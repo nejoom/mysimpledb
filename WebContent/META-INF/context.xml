@@ -1,0 +1,55 @@
+
+  <!--
+    The contents of this file will be loaded for mysimpledb web
+    application. The following sets up a dataSource for a mysql
+    connection to a database with user root, no password, and the
+    database example.
+  -->
+<Context
+  cookies="true"
+  debug="0"
+  reloadable="true"
+>
+  <Resource
+    name="jdbc/example"
+    auth="Container"
+    type="javax.sql.DataSource"
+    maxActive="50"
+    maxIdle="20"
+    maxWait="5000"
+    username="root"
+    password=""
+    driverClassName="com.mysql.jdbc.Driver"
+    url="jdbc:mysql://localhost/?autoReconnectForPools=true&amp;autoReconnect=true"
+    validationQuery="SELECT 1"
+    removeAbandoned="true"
+    removeAbandonedTimeout="60"
+    logAbandoned="true" />
+  <Environment
+    name="AWSAccessKeyId"
+    value=""
+    type="java.lang.String"
+    override="false" />
+  <Environment
+    name="SecretAccessKey"
+    value=""
+    type="java.lang.String"
+    override="false" />
+  <!--
+    CREATE TABLE `session` ( `id` char(32) NOT NULL, `app` varchar(255)
+    NOT NULL, `valid_session` char(1) NOT NULL, `max_inactive` int(11)
+    NOT NULL, `last_access` bigint(20) NOT NULL, `data` blob, PRIMARY
+    KEY (`id`,`app`), KEY `app` (`app`) ) ENGINE=MyISAM DEFAULT
+    CHARSET=utf8 idle for 10 seconds leads to backup
+  -->
+  <!--
+    <Manager className="org.apache.catalina.session.PersistentManager"
+    debug="10" checkInterval="1" saveOnRestart="true"
+    maxActiveSessions="-1" minIdleSwap="-1" maxIdleSwap="-1"
+    maxIdleBackup="10"> <Store className="ac.elements.sdb.SimpleDBStore"
+    sessionIdCol="id" sessionAppCol="app" sessionDataCol="data"
+    sessionLastAccessedCol="lastAccessed"
+    sessionMaxInactiveCol="maxInactive" sessionTable="session"
+    sessionValidCol="validSession"> </Store> </Manager>
+  -->
+</Context>

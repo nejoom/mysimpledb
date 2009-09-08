@@ -1,0 +1,174 @@
+<!--
+ 
+  Copyright 2008-2009 Elements. All Rights Reserved.
+ 
+  License version: CPAL 1.0
+ 
+  The Original Code is mysimpledb code. Please visit mysimpledb.com to see how
+  you can contribute and improve this software.
+ 
+  The contents of this file are licensed under the Common Public Attribution
+  License Version 1.0 (the "License"); you may not use this file except in
+  compliance with the License. You may obtain a copy of the License at
+ 
+     http://mysimpledb.com/mysimpledb/license.
+ 
+  The License is based on the Mozilla Public License Version 1.1.
+ 
+  Sections 14 and 15 have been added to cover use of software over a computer
+  network and provide for attribution determined by Elements.
+ 
+  Software distributed under the License is distributed on an "AS IS" basis,
+  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+  the specific language governing permissions and limitations under the
+  License.
+ 
+  Elements is the Initial Developer and the Original Developer of the Original
+  Code.
+ 
+  The contents of this file may be used under the terms of the Elements 
+  End-User License Agreement (the Elements License), in which case the 
+  provisions of the Elements License are applicable instead of those above.
+ 
+  You may wish to allow use of your version of this file under the terms of
+  the Elements License please visit http://mysimpledb.com/mysimpledb/license 
+  for details.
+ 
+-->
+<!--
+
+
+              mysimpledb   B u i l d   S y s t e m
+
+
+-->
+
+<project default="help" name="mysimpledb" basedir=".">
+
+  <!-- Initializations .................................................... -->
+  <target name="init" unless="init.done">
+    <tstamp>
+      <format property="ts" pattern="yyyyMMdd-HHmmss-z" />
+    </tstamp>
+    <property name="Project" value="mysimpledb" />
+    <property name="project" value="mysimpledb" />
+    <property name="year" value="2009" />
+
+    <!-- Info ............................................................... -->
+    <echo message=" == ${Project} build file ================================" />
+    <echo message="" />
+    <echo message="    JAVA_HOME: ${env.JAVA_HOME}" />
+    <echo message="    VM:        ${java.vm.version}, ${java.vm.vendor}" />
+
+    <property name="init.done" value="true" />
+  </target>
+
+  <!-- Help ............................................................... -->
+  <target name="help" depends="init" description="Displays the usage">
+    <echo message="" />
+    <echo message="The following build targets are available:" />
+    <echo message="" />
+    <echo message=" -- Building ------------------------------------------------------" />
+    <echo message="" />
+    <echo message="    jars" />
+    <echo message="        Builds jar files for all mysimpledb libraries and applications." />
+    <echo message="        (Creates ${build}/.)" />
+    <echo message="    javadoc" />
+    <echo message="        Generates the API documentation." />
+    <echo message="        (Creates ${docs}/javadoc/.)" />
+    <echo message="" />
+    <echo message="    clean" />
+    <echo message="        Removes all output files and directories." />
+    <echo message="    " />
+    <echo message="See the comments in the build.xml file for more details." />
+  </target>
+
+  <!-- Configuring the build -->
+  <property file="${basedir}/build-local.properties" />
+  <target name="javadoc">
+    <javadoc access="public"
+             additionalparam="-J-Xmx180m -link http://java.sun.com/j2se/1.5.0/docs/api"
+             author="true"
+             classpath="/WebContent/WEB-INF/lib/pdf-transcoder.jar:/WebContent/WEB-INF/lib/batik-extension.jar:/WebContent/WEB-INF/lib/batik-css.jar:/WebContent/WEB-INF/lib/batik-transcoder.jar:WebContent/WEB-INF/lib/batik-parser.jar:/WebContent/WEB-INF/lib/batik-swing.jar:/WebContent/WEB-INF/lib/batik-anim.jar:/WebContent/WEB-INF/lib/batik-util.jar:/WebContent/WEB-INF/lib/batik-awt-util.jar:/WebContent/WEB-INF/lib/batik-codec.jar:/WebContent/WEB-INF/lib/xml-apis-ext.jar:/WebContent/WEB-INF/lib/batik-ext.jar:/WebContent/WEB-INF/lib/batik-xml.jar:/WebContent/WEB-INF/lib/batik-script.jar:/WebContent/WEB-INF/lib/xerces_2_5_0.jar:/WebContent/WEB-INF/classes:/WebContent/WEB-INF/lib/batik-gui-util.jar:/WebContent/WEB-INF/lib/jdom.jar:/WebContent/WEB-INF/lib/xml-apis.jar:/WebContent/WEB-INF/lib/batik-bridge.jar:/WebContent/WEB-INF/lib/js.jar:/WebContent/WEB-INF/lib/xalan-2.6.0.jar:/WebContent/WEB-INF/lib/log4j-1.2.8.jar:WebContent/WEB-INF/lib/batik-svg-dom.jar:/WebContent/WEB-INF/lib/batik-svggen.jar:/WebContent/WEB-INF/lib/batik-gvt.jar:/WebContent/WEB-INF/lib/batik-dom.jar"
+             destdir="WebContent/javadoc"
+             doctitle="mysimpledb"
+             nodeprecated="false"
+             nodeprecatedlist="false"
+             noindex="false"
+             nonavbar="false"
+             notree="false"
+             splitindex="true"
+             use="true"
+             version="true">
+      <fileset dir="../src" defaultexcludes="yes">
+        <include name="**/*.java" />
+        <exclude name="trash/**/*.java" />
+      </fileset>
+      <link href="http://www.jdom.org/docs/apidocs/" />
+      <link href="http://logging.apache.org/log4j/docs/api/" />
+      <link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+      <link href="http://java.sun.com/j2ee/1.4/docs/api" />
+      <link href="http://jigsaw.w3.org/Doc/Programmer/api" />
+      <link href="." />
+
+      <!--
+      <doclet name="ydoc.doclets.YStandard"
+              path="../ydoc-3.0_01-jdk1.5/lib/ydoc.jar:../ydoc-3.0_01-jdk1.5/resources:../ydoc-3.0_01-jdk1.5/lib/class2svg.jar:buld/classes">
+        <param name="-umlautogen" />
+      </doclet>
+      -->
+
+    </javadoc>
+  </target>
+
+  <!-- 
+    the jared.txt file is generated with
+    mysimpledb/build/classes]$ find . -name "*class*" | cut -c 3- > ../jared.txt
+    -->
+  <target name="make-jar" description="Creates a bin jar">
+    <jar jarfile="mysimpledb.version.jar"
+         includesfile="jared.txt"
+         basedir="classes" />
+  </target>
+
+  <!-- 
+  
+build/mysimpledbWar]$ find . -type f | grep -v svn | grep -v aws.properties > ../wared.txt 
+then find replace "./"
+
+-->
+  <target name="setup-war" description="Creates a war">
+    <touch>
+      <fileset dir="../WebContent" />
+    </touch>
+    <copy todir="mysimpledb">
+      <fileset dir="../WebContent">
+        <exclude name="**/*.aws.properties" />
+      </fileset>
+    </copy>
+    <copy file="mysimpledb.version.jar" todir="mysimpledb/WEB-INF/lib/" />
+  </target>
+
+  <target name="web-archive"
+          description="make web archive file"
+          depends="make-jar, setup-war">
+    <jar jarfile="mysimpledb.war"
+         includesfile="wared.txt"
+         basedir="mysimpledb" />
+    <copy file="mysimpledb.war" todir="mysimpledb" />
+  </target>
+
+
+  <target name="send to elements.ac"
+          description="sends web archive to elements.ac">
+    <!--
+    cd /Users/eddie/Documents/workspace/mysimpledb/build
+    scp mysimpledb.war nejoom@elements.ac:/home/tomcat/webapps
+    -->
+    <scp file="mysimpledb.war"
+         todir="nejoom@elements.ac:/home/tomcat/webapps"
+         keyfile="/Users/eddie/Elements/amazon/pk-HHQ27MWIS5PCAZBO3WSLSE44GC6KI2M2.pem"
+         trust="yes" />
+  </target>
+
+</project>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Licensed to the elements.ac
+-->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:jsp="http://java.sun.com/xml/ns/javaee/jsp" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <description>A jsp utility to manage Amazon's SimpleDB.</description>
+  <display-name>mysimpledb</display-name>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  <jsp-config>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
+      <taglib-location>/WEB-INF/jstl/fmt.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/fmt-rt</taglib-uri>
+      <taglib-location>/WEB-INF/jstl/fmt-rt.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+      <taglib-location>/WEB-INF/jstl/c.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/core-rt</taglib-uri>
+      <taglib-location>/WEB-INF/jstl/c-rt.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/sql</taglib-uri>
+      <taglib-location>/WEB-INF/jstl/sql.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/sql-rt</taglib-uri>
+      <taglib-location>/WEB-INF/jstl/sql-rt.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/x</taglib-uri>
+      <taglib-location>/WEB-INF/jstl/x.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/x-rt</taglib-uri>
+      <taglib-location>/WEB-INF/jstl/x-rt.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://ac.elements/jsp/jstl/functions</taglib-uri>
+      <taglib-location>/WEB-INF/jstl/fn.tld</taglib-location>
+    </taglib>
+  </jsp-config>
+</web-app>

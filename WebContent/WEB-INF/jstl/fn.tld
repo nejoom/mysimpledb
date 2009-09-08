@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib
+  xmlns="http://java.sun.com/xml/ns/j2ee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+  version="2.0"
+>
+  <description>JSTL 1.1 functions library</description>
+  <display-name>JSTL functions</display-name>
+  <tlib-version>1.1</tlib-version>
+  <short-name>fn</short-name>
+  <uri>http://ac.elements/jsp/jstl/functions</uri>
+  <function>
+    <description>
+      Tests if an input string contains the specified substring.
+    </description>
+    <name>contains</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>boolean contains(java.lang.String,
+      java.lang.String)</function-signature>
+    <example>
+      &lt;c:if test="${fn:contains(name, searchString)}">
+    </example>
+  </function>
+  <function>
+    <description>
+      Tests if an input string contains the specified substring in a case insensitive way.
+    </description>
+    <name>containsIgnoreCase</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>boolean containsIgnoreCase(java.lang.String, java.lang.String)</function-signature>
+    <example>
+      &lt;c:if test="${fn:containsIgnoreCase(name, searchString)}">
+    </example>
+  </function>
+  <function>
+    <description>
+      Tests if an input string ends with the specified suffix.
+    </description>
+    <name>endsWith</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>boolean endsWith(java.lang.String, java.lang.String)</function-signature>
+    <example>
+      &lt;c:if test="${fn:endsWith(filename, ".txt")}">
+    </example>
+  </function>
+  <function>
+    <description>
+      Escapes characters that could be interpreted as XML markup.
+    </description>
+    <name>escapeXml</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>java.lang.String escapeXml(java.lang.String)</function-signature>
+    <example>
+      ${fn:escapeXml(param:info)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Returns the index withing a string of the first occurrence of a specified substring.
+    </description>
+    <name>indexOf</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>int indexOf(java.lang.String, java.lang.String)</function-signature>
+    <example>
+      ${fn:indexOf(name, "-")}
+    </example>
+  </function>
+  <function>
+    <description>
+      Joins all elements of an array into a string.
+    </description>
+    <name>join</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>java.lang.String join(java.lang.String[], java.lang.String)</function-signature>
+    <example>
+      ${fn:join(array, ";")}
+    </example>
+  </function>
+  <function>
+    <description>
+      Returns the number of items in a collection, or the number of characters in a string.
+    </description>
+    <name>length</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>int length(java.lang.Object)</function-signature>
+    <example>
+      You have ${fn:length(shoppingCart.products)} in your shopping cart.
+    </example>
+  </function>
+  <function>
+    <description>
+      Returns a string resulting from replacing in an input string all occurrences
+      of a "before" string into an "after" substring.
+    </description>
+    <name>replace</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>java.lang.String replace(java.lang.String, java.lang.String, java.lang.String)</function-signature>
+    <example>
+      ${fn:replace(text, "-", "&#149;")}
+    </example>
+  </function>
+  <function>
+    <description>
+      Splits a string into an array of substrings.
+    </description>
+    <name>split</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>java.lang.String[] split(java.lang.String, java.lang.String)</function-signature>
+    <example>
+      ${fn:split(customerNames, ";")}
+    </example>
+  </function>
+  <function>
+    <description>
+      Tests if an input string starts with the specified prefix.
+    </description>
+    <name>startsWith</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>boolean startsWith(java.lang.String, java.lang.String)</function-signature>
+    <example>
+      &lt;c:if test="${fn:startsWith(product.id, "100-")}">
+    </example>
+  </function>
+  <function>
+    <description>
+      Returns a subset of a string.
+    </description>
+    <name>substring</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>java.lang.String substring(java.lang.String, int, int)</function-signature>
+    <example>
+      P.O. Box: ${fn:substring(zip, 6, -1)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Returns a subset of a string following a specific substring.
+    </description>
+    <name>substringAfter</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>java.lang.String substringAfter(java.lang.String, java.lang.String)</function-signature>
+    <example>
+      P.O. Box: ${fn:substringAfter(zip, "-")}
+    </example>
+  </function>
+  <function>
+    <description>
+      Returns a subset of a string before a specific substring.
+    </description>
+    <name>substringBefore</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>java.lang.String substringBefore(java.lang.String, java.lang.String)</function-signature>
+    <example>
+      Zip (without P.O. Box): ${fn:substringBefore(zip, "-")}
+    </example>
+  </function>
+  <function>
+    <description>
+      Converts all of the characters of a string to lower case.
+    </description>
+    <name>toLowerCase</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>java.lang.String toLowerCase(java.lang.String)</function-signature>
+    <example>
+      Product name: ${fn.toLowerCase(product.name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Converts all of the characters of a string to upper case.
+    </description>
+    <name>toUpperCase</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>java.lang.String toUpperCase(java.lang.String)</function-signature>
+    <example>
+      Product name: ${fn.UpperCase(product.name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Removes white spaces from both ends of a string.
+    </description>
+    <name>trim</name>
+    <function-class>org.apache.taglibs.standard.functions.Functions</function-class>
+    <function-signature>java.lang.String trim(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.trim(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Capitalize a sentence.
+    </description>
+    <name>capitalize</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String capitalize(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.capitalize(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Chop the url to print nicely with given int character length
+    </description>
+    <name>chopUrl</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String chopUrl(java.lang.String, int)</function-signature>
+    <example>
+      Name: ${fn.chopUrl(url, 50)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Escapes Html.
+    </description>
+    <name>escapeHtml</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String escapeHtml(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.escapeHtml(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Escapes java.
+    </description>
+    <name>escapeJava</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String escapeJava(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.escapeJava(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Within a specified input string, replaces all strings that match a
+      regular expression pattern with a specified replacement string.
+    </description>
+    <name>regex</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String regex(java.lang.String, java.lang.String, java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.regex("aabfooaabfooabfoob", "a*b", "-")}
+    </example>
+  </function>
+  <function>
+    <description>
+      Swaps the case of all letters.
+    </description>
+    <name>swapCase</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String swapCase(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.swapCase(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Uncapitalizes.
+    </description>
+    <name>uncapitalize</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String uncapitalize(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.uncapitalize(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Escapes javascript.
+    </description>
+    <name>escapeJavaScript</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String escapeJavaScript(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.escapeJavaScript(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Unescapes html.
+    </description>
+    <name>unescapeHtml</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String unescapeHtml(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.unescapeHtml(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Unescapes Java.
+    </description>
+    <name>unescapeJava</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String unescapeJava(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.unescapeJava(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Unescapes JavaScript.
+    </description>
+    <name>unescapeJavaScript</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String unescapeJavaScript(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.unescapeJavaScript(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Unescapes Xml.
+    </description>
+    <name>unescapeXml</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String unescapeXml(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.unescapeXml(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Converts unicode java string to Unicode HTML (&amp;#xxxx) .
+    </description>
+    <name>toUnicodeHTML</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String toUnicodeHTML(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.toUnicodeHTML(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Escapes a unicode java string for javascript.
+    </description>
+    <name>escUniJs</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String escUniJs(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.escUniJs(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Formats/ pretty prints the calid/ well-formed xml given.
+    </description>
+    <name>formatXml</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String formatXml(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.formatXml(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Formats/ pretty prints the bytes given.
+    </description>
+    <name>formatBytes</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String formatBytes(java.lang.String)</function-signature>
+    <example>
+      Name: ${fn.formatBytes(bytes)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Decode the object and then escape the unicode for javascript use.
+    </description>
+    <name>decodeEscUniJs</name>
+    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String decodeEscUniJs(java.lang.Object)</function-signature>
+    <example>
+      Name: ${fn.decodeEscUniJs(name)}
+    </example>
+  </function>
+</taglib>
