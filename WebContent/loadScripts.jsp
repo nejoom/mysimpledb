@@ -70,50 +70,54 @@ SyntaxHighlighter.all();</script>
     src="/mysimpledb/assets/js/tooltip.js"></script>
 
 <script>
+
+// defining a namespace seems to be essential for internet explorer
+YAHOO.namespace("mysimpledb");
+
 // Variable holding the div id of the element to work on. 
 var divElement = "listDomainNames";
 
-// Define various event handlers for Dialogs
-var handleSubmit = function() {
-    this.submit();
-    this.hide();
-};
-
-var handleCancel = function() {
-    this.cancel();
-    this.hide();
-};
-
-var handleSuccess = function(o) {
-    var response = o.responseText;
-    document.getElementById(divElement).innerHTML = response;
-    wait.hide();
-    
-    // update the auto-complete box to make natural querying
-    if (document.getElementById("copySelect").value == "") {
-      document.getElementById("selectField").value = 
-        document.getElementById("selectField").getAttribute("default");
-    } 
-    //alert();
-    //highlight the xml debug
-    //SyntaxHighlighter.highlight();
-};
-
-var handleFailure = function(o) {
-    wait.hide();
-    popAlertDialog("Handling submit failure: ", 
-        "Err code: " + o.status + ", " + o.statusText + ".<br />");
-};
-
-var callback = {
-    success:handleSuccess,
-    failure:handleFailure
-};
-
 function init() {
+
+	// Define various event handlers for Dialogs
+	var handleSubmit = function() {
+	    this.submit();
+	    this.hide();
+	};
+
+	var handleCancel = function() {
+	    this.cancel();
+	    this.hide();
+	};
+
+	var handleSuccess = function(o) {
+	    var response = o.responseText;
+	    document.getElementById(divElement).innerHTML = response;
+	    YAHOO.mysimpledb.wait.hide();
+	    
+	    // update the auto-complete box to make natural querying
+	    if (document.getElementById("copySelect").value == "") {
+	      document.getElementById("selectField").value = 
+	        document.getElementById("selectField").getAttribute("default");
+	    } 
+	    //alert();
+	    //highlight the xml debug
+	    //SyntaxHighlighter.highlight();
+	};
+
+	var handleFailure = function(o) {
+	    YAHOO.mysimpledb.wait.hide();
+	    popAlertDialog("Handling submit failure: ", 
+	        "Err code: " + o.status + ", " + o.statusText + ".<br />");
+	};
+
+	var callback = {
+	    success:handleSuccess,
+	    failure:handleFailure
+	};
     
     // Initialize the temporary Panel to display while waiting
-    wait = new YAHOO.widget.Panel("wait", 
+    YAHOO.mysimpledb.wait = new YAHOO.widget.Panel("wait", 
     { 
         width: "240px", 
         y: 20,
@@ -125,13 +129,13 @@ function init() {
         visible: false
     });
 
-    wait.setHeader("Processing at AWS's SimpleDB ...");
-    wait.setBody("<img src='http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif'/>");
-    wait.render(document.body);
+    YAHOO.mysimpledb.wait.setHeader("Processing at AWS's SimpleDB ...");
+    YAHOO.mysimpledb.wait.setBody("<img src='http://l.yimg.com/a/i/us/per/gr/gp/rel_interstitial_loading.gif'/>");
+    YAHOO.mysimpledb.wait.render(document.body);
     
     
     // Instantiate the alert dialog
-    alertDialog = new YAHOO.widget.SimpleDialog("alertDialog", { 
+    YAHOO.mysimpledb.alertDialog = new YAHOO.widget.SimpleDialog("alertDialog", { 
         modal: true,
         width : "25em",
         fixedcenter : true,
@@ -145,18 +149,18 @@ function init() {
     });
 
     // Validate the entries in the for
-    alertDialog.validate = function() {
+    YAHOO.mysimpledb.alertDialog.validate = function() {
       return true;
     };
 
     // Wire up the success and failure handlers
-    alertDialog.callback = callback;
+    YAHOO.mysimpledb.alertDialog.callback = callback;
     
     // Render the Dialog
-    alertDialog.render();
+    YAHOO.mysimpledb.alertDialog.render();
     
     // Instantiate the Dialog
-    deleteDomain = new YAHOO.widget.SimpleDialog("deleteDomain", { 
+    YAHOO.mysimpledb.deleteDomain = new YAHOO.widget.SimpleDialog("deleteDomain", { 
         modal: true,
         width : "20em",
         fixedcenter : true,
@@ -175,19 +179,19 @@ function init() {
     });
 
     // Validate the entries in the for
-    deleteDomain.validate = function() {
-      wait.show();
+    YAHOO.mysimpledb.deleteDomain.validate = function() {
+      YAHOO.mysimpledb.wait.show();
       return true;
     };
 
     // Wire up the success and failure handlers
-    deleteDomain.callback = callback;
+    YAHOO.mysimpledb.deleteDomain.callback = callback;
     
     // Render the Dialog
-    deleteDomain.render();
+    YAHOO.mysimpledb.deleteDomain.render();
     
     // Instantiate the Dialog
-    createDomain = new YAHOO.widget.Dialog("createDomain", { 
+    YAHOO.mysimpledb.createDomain = new YAHOO.widget.Dialog("createDomain", { 
         modal: true,
         width : "30em",
         fixedcenter : true,
@@ -206,24 +210,24 @@ function init() {
     });
 
     // Validate the entries in the form 
-    createDomain.validate = function() {
+    YAHOO.mysimpledb.createDomain.validate = function() {
         var data = this.getData();
         if (data.domainName == "" ) {
             return false;
         } else {
-            wait.show();
+            YAHOO.mysimpledb.wait.show();
             return true;
         }
     };
 
     // Wire up the success and failure handlers
-    createDomain.callback = callback;
+    YAHOO.mysimpledb.createDomain.callback = callback;
     
     // Render the Dialog
-    createDomain.render();
+    YAHOO.mysimpledb.createDomain.render();
     
     // Instantiate the Dialog
-    createItem = new YAHOO.widget.Dialog("createItem", { 
+    YAHOO.mysimpledb.createItem = new YAHOO.widget.Dialog("createItem", { 
         modal: true,
         width : "30em",
         fixedcenter : true,
@@ -242,30 +246,30 @@ function init() {
     });
 
     // Validate the entries in the form 
-    createItem.validate = function() {
+    YAHOO.mysimpledb.createItem.validate = function() {
         var data = this.getData();
         this.form.itemName.disabled=false;
         
-        wait.show();
+        YAHOO.mysimpledb.wait.show();
         return true;
     };
     
     
 
     // Validate the entries in the form 
-    createItem.setItem = function(item, domain) {
+    YAHOO.mysimpledb.createItem.setItem = function(item, domain) {
         this.form.itemName.value=item;
         this.form.domainName.value=domain;
     };
 
     // Wire up the success and failure handlers
-    createItem.callback = callback;
+    YAHOO.mysimpledb.createItem.callback = callback;
     
     // Render the Dialog
-    createItem.render();
+    YAHOO.mysimpledb.createItem.render();
         
     // Instantiate the Dialog
-    deleteItem = new YAHOO.widget.SimpleDialog("deleteItem", { 
+    YAHOO.mysimpledb.deleteItem = new YAHOO.widget.SimpleDialog("deleteItem", { 
         modal: true,
         width : "20em",
         fixedcenter : true,
@@ -284,19 +288,19 @@ function init() {
     });
 
     // Validate the entries in the for
-    deleteItem.validate = function() {
-      wait.show();
+    YAHOO.mysimpledb.deleteItem.validate = function() {
+      YAHOO.mysimpledb.wait.show();
       return true;
     };
 
     // Wire up the success and failure handlers
-    deleteItem.callback = callback;
+    YAHOO.mysimpledb.deleteItem.callback = callback;
     
     // Render the Dialog
-    deleteItem.render();
+    YAHOO.mysimpledb.deleteItem.render();
     
 	// Instantiate the Dialog
-    deleteValueKey = new YAHOO.widget.SimpleDialog("deleteValueKey", { 
+    YAHOO.mysimpledb.deleteValueKey = new YAHOO.widget.SimpleDialog("deleteValueKey", { 
         modal: true,
         width : "20em",
         fixedcenter : true,
@@ -315,19 +319,19 @@ function init() {
     });
 
     // Validate the entries in the for
-    deleteValueKey.validate = function() {
-      wait.show();
+    YAHOO.mysimpledb.deleteValueKey.validate = function() {
+      YAHOO.mysimpledb.wait.show();
       return true;
     };
 
     // Wire up the success and failure handlers
-    deleteValueKey.callback = callback;
+    YAHOO.mysimpledb.deleteValueKey.callback = callback;
     
     // Render the Dialog
-    deleteValueKey.render();
+    YAHOO.mysimpledb.deleteValueKey.render();
 
     // Instantiate the Dialog
-    createDialog = new YAHOO.widget.SimpleDialog("createDialog", { 
+    YAHOO.mysimpledb.createDialog = new YAHOO.widget.SimpleDialog("createDialog", { 
         modal: true,
         width : "20em",
         fixedcenter : true,
@@ -346,19 +350,19 @@ function init() {
     });
 
     // Validate the entries in the for
-    createDialog.validate = function() {
-      wait.show();
+    YAHOO.mysimpledb.createDialog.validate = function() {
+      YAHOO.mysimpledb.wait.show();
       return true;
     };
 
     // Wire up the success and failure handlers
-    createDialog.callback = callback;
+    YAHOO.mysimpledb.createDialog.callback = callback;
     
     // Render the Dialog
-    createDialog.render();
+    YAHOO.mysimpledb.createDialog.render();
     
     // Instantiate the Dialog
-    selectDialog = new YAHOO.widget.SimpleDialog("selectDialog", { 
+     YAHOO.mysimpledb.selectDialog = new YAHOO.widget.SimpleDialog("selectDialog", { 
         modal: true,
         width : "20em",
         fixedcenter : true,
@@ -377,16 +381,16 @@ function init() {
     });
 
     // Validate the entries in the for
-    selectDialog.validate = function() {
-      wait.show();
+    YAHOO.mysimpledb.selectDialog.validate = function() {
+      YAHOO.mysimpledb.wait.show();
       return true;
     };
 
     // Wire up the success and failure handlers
-    selectDialog.callback = callback;
+    YAHOO.mysimpledb.selectDialog.callback = callback;
     
     // Render the Dialog
-    selectDialog.render();
+    YAHOO.mysimpledb.selectDialog.render();
     
     // Set up auto-complete form    
     YAHOO.example.BasicRemote = function() {
@@ -429,7 +433,7 @@ function makeRequest(domain){
   var select = document.getElementById("selectField");
   select.value = "select * from " + domain;
   
-  wait.show();
+  YAHOO.mysimpledb.wait.show();
 
   popSelect();
   //var sUrl = "listItemNames.jsp?Action=exploreDomain&domainName="+domain;
@@ -446,7 +450,7 @@ function makeRequestSort(domain, items, where, order, limit){
   select.value = "select " + items + " from " + domain + " " + where + 
     " " + order + " " + limit;
   
-  wait.show();
+  YAHOO.mysimpledb.wait.show();
 
   popSelect();
   //var sUrl = "listItemNames.jsp?Action=exploreDomain&domainName="+domain;
@@ -454,30 +458,30 @@ function makeRequestSort(domain, items, where, order, limit){
 };
 
 window.popAlertDialog = function(head, body) {
-  alertDialog.setHeader(head); 
-  alertDialog.setBody(body); 
-  alertDialog.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_BLOCK);
-  alertDialog.show();
+  YAHOO.mysimpledb.alertDialog.setHeader(head); 
+  YAHOO.mysimpledb.alertDialog.setBody(body); 
+  YAHOO.mysimpledb.alertDialog.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_BLOCK);
+  YAHOO.mysimpledb.alertDialog.show();
 };
 
 window.popDeleteDomain = function(head, body, domain) {
   //div element to update
   divElement = "listDomainNames";
-  deleteDomain.setHeader(head); 
-  deleteDomain.setBody(body); 
-  deleteDomain.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_WARN); 
-  deleteDomain.form.action="listDomainNames.jsp?Action=deleteDomain";
-  deleteDomain.form.deleteDomain.value = domain;
+  YAHOO.mysimpledb.deleteDomain.setHeader(head); 
+  YAHOO.mysimpledb.deleteDomain.setBody(body); 
+  YAHOO.mysimpledb.deleteDomain.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_WARN); 
+  YAHOO.mysimpledb.deleteDomain.form.action="listDomainNames.jsp?Action=deleteDomain";
+  YAHOO.mysimpledb.deleteDomain.form.deleteDomain.value = domain;
   //needed to realy post things, otherwise doesnt work (hard work).
-  deleteDomain.cfg.setProperty("postmethod", "async");
-  //alert(deleteDomain.body.innerHTML);
-  deleteDomain.show();
+  YAHOO.mysimpledb.deleteDomain.cfg.setProperty("postmethod", "async");
+  //alert(YAHOO.mysimpledb.deleteDomain.body.innerHTML);
+  YAHOO.mysimpledb.deleteDomain.show();
 };
 
 window.popRefreshDomains = function(nextToken) {
   //div element to update
   divElement = "listDomainNames";
-  wait.show();
+  YAHOO.mysimpledb.wait.show();
   var sUrl = "listDomainNames.jsp?Action=exploreDomain&domainNextToken="+
     nextToken;
   //alert("refresh");
@@ -487,7 +491,7 @@ window.popRefreshDomains = function(nextToken) {
 window.popCreateDomain = function() {
   //div element to update
   divElement = "listDomainNames";
-  createDomain.show();
+  YAHOO.mysimpledb.createDomain.show();
 };
 
 function getHiddenField(key, value){
@@ -502,17 +506,17 @@ function getHiddenField(key, value){
 window.popDeleteItem = function(head, body, item, domain) {
   //div element to update
   divElement = "listItemNames";
-  deleteItem.setHeader(head); 
-  deleteItem.setBody(body); 
-  deleteItem.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_WARN); 
-  deleteItem.form.action="listItemNames.jsp?Action=deleteItem";
-  deleteItem.form.deleteItem.value = item;
+  YAHOO.mysimpledb.deleteItem.setHeader(head); 
+  YAHOO.mysimpledb.deleteItem.setBody(body); 
+  YAHOO.mysimpledb.deleteItem.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_WARN); 
+  YAHOO.mysimpledb.deleteItem.form.action="listItemNames.jsp?Action=deleteItem";
+  YAHOO.mysimpledb.deleteItem.form.deleteItem.value = item;
   var element = getHiddenField("domainName", domain);
-  deleteItem.form.appendChild(element);
+  YAHOO.mysimpledb.deleteItem.form.appendChild(element);
   //needed to realy post things, otherwise doesnt work (hard work).
-  deleteItem.cfg.setProperty("postmethod", "async");
-  //alert(deleteItem.body.innerHTML);
-  deleteItem.show();
+  YAHOO.mysimpledb.deleteItem.cfg.setProperty("postmethod", "async");
+  //alert(YAHOO.mysimpledb.deleteItem.body.innerHTML);
+  YAHOO.mysimpledb.deleteItem.show();
 };
 
 window.popCreateItem = function(item, domain) {
@@ -523,43 +527,43 @@ window.popCreateItem = function(item, domain) {
     //remove any new item elements, cause its not
     var element = document.getElementById("itemNew");
     if (element) 
-      createItem.form.removeChild(element);
+      YAHOO.mysimpledb.createItem.form.removeChild(element);
 
-    createItem.setItem(item, domain);
-    createItem.form.itemName.disabled=true;
+    YAHOO.mysimpledb.createItem.setItem(item, domain);
+    YAHOO.mysimpledb.createItem.form.itemName.disabled=true;
   } else {
     var element = getHiddenField("itemNew", "true");
-    createItem.form.appendChild(element);
-    createItem.setItem("", domain);  
-    createItem.form.itemName.disabled=false;
+    YAHOO.mysimpledb.createItem.form.appendChild(element);
+    YAHOO.mysimpledb.createItem.setItem("", domain);  
+    YAHOO.mysimpledb.createItem.form.itemName.disabled=false;
   }
-  createItem.show();
+  YAHOO.mysimpledb.createItem.show();
 };
 
 window.popDeleteValueKey = function(head, body, key, value, item, domain) {
   //div element to update
   divElement = "listItemNames";
-  deleteValueKey.setHeader(head); 
-  deleteValueKey.setBody(body); 
-  deleteValueKey.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_WARN); 
-  deleteValueKey.form.action="listItemNames.jsp?Action=deleteValueKey";
+  YAHOO.mysimpledb.deleteValueKey.setHeader(head); 
+  YAHOO.mysimpledb.deleteValueKey.setBody(body); 
+  YAHOO.mysimpledb.deleteValueKey.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_WARN); 
+  YAHOO.mysimpledb.deleteValueKey.form.action="listItemNames.jsp?Action=deleteValueKey";
 
   var element = getHiddenField("domainName", domain);
-  deleteValueKey.form.appendChild(element);
+  YAHOO.mysimpledb.deleteValueKey.form.appendChild(element);
   element = getHiddenField("itemName", item);
-  deleteValueKey.form.appendChild(element);
+  YAHOO.mysimpledb.deleteValueKey.form.appendChild(element);
   element = getHiddenField("keyName", key);
-  deleteValueKey.form.appendChild(element);
+  YAHOO.mysimpledb.deleteValueKey.form.appendChild(element);
   element = getHiddenField("value", value);
-  deleteValueKey.form.appendChild(element);
+  YAHOO.mysimpledb.deleteValueKey.form.appendChild(element);
   //needed to realy post things, otherwise doesnt work (hard work).
-  deleteValueKey.cfg.setProperty("postmethod", "async");
-  //alert(deleteValueKey.body.innerHTML);
-  deleteValueKey.show();
+  YAHOO.mysimpledb.deleteValueKey.cfg.setProperty("postmethod", "async");
+  //alert(YAHOO.mysimpledb.deleteValueKey.body.innerHTML);
+  YAHOO.mysimpledb.deleteValueKey.show();
 };
 
 window.popCreate = function() { 
-  var element = createDialog.form;
+  var element = YAHOO.mysimpledb.createDialog.form;
   
   //remove any new item elements, cause its not
   while (element.firstChild) {
@@ -567,27 +571,27 @@ window.popCreate = function() {
   }
 
   //needed to realy post things, otherwise doesnt work (hard work).
-  createDialog.cfg.setProperty("postmethod", "async");
+  YAHOO.mysimpledb.createDialog.cfg.setProperty("postmethod", "async");
   //div element to update
   divElement = "listDomainNames";
-  createDialog.form.action="listDomainNames.jsp?Action=select";
-  //alert(selectDialog.body.innerHTML);
+  YAHOO.mysimpledb.createDialog.form.action="listDomainNames.jsp?Action=select";
+  //alert(YAHOO.mysimpledb.selectDialog.body.innerHTML);
   var select = document.getElementById("selectField");
   var element = getHiddenField("select", select.value);
   //alert(select.value);
-  createDialog.form.appendChild(element);
+  YAHOO.mysimpledb.createDialog.form.appendChild(element);
 
   
   //alert(select.value);
-  //alert(selectDialog.body.innerHTML);
-  createDialog.submit();
+  //alert(YAHOO.mysimpledb.selectDialog.body.innerHTML);
+  YAHOO.mysimpledb.createDialog.submit();
 	  
 };
     
 window.popSelect = function(cursorToken) { 
 
   
-  var element = selectDialog.form;
+  var element = YAHOO.mysimpledb.selectDialog.form;
   
   //remove any new item elements, cause its not
   while (element.firstChild) {
@@ -595,25 +599,25 @@ window.popSelect = function(cursorToken) {
   }
 
   //needed to realy post things, otherwise doesnt work (hard work).
-  selectDialog.cfg.setProperty("postmethod", "async");
+  YAHOO.mysimpledb.selectDialog.cfg.setProperty("postmethod", "async");
   //div element to update
   divElement = "listItemNames";
-  selectDialog.form.action="listItemNames.jsp?Action=select";
-  //alert(selectDialog.body.innerHTML);
+  YAHOO.mysimpledb.selectDialog.form.action="listItemNames.jsp?Action=select";
+  //alert(YAHOO.mysimpledb.selectDialog.body.innerHTML);
   var select = document.getElementById("selectField");
   var element = getHiddenField("select", select.value);
   
   //alert(select.value);
-  selectDialog.form.appendChild(element);
+  YAHOO.mysimpledb.selectDialog.form.appendChild(element);
 
   if (cursorToken) {
-	  selectDialog.form.action+="&itemNextToken="+cursorToken;
+	  YAHOO.mysimpledb.selectDialog.form.action+="&itemNextToken="+cursorToken;
       //alert(cursorToken);
   }
   
   //alert(select.value);
-  //alert(selectDialog.body.innerHTML);
-  selectDialog.submit();
+  //alert(YAHOO.mysimpledb.selectDialog.body.innerHTML);
+  YAHOO.mysimpledb.selectDialog.submit();
   
 };
 </script>
