@@ -290,17 +290,17 @@ public abstract class ASimpleDBCollection extends SimpleDB {
 
         long t0 = System.currentTimeMillis();
         selectExpression = ExtendedFunctions.trimSentence(selectExpression);
-        log.error(selectExpression);
+        log.debug(selectExpression);
         String result = select(selectExpression, nextToken);
-        log.error(result);
+        log.debug(result);
         SimpleDBDataList list = new SimpleDBDataList();
 
         // extract domain
         String domain = SimpleDBParser.getDomain(selectExpression);
         list.setDomainName(domain);
-        log.error(domain);
+        log.debug(domain);
         List<String> items = getElementsAsList(result, "Item");
-        log.error(items.size());
+        log.debug(items.size());
         for (int x = 0; x < items.size(); x++) {
             String t = items.get(x).toString();
 
