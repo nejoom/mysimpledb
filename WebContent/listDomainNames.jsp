@@ -83,12 +83,12 @@ taglib
     request.setAttribute("currentToken", currentToken);
 %>
 <fieldset style="border: 2px ridge navy;"><legend><b>&nbsp;Domains:</b></legend>
-<div align="right">[ <a
+<div align="right"><span class="jive-paginator">[ <a
     href="?Action=createDomain"
     title="Click to add domain"
     onclick="popCreateDomain();return false;">create new domain</a>
-]&nbsp;&nbsp;</div>
-<div align="right">[<c:choose>
+]&nbsp;&nbsp;</span></div>
+<div align="right"><span class="jive-paginator">[<c:choose>
     <c:when test="${previousToken!=null}">
         <a
             href="?Action=exploreDomain&domainNextToken=${previousToken}"
@@ -104,13 +104,13 @@ taglib
             onclick="popRefreshDomains('${nextToken}');return false;">next</a>
     </c:when>
     <c:otherwise>next</c:otherwise>
-</c:choose>]&nbsp;&nbsp;</div>
+</c:choose>]&nbsp;&nbsp;</span></div>
 <ol>
     <c:forEach
         items="${domainList}"
         var="domain"
         varStatus="status">
-        <li>[<a
+        <li><span class="jive-paginator">[<a
             href="?Action=deleteDomain"
             title="Click to delete domain"
             onclick="popDeleteDomain('Delete Domain: ${domain}', 'Are you very sure?', '${domain}');return false;">del</a>]
@@ -119,7 +119,7 @@ taglib
             onmouseout="_hide();"
             onmouseover="_show(event,'id${status.count}');"
             onclick="makeRequest('${domain}');return false;"><c:out
-            value="${domain}" /></a>
+            value="${domain}" /></a></span>
     </c:forEach>
 </ol>
 </fieldset>
