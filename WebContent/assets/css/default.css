@@ -30,6 +30,35 @@ a img,:link img,:visited img {
     border: none
 }
 
+/* --------------------------------------------- */
+/*  Paginators                                   */
+/* --------------------------------------------- */
+
+.jive-paginator, .jive-paginator A {
+    font-family : helvetica,sans-serif;
+    padding: 1px;
+}
+
+.jive-paginator .jive-current {
+    color : #000;
+    background-color : #eee;
+    border : none;
+    text-decoration : none;
+}
+
+.jive-paginator A, .jive-paginator A:visited {
+    text-decoration : none;
+    color : blue;
+    border : 1px #fff solid;
+}
+
+.jive-paginator A:hover {
+    border : 1px #ccc solid;
+    color : #000;
+    background-color : #ffc;
+    text-decoration : none;
+}
+
 /* Header 
 -----------------------------------------------------------------------------*/
 h1 {
