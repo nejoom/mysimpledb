@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -400,13 +401,13 @@ public class Signature {
             method.addParameter(entry.getKey(), entry.getValue());
         }
 
+        String en = null;
         try {
 
             /* Set content type and encoding */
             method.addRequestHeader("Content-Type",
                     "application/x-www-form-urlencoded; charset="
                             + DEFAULT_ENCODING.toLowerCase());
-
             boolean shouldRetry = true;
             int retries = 0;
             do {
@@ -440,10 +441,33 @@ public class Signature {
                             shouldRetry = false;
                         }
                     }
+                } catch (ConnectException ce) {
+                    shouldRetry = false;
+                    ++retries;
+                    en =
+
+                            "ConnectException: This webapp is not able to "
+                                    + "connect, a likely cause is your "
+                                    + "firewall settings, please double check.";
+
+                } catch (UnknownHostException uhe) {
+                    shouldRetry = false;
+                    ++retries;
+                    en =
+
+                            "UnknownHostException: This webapp is not able to "
+                                    + "connect, to sdb.amazonaws.com "
+                                    + "please check connection and your "
+                                    + "firewall settings.";
+
                 } catch (IOException ioe) {
+
+                    ++retries;
                     log.error("Caught IOException: ", ioe);
                     ioe.printStackTrace();
+
                 } catch (Exception e) {
+                    ++retries;
                     log.error("Caught Exception: ", e);
                     e.printStackTrace();
                 } finally {
@@ -454,7 +478,9 @@ public class Signature {
             log.error("Caught Exception: ", e);
             e.printStackTrace();
         }
-        log.error(response);
+        if (en != null) {
+            throw new RuntimeException(en);
+        }
         if (response.indexOf("<Code>InvalidClientTokenId</Code>") != -1) {
 
             throw new RuntimeException(
