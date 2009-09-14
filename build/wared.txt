@@ -5,7 +5,9 @@ listSelects.jsp
 loadForms.jsp
 loadScripts.jsp
 signature.jsp
+hiddenForms.jsp
 error.jsp
+mysimpledb.war
 META-INF/context.xml
 META-INF/MANIFEST.MF
 solid_state_sessions/solid_state_sessions.jsp
