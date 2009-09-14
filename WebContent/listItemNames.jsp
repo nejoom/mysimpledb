@@ -300,12 +300,12 @@ time: <%=list.getResponseTime()%>[ms] - BoxUsage: <%=list.getBoxUsage()%>
 
 <%
     if (domainsSize > 0) {
-%><div align="right">[ <a
+%><div align="right"><span class="jive-paginator">[ <a
     href="?Action=createItem"
     title="Click to add item"
     onclick="popCreateItem('', '${domain}');return false;">create
-new item</a> ]&nbsp;&nbsp;</div>
-<div align="right">[<c:choose>
+new item</a> ]&nbsp;&nbsp;</span></div>
+<div align="right"><span class="jive-paginator">[<c:choose>
     <c:when test="${previousToken!=null}">
         <a
             href="?Action=select"
@@ -321,7 +321,7 @@ new item</a> ]&nbsp;&nbsp;</div>
             onclick="popSelect('${nextToken}');return false;">next</a>
     </c:when>
     <c:otherwise>next</c:otherwise>
-</c:choose>]&nbsp;&nbsp;</div>
+</c:choose>]&nbsp;&nbsp;</span></div>
 <%
     }
 %>
@@ -376,10 +376,11 @@ table { /*border-spacing:  0;
             <td>
             <%
                 if (list.size() > 0) {
-            %><a
+            %><span class="jive-paginator"><a
+                title="Click to sort"
                 href="?Action=exploreDomain&domainName=${domain}"
                 onclick="makeRequestSort('${domain}','<%=sqlAtt.trim()%>','<%=sqlWhere.trim()%>','<%=sqlOrder.trim()%>', '<%=sqlLimit.trim()%>');return false;">
-            itemName()</a> <%=token%> <%
+            itemName()</a> <%=token%></span> <%
      } else {
  %>[empty result set, no results]<%
      }
@@ -421,10 +422,11 @@ table { /*border-spacing:  0;
                         }
                 %>
 
-                <td><a
+                <td><span class="jive-paginator"><a
                     href="?Action=exploreDomain&domainName=${domain}"
+                    title="Click to sort"
                     onclick="makeRequestSort('${domain}','<%=sqlAtt.trim()%>','<%=sqlWhere.trim()%>','<%=sqlOrder.trim()%>', '<%=sqlLimit.trim()%>');return false;">
-                ${attribute}</a> <%=token%></td>
+                ${attribute}</a> <%=token%></span></td>
             </c:forEach>
         </tr>
     </thead>
@@ -434,14 +436,14 @@ table { /*border-spacing:  0;
             var="item"
             varStatus="status">
             <tr>
-                <td>[<a
+                <td><span class="jive-paginator">[<a
                     href="?Action=deleteItem"
                     title="Click to delete item"
                     onclick="popDeleteItem('Delete item ${fn:escUniJs(item)}', 'Are you very sure?', '${fn:escUniJs(item)}', '${fn:escUniJs(domain)}');return false;">x</a>]
                 [<a
                     href="?Action=createItem"
                     title="Click to add key value pair"
-                    onclick="popCreateItem('${fn:escUniJs(item)}', '${fn:escUniJs(domain)}');return false;">+</a>]
+                    onclick="popCreateItem('${fn:escUniJs(item)}', '${fn:escUniJs(domain)}');return false;">+</a>]</span>
                 ${item} <!--  
             
             Loop through attributes (entry)
@@ -453,10 +455,10 @@ table { /*border-spacing:  0;
                     <td><c:forEach
                         var="value"
                         items="${item[attribute]}">
-                    [<a
+                    <span class="jive-paginator">[<a
                             href="?Action=deleteValueKey"
                             title="Click to delete key value pair (${value.class}: ${fn:decodeEscUniJs(value)})"
-                            onclick="popDeleteValueKey('Are you sure?', 'Delete attribute ${fn:escUniJs(attribute)}?', '${fn:escUniJs(attribute)}', '${fn:decodeEscUniJs(value)}', '${fn:escUniJs(item)}', '${domain}');return false;">x</a>]
+                            onclick="popDeleteValueKey('Are you sure?', 'Delete attribute ${fn:escUniJs(attribute)}?', '${fn:escUniJs(attribute)}', '${fn:decodeEscUniJs(value)}', '${fn:escUniJs(item)}', '${domain}');return false;">x</a>]</span>
                         <!--   ${attribute}: -->${value}
                         </c:forEach></td>
                 </c:forEach>
@@ -469,7 +471,7 @@ table { /*border-spacing:  0;
 <!-- fieldset style="border: 2px ridge navy;"><legend>&nbsp;Construct
 <b>select</b> statement [ <a
     href="http://docs.amazonwebservices.com/AmazonSimpleDB/2009-04-15/DeveloperGuide/index.html?UsingSelect.html"
-    title="click for help"
+    title="Click for help"
     target="_blank">help</a> ]&nbsp;</legend>
 <div align="center"><textarea
     style="width: 90%;"
