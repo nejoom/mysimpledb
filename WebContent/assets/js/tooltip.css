@@ -13,7 +13,7 @@
 	/* based on image dimensions */
 	z-index: 1;
 	margin-left: 10px; /* default, width of left corner */
-	//border: 5px solid darkred;
+	border: 0px solid darkred;
 }
 
 .dialog .content,.dialog .t,.dialog .b,.dialog .b div {
@@ -28,7 +28,7 @@
 	_overflow-y: hidden;
 	padding: 0px 0px 0px 0px;/*candidate for padding*/
 	margin: 0;
-	//border: 4px solid brown;
+	border: 0px solid brown;
 }
 
 .dialog .t { /* top left slice */
@@ -36,35 +36,39 @@
 	left: 0px;
 	top: 0px;
 	width: 10px; /* top slice width */
-	margin-left: -10px;
+	margin-left: -0px;
 	height: 100%;
 	_height: 1600px; /* arbitrary long height, IE 6 */
 	background-position: top left;
-	//border: 4px solid violet;
+	border: 0px solid violet;
 }
 
 .label-content {
 	color: black;
 	padding: 8px 0px 0px 0px;
-	margin: 0px 10px 0px 0px; /* t r b l */
-	//border: 3px solid #CBCBCB;
+	margin: 0px 10px 0px 11px; /* t r b l */
+	border: 0px solid #CBCBCB;
 }
 
 .dialog .b {/* bottom right */
-	position: relative;
+	
+	padding: 0px;
 	width: 100%;
+	//width: 400px;/*ie*/
 	height: 9px;
 	background-position: bottom right;
-	//border: 2px solid yellow;
+	border: 0px solid yellow;
 }
 
 .dialog .b div {/* bottom left */
 	position: relative;
+	//display: none;/*ie*/
 	height: 9px;
 	width: 10px; /* bottom corner width */
-	margin-left: -10px;
-	background-position: bottom left;
-	//border: 2px solid green;
+	margin-left: 0px;
+	align: left;
+	background-position:bottom left;
+	border: 0px solid green;
 }
 
 .frame {/* on over mask */
