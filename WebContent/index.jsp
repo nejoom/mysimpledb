@@ -42,8 +42,9 @@ Id: <%=session.getId()%>| Last access: <%=new java.util.Date(session.getLastAcce
 <!-- end body yui --></div>
 <div id="ft"><!-- footer -->
 <hr />
-<!-- center>Copyright <a href="http://elements.ac">elements</a> (c)
-</center --> <!-- end footer --></div>
+<jsp:include page="hiddenForms.jsp" />
+<center>Copyright elements (c)/ <a href="http://mysimpledb.com">mysimpledb.com</a>
+</center> <!-- end footer --></div>
 <!-- end document wrapper --></div>
 <script type="text/javascript">
   var uservoiceJsHost = ("https:" == document.location.protocol) ? "https://uservoice.com" : "http://cdn.uservoice.com";
@@ -54,7 +55,7 @@ UserVoice.Tab.show({
   /* required */
   key: 'mysimpledb',
   host: 'mysimpledb.uservoice.com', 
-  forum: '26895', 
+  forum: '28433', 
   /* optional */
   alignment: 'right',
   background_color:'#aa0000', 
