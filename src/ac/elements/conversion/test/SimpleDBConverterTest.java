@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ac.elements.conf.test;
+package ac.elements.conversion.test;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,8 +12,8 @@ import junit.framework.TestCase;
 import ac.elements.parser.SimpleDBConverter;
 
 /**
- * The Class SimpleDBCollectionTest. Test for converting string types to ecoded
- * types for amazons simpleDB. Sorting order is also tested see amazon's
+ * The Class SimpleDBCollectionTest. Test for converting string types to encoded
+ * types for Amazon's SimpleDB. Sorting order is also tested see Amazon's
  * documentation .
  */
 @SuppressWarnings("unchecked")
