@@ -4,14 +4,14 @@
  *
  * License version: CPAL 1.0
  *
- * The Original Code is glowaxes.org code. Please visit glowaxes.org to see how
+ * The Original Code is mysimpledb.com code. Please visit mysimpledb.com to see how
  * you can contribute and improve this software.
  *
  * The contents of this file are licensed under the Common Public Attribution
  * License Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  *
- *    http://glowaxes.org/license.
+ *    http://mysimpledb.com/license.
  *
  * The License is based on the Mozilla Public License Version 1.1.
  *
@@ -26,12 +26,13 @@
  * Elements is the Initial Developer and the Original Developer of the Original
  * Code.
  *
- * The contents of this file may be used under the terms of the Elements 
- * End-User License Agreement (the Elements License), in which case the 
- * provisions of the Elements License are applicable instead of those above.
+ * Based on commercial needs the contents of this file may be used under the
+ * terms of the Elements End-User License Agreement (the Elements License), in
+ * which case the provisions of the Elements License are applicable instead of
+ * those above.
  *
  * You may wish to allow use of your version of this file under the terms of
- * the Elements License please visit http://glowaxes.org/license for details.
+ * the Elements License please visit http://mysimpledb.com/license for details.
  *
  */
 package ac.elements.conf;
@@ -56,12 +57,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class FileMonitor {
 
-    /*
-     * Inner class to do the task of monitoring. created with the
-     * addFileChangeListener method
-     */
     /**
-     * The Class FileMonitorTask.
+     * Inner class to do the task of monitoring. created with the
+     * addFileChangeListener method The Class FileMonitorTask.
      */
     class FileMonitorTask extends TimerTask {
 
@@ -193,8 +191,8 @@ public class FileMonitor {
         removeFileChangeListener(listener, fileName);
 
         if (log.isDebugEnabled())
-            log.debug("Registering listener: "
-                    + listener.getClass().getName() + ", " + fileName);
+            log.debug("Registering listener: " + listener.getClass().getName()
+                    + ", " + fileName);
 
         FileMonitorTask task = new FileMonitorTask(listener, fileName);
         timerEntries.put(fileName + listener.hashCode(), task);

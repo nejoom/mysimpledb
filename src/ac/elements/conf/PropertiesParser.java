@@ -1,26 +1,41 @@
-package ac.elements.conf;
-/*
- *  Elements Java Object tracking toolkit Library
- *  Copyright (C) 1999-2004 Elements
+/**
  *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2 of the License, or (at your option) any later version.
+ * Copyright 2008-2009 Elements. All Rights Reserved.
  *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
+ * License version: CPAL 1.0
  *
- *  The full license is located at the root of this distribution
- *  in the LICENSE file.
+ * The Original Code is mysimpledb.com code. Please visit mysimpledb.com to see how
+ * you can contribute and improve this software.
  *
- *  Please report bugs to development@tinyelements.net
- *  Adapted from Xiaodong Zhang.
- *  URL: 
- *  http://www.javaworld.com/javaworld/javatips/jw-javatip125.html
+ * The contents of this file are licensed under the Common Public Attribution
+ * License Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ *    http://mysimpledb.com/license.
+ *
+ * The License is based on the Mozilla Public License Version 1.1.
+ *
+ * Sections 14 and 15 have been added to cover use of software over a computer
+ * network and provide for attribution determined by Elements.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing permissions and limitations under the
+ * License.
+ *
+ * Elements is the Initial Developer and the Original Developer of the Original
+ * Code.
+ *
+ * Based on commercial needs the contents of this file may be used under the
+ * terms of the Elements End-User License Agreement (the Elements License), in
+ * which case the provisions of the Elements License are applicable instead of
+ * those above.
+ *
+ * You may wish to allow use of your version of this file under the terms of
+ * the Elements License please visit http://mysimpledb.com/license for details.
+ *
  */
+package ac.elements.conf;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -60,9 +75,9 @@ import org.apache.commons.logging.LogFactory;
  * <code>PropertiesParser</code> object. Their use is strongly discouraged as
  * they allow the caller to insert entries whose keys or values are not
  * <code>Strings</code>. The <code>setProperty</code> method should be used
- * instead. If the <code>store</code> or <code>save</code> method is called
- * on a "compromised" <code>Properties</code> object that contains a non-<code>String</code>
- * key or value, the call will fail.
+ * instead. If the <code>store</code> or <code>save</code> method is called on a
+ * "compromised" <code>Properties</code> object that contains a non-
+ * <code>String</code> key or value, the call will fail.
  * <p>
  * <a name="encoding"></a> When saving properties to a stream or loading them
  * from a stream, the ISO 8859-1 character encoding is used. For characters that
@@ -192,9 +207,9 @@ public class PropertiesParser {
 
     /**
      * Calls the <tt>HashMap</tt> method <code>put</code>. Provided for
-     * parallelism with the <tt>getProperty</tt> method. Enforces use of
-     * strings for property keys and values. The value returned is the result of
-     * the <tt>HashMap</tt> call to <code>put</code>.
+     * parallelism with the <tt>getProperty</tt> method. Enforces use of strings
+     * for property keys and values. The value returned is the result of the
+     * <tt>HashMap</tt> call to <code>put</code>.
      * 
      * @param key
      *            the key to be placed into this property list.
@@ -225,10 +240,10 @@ public class PropertiesParser {
     }
 
     /**
-     * Calls the <tt>HashMap</tt> method <code>put</code>. Provided for
-     * easy method for adding comments to a properties file. Enforces use of
-     * strings for property keys and comments. The value returned is the result
-     * of the <tt>HashMap</tt> call to <code>put</code>.
+     * Calls the <tt>HashMap</tt> method <code>put</code>. Provided for easy
+     * method for adding comments to a properties file. Enforces use of strings
+     * for property keys and comments. The value returned is the result of the
+     * <tt>HashMap</tt> call to <code>put</code>.
      * 
      * @param key
      *            the key to be placed into this property list.
@@ -254,42 +269,42 @@ public class PropertiesParser {
      * each byte is one Latin1 character. Characters not in Latin1, and certain
      * special characters, can be represented in keys and elements using escape
      * sequences similar to those used for character and string literals (see <a
-     * href="http://java.sun.com/docs/books/jls/second_edition/html/lexical.doc.html#100850">&sect;3.3</a>
-     * and <a
-     * href="http://java.sun.com/docs/books/jls/second_edition/html/lexical.doc.html#101089">&sect;3.10.6</a>
-     * of the <i>Java Language Specification</i>).
+     * href=
+     * "http://java.sun.com/docs/books/jls/second_edition/html/lexical.doc.html#100850"
+     * >&sect;3.3</a> and <a href=
+     * "http://java.sun.com/docs/books/jls/second_edition/html/lexical.doc.html#101089"
+     * >&sect;3.10.6</a> of the <i>Java Language Specification</i>).
      * 
      * The differences from the character escape sequences used for characters
      * and strings are:
      * 
      * <ul>
-     * <li> Octal escapes are not recognized.
+     * <li>Octal escapes are not recognized.
      * 
-     * <li> The character sequence <code>\b</code> does <i>not</i> represent
-     * a backspace character.
+     * <li>The character sequence <code>\b</code> does <i>not</i> represent a
+     * backspace character.
      * 
-     * <li> The method does not treat a backslash character, <code>\</code>,
+     * <li>The method does not treat a backslash character, <code>\</code>,
      * before a non-valid escape character as an error; the backslash is
-     * silently dropped. For example, in a Java string the sequence
-     * <code>"\z"</code> would cause a compile time error. In contrast, this
-     * method silently drops the backslash. Therefore, this method treats the
-     * two character sequence <code>"\b"</code> as equivalent to the single
-     * character <code>'b'</code>.
+     * silently dropped. For example, in a Java string the sequence <code>"\z"</code> would
+     * cause a compile time error. In contrast, this method silently drops the
+     * backslash. Therefore, this method treats the two character sequence
+     * <code>"\b"</code> as equivalent to the single character <code>'b'</code>.
      * 
-     * <li> Escapes are not necessary for single and double quotes; however, by
+     * <li>Escapes are not necessary for single and double quotes; however, by
      * the rule above, single and double quote characters preceded by a
      * backslash still yield single and double quote characters, respectively.
      * 
      * </ul>
      * 
-     * An <code>IllegalArgumentException</code> is thrown if a malformed
-     * Unicode escape appears in the input.
+     * An <code>IllegalArgumentException</code> is thrown if a malformed Unicode
+     * escape appears in the input.
      * 
      * <p>
      * This method processes input in terms of lines. A natural line of input is
      * terminated either by a set of line terminator characters (<code>\n</code>
-     * or <code>\r</code> or <code>\r\n</code>) or by the end of the file.
-     * A natural line may be either a blank line, a comment line, or hold some
+     * or <code>\r</code> or <code>\r\n</code>) or by the end of the file. A
+     * natural line may be either a blank line, a comment line, or hold some
      * part of a key-element pair. The logical line holding all the data for a
      * key-element pair may be spread out across several adjacent natural lines
      * by escaping the line terminator sequence with a backslash character,
@@ -305,10 +320,9 @@ public class PropertiesParser {
      * blank and is ignored. A comment line has an ASCII <code>'#'</code> or
      * <code>'!'</code> as its first non-white space character; comment lines
      * are also ignored and do not encode key-element information. In addition
-     * to line terminators, this method considers the characters space (<code>' '</code>,
-     * <code>'&#92;u0020'</code>), tab (<code>'\t'</code>,
-     * <code>'&#92;u0009'</code>), and form feed (<code>'\f'</code>,
-     * <code>'&#92;u000C'</code>) to be white space.
+     * to line terminators, this method considers the characters space (
+     * <code>' '</code>, <code>'&#92;u0020'</code>), tab (<code>'\t'</code>, <code>'&#92;u0009'</code>), and form feed
+     * (<code>'\f'</code>, <code>'&#92;u000C'</code>) to be white space.
      * 
      * <p>
      * If a logical line is spread across several natural lines, the backslash
@@ -328,10 +342,10 @@ public class PropertiesParser {
      * <p>
      * The key contains all of the characters in the line starting with the
      * first non-white space character and up to, but not including, the first
-     * unescaped <code>'='</code>, <code>':'</code>, or white space
-     * character other than a line terminator. All of these key termination
-     * characters may be included in the key by escaping them with a preceding
-     * backslash character; for example,
+     * unescaped <code>'='</code>, <code>':'</code>, or white space character
+     * other than a line terminator. All of these key termination characters may
+     * be included in the key by escaping them with a preceding backslash
+     * character; for example,
      * <p>
      * 
      * <code>\:\=</code>
@@ -341,12 +355,12 @@ public class PropertiesParser {
      * characters can be included using <code>\r</code> and <code>\n</code>
      * escape sequences. Any white space after the key is skipped; if the first
      * non-white space character after the key is <code>'='</code> or
-     * <code>':'</code>, then it is ignored and any white space characters
-     * after it are also skipped. All remaining characters on the line become
-     * part of the associated element string; if there are no remaining
-     * characters, the element is the empty string <code>&quot;&quot;</code>.
-     * Once the raw character sequences constituting the key and element are
-     * identified, escape processing is performed as described above.
+     * <code>':'</code>, then it is ignored and any white space characters after
+     * it are also skipped. All remaining characters on the line become part of
+     * the associated element string; if there are no remaining characters, the
+     * element is the empty string <code>&quot;&quot;</code>. Once the raw
+     * character sequences constituting the key and element are identified,
+     * escape processing is performed as described above.
      * 
      * <p>
      * As an example, each of the following three lines specifies the key
@@ -376,11 +390,10 @@ public class PropertiesParser {
      * &quot;apple, banana, pear, cantaloupe, watermelon, kiwi, mango&quot;
      * </pre>
      * 
-     * Note that a space appears before each <code>\</code> so that a space
-     * will appear after each comma in the final result; the <code>\</code>,
-     * line terminator, and leading white space on the continuation line are
-     * merely discarded and are <i>not</i> replaced by one or more other
-     * characters.
+     * Note that a space appears before each <code>\</code> so that a space will
+     * appear after each comma in the final result; the <code>\</code>, line
+     * terminator, and leading white space on the continuation line are merely
+     * discarded and are <i>not</i> replaced by one or more other characters.
      * <p>
      * As a third example, the line:
      * <p>
@@ -678,15 +691,14 @@ public class PropertiesParser {
     }
 
     /**
-     * Calls the <code>store(OutputStream out, String header)</code> method
-     * and suppresses IOExceptions that were thrown.
+     * Calls the <code>store(OutputStream out, String header)</code> method and
+     * suppresses IOExceptions that were thrown.
      * 
      * @deprecated This method does not throw an IOException if an I/O error
      *             occurs while saving the property list. As of the Java 2
      *             platform v1.2, the preferred way to save a properties list is
      *             via the <code>store(OutputStream out,
-     * String header)</code>
-     *             method.
+     * String header)</code> method.
      * 
      * @param out
      *            an output stream.
@@ -710,8 +722,8 @@ public class PropertiesParser {
      * {@link #load(InputStream) load} method. The stream is written using the
      * ISO 8859-1 character encoding.
      * <p>
-     * Properties from the defaults table of this <code>Properties</code>
-     * table (if any) are <i>not</i> written out by this method.
+     * Properties from the defaults table of this <code>Properties</code> table
+     * (if any) are <i>not</i> written out by this method.
      * <p>
      * If the header argument is not null, then an ASCII <code>#</code>
      * character, the header string, and a line separator are first written to
@@ -725,21 +737,20 @@ public class PropertiesParser {
      * <p>
      * Then every entry in this <code>Properties</code> table is written out,
      * one per line. For each entry the key string is written, then an ASCII
-     * <code>=</code>, then the associated element string. Each character of
-     * the key and element strings is examined to see whether it should be
-     * rendered as an escape sequence. The ASCII characters <code>\</code>,
-     * tab, form feed, newline, and carriage return are written as
-     * <code>\\</code>, <code>\t</code>, <code>\f</code> <code>\n</code>,
-     * and <code>\r</code>, respectively. Characters less than
-     * <code>&#92;u0020</code> and characters greater than
-     * <code>&#92;u007E</code> are written as <code>&#92;u</code><i>xxxx</i>
-     * for the appropriate hexadecimal value <i>xxxx</i>. For the key, all
-     * space characters are written with a preceding <code>\</code> character.
-     * For the element, leading space characters, but not embedded or trailing
-     * space characters, are written with a preceding <code>\</code>
-     * character. The key and element characters <code>#</code>,
-     * <code>!</code>, <code>=</code>, and <code>:</code> are written
-     * with a preceding backslash to ensure that they are properly loaded.
+     * <code>=</code>, then the associated element string. Each character of the
+     * key and element strings is examined to see whether it should be rendered
+     * as an escape sequence. The ASCII characters <code>\</code>, tab, form
+     * feed, newline, and carriage return are written as <code>\\</code>,
+     * <code>\t</code>, <code>\f</code> <code>\n</code>, and <code>\r</code>,
+     * respectively. Characters less than <code>&#92;u0020</code> and characters
+     * greater than <code>&#92;u007E</code> are written as <code>&#92;u</code>
+     * <i>xxxx</i> for the appropriate hexadecimal value <i>xxxx</i>. For the
+     * key, all space characters are written with a preceding <code>\</code>
+     * character. For the element, leading space characters, but not embedded or
+     * trailing space characters, are written with a preceding <code>\</code>
+     * character. The key and element characters <code>#</code>, <code>!</code>,
+     * <code>=</code>, and <code>:</code> are written with a preceding backslash
+     * to ensure that they are properly loaded.
      * <p>
      * After the entries have been written, the output stream is flushed. The
      * output stream remains open after this method returns.
@@ -843,8 +854,7 @@ public class PropertiesParser {
      * 
      * @param key
      *            the property key.
-     * @param boolean
-     *            withLink suppresses urls in comment and "url:" token.
+     * @param boolean withLink suppresses urls in comment and "url:" token.
      * @return the value in this property list with the specified key value.
      * @see #setProperty
      * @see #defaults
@@ -1171,17 +1181,17 @@ public class PropertiesParser {
                 forceComment = true;
             }
 
-//            if (change || forceComment) {
-//                System.out.println("change: " + change);
-//                System.out.println("forceComment: " + forceComment);
-//                System.out.println("hadModifiedTag: " + hadModifiedTag);
-//                System.out
-//                        .println("value: '" + saveConvert(value, false) + "'");
-//                System.out.println("mappedValue: '"
-//                        + saveConvert(mappedValue, false) + "'");
-//                System.out.println("typedComment: '" + typedComment + "'");
-//                System.out.println("oldComment: '" + oldComment + "'");
-//            }
+            // if (change || forceComment) {
+            // System.out.println("change: " + change);
+            // System.out.println("forceComment: " + forceComment);
+            // System.out.println("hadModifiedTag: " + hadModifiedTag);
+            // System.out
+            // .println("value: '" + saveConvert(value, false) + "'");
+            // System.out.println("mappedValue: '"
+            // + saveConvert(mappedValue, false) + "'");
+            // System.out.println("typedComment: '" + typedComment + "'");
+            // System.out.println("oldComment: '" + oldComment + "'");
+            // }
 
             // if someone typed a comment OR the comment is being forced,
             // OR theres been a change
@@ -1407,7 +1417,7 @@ public class PropertiesParser {
 
             // if change, replace last modified stamp
             if (lines[i].indexOf(protocol) != -1) {
-//                System.out.println(lines[i]);
+                // System.out.println(lines[i]);
                 try {
                     // from protocol to first space
                     link =
@@ -1416,8 +1426,8 @@ public class PropertiesParser {
                     if (link.indexOf(" ") != -1) {
                         link = link.substring(0, link.indexOf(" "));
                     }
-//                    System.out.println("1. " + lines[i]);
-//                    System.out.println("2. " + link);
+                    // System.out.println("1. " + lines[i]);
+                    // System.out.println("2. " + link);
 
                 } catch (Exception e) {
                     logger.error(e);
@@ -1427,8 +1437,7 @@ public class PropertiesParser {
 
         }
 
-//        System.out.println(link);
+        // System.out.println(link);
 
     }
 }
-

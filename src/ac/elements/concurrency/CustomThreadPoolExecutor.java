@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * CustomThreadPoolExecutor.
+ * http://www.devx.com/Java/Article/41377/1954: CustomThreadPoolExecutor.
  */
 public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
 

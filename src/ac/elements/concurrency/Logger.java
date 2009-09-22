@@ -1,7 +1,7 @@
 package ac.elements.concurrency;
 
 /**
- * Logger.
+ * http://www.devx.com/Java/Article/41377/1954: Logger.
  */
 public class Logger {
 

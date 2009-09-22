@@ -1,3 +1,40 @@
+/**
+ *
+ * Copyright 2008-2009 Elements. All Rights Reserved.
+ *
+ * License version: CPAL 1.0
+ *
+ * The Original Code is mysimpledb.com code. Please visit mysimpledb.com to see how
+ * you can contribute and improve this software.
+ *
+ * The contents of this file are licensed under the Common Public Attribution
+ * License Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ *    http://mysimpledb.com/license.
+ *
+ * The License is based on the Mozilla Public License Version 1.1.
+ *
+ * Sections 14 and 15 have been added to cover use of software over a computer
+ * network and provide for attribution determined by Elements.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing permissions and limitations under the
+ * License.
+ *
+ * Elements is the Initial Developer and the Original Developer of the Original
+ * Code.
+ *
+ * Based on commercial needs the contents of this file may be used under the
+ * terms of the Elements End-User License Agreement (the Elements License), in
+ * which case the provisions of the Elements License are applicable instead of
+ * those above.
+ *
+ * You may wish to allow use of your version of this file under the terms of
+ * the Elements License please visit http://mysimpledb.com/license for details.
+ *
+ */
 package ac.elements.sdb;
 
 import java.util.ArrayList;
@@ -11,7 +48,7 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ac.elements.conf.TypeConverter;
+import ac.elements.conversion.TypeConverter;
 import ac.elements.parser.SimpleDBConverter;
 import ac.elements.parser.SimpleDBParser;
 
@@ -239,7 +276,7 @@ public abstract class ASimpleDBCollection extends SimpleDB {
      * @return the xml response as a HashMap
      */
     public TreeMap<String, String> getMetaDataAsMap(final String domain) {
-        System.out.println("Got: " + domain);
+
         String result = domainMetadata(domain);
 
         TreeMap<String, String> map = new TreeMap<String, String>();
@@ -752,122 +789,228 @@ public abstract class ASimpleDBCollection extends SimpleDB {
 
         // get the key syntax without brackets
         String keySyntax =
-                parseString.substring(1, parseString.indexOf(")")).trim();
+                parseString.substring(
+                        1,
+                        SimpleDBParser.indexOfIgnoreCaseRespectQuotes(1,
+                                parseString, ")", '`')).trim();
 
         Object[] keys = SimpleDBParser.parseList(keySyntax, "`");
 
+        boolean useItemNameColumn = false;
+        if (keys != null && keys.length > 0 && keys[0].equals("itemName()")) {
+            useItemNameColumn = true;
+        }
+
         parseString = parseString.substring(keySyntax.length() + 2).trim();
 
-        String itemSyntax =
-                parseString.substring(
-                        parseString.toLowerCase().indexOf("values")
-                                + "values".length()).trim();
-
-        log.error("Parsing itemSyntax: " + itemSyntax);
+        Object[] items;
         ArrayList<Object> itemNames = new ArrayList<Object>();
-        StringBuffer itemBuffer = new StringBuffer(itemSyntax);
-        int pointer = 0;
-        // strip things to contain only item names
-        while (pointer < itemBuffer.length()) {
-            if (itemBuffer.charAt(pointer) == '(') {
-                itemBuffer.deleteCharAt(pointer);
-                while (itemBuffer.length() > 0
-                        && itemBuffer.charAt(pointer) != ')') {
-                    itemBuffer.deleteCharAt(pointer);
-                }
-                if (itemBuffer.charAt(pointer) == ')')
-                    itemBuffer.deleteCharAt(pointer);
-            }
-            pointer++;
-        }
-        log.error("itemBuffer: " + itemBuffer.toString());
-        Object[] items = SimpleDBParser.parseList(itemBuffer.toString(), "'\"");
-
-        if (items.length == 0) {
-            // generate random UUIDs
-            itemNames.add(UUID.randomUUID().toString());
-        } else {
-            for (int i = 0; i < items.length; i++) {
-                Object itemName = items[i];
-                if (itemName == null || itemName.toString().equals("")) {
-                    itemNames.add(UUID.randomUUID().toString());
-                    continue;
-                }
-
-                itemNames.add(itemName);
-            }
-        }
-        log.info("Parsed itemSyntax: " + itemNames);
-
-        log.trace("Parsing dataSyntax: " + itemSyntax);
         SimpleDBDataList dataList = new SimpleDBDataList();
-        dataList.setDomainName(domain);
-        StringBuffer dataBuffer = new StringBuffer(itemSyntax);
-        pointer = 0;
-        // strip things to contain only data lists
-        while (pointer < dataBuffer.length()) {
 
-            if (dataBuffer.charAt(pointer) == '(') {
-                while (dataBuffer.length() > 0
-                        && dataBuffer.charAt(pointer) != ')') {
-                    pointer++;
+        // if itemName is not a defined column, then use standard syntax
+        if (!useItemNameColumn) {
+            String itemSyntax =
+                    parseString.substring(
+                            parseString.toLowerCase().indexOf("values")
+                                    + "values".length()).trim();
+
+            log.error("Parsing itemSyntax: " + itemSyntax);
+            StringBuffer itemBuffer = new StringBuffer(itemSyntax);
+            int pointer = 0;
+            // strip things to contain only item names
+            while (pointer < itemBuffer.length()) {
+                if (itemBuffer.charAt(pointer) == '(') {
+                    itemBuffer.deleteCharAt(pointer);
+                    while (itemBuffer.length() > 0
+                            && itemBuffer.charAt(pointer) != ')') {
+                        itemBuffer.deleteCharAt(pointer);
+                    }
+                    if (itemBuffer.charAt(pointer) == ')')
+                        itemBuffer.deleteCharAt(pointer);
                 }
                 pointer++;
-                if (dataBuffer.length() < pointer)
-                    dataBuffer.insert(pointer, ',');
-                pointer++;
-            } else {
-                dataBuffer.deleteCharAt(pointer);
             }
-        }
+            log.error("itemBuffer: " + itemBuffer.toString());
+            items = SimpleDBParser.parseList(itemBuffer.toString(), "'\"");
 
-        // replace ( and ) with | and then parse like its a | delimited file
-        // todo make beter
-        String data = dataBuffer.toString().replace('(', '|').replace(')', '|');
-        Object[] valueSequence = SimpleDBParser.parseList(data, "|");
-
-        if (valueSequence.length == 0) {
-            throw new RuntimeException("Illegal insertExpression in values: "
-                    + insertExpression);
-        } else {
-            for (int i = 0; i < valueSequence.length; i++) {
-                String valueString = (String) valueSequence[i];
-                Object[] values = SimpleDBParser.parseList(valueString, "'\"");
-                if (!dataList.getItemNames().contains(itemNames.get(i))) {
-                    SimpleDBMap sdbMap = new SimpleDBMap();
-                    for (int j = 0; j < values.length; j++) {
-                        Object value = values[j];
-                        sdbMap.put(keys[j], value);
+            if (items.length == 0) {
+                // generate random UUIDs
+                itemNames.add(UUID.randomUUID().toString());
+            } else {
+                for (int i = 0; i < items.length; i++) {
+                    Object itemName = items[i];
+                    if (itemName == null || itemName.toString().equals("")) {
+                        itemNames.add(UUID.randomUUID().toString());
+                        continue;
                     }
-                    sdbMap.setItemName(itemNames.get(i));
-                    dataList.add(sdbMap);
-                    log.error("TODO: in method getItemName? " + sdbMap);
-                    log.error(dataList.getItemNames());
-                    log.error(dataList.get(dataList.size() - 1).toStringF());
+
+                    itemNames.add(itemName);
+                }
+            }
+            log.info("Parsed itemSyntax: " + itemNames);
+
+            log.trace("Parsing dataSyntax: " + itemSyntax);
+            dataList.setDomainName(domain);
+            StringBuffer dataBuffer = new StringBuffer(itemSyntax);
+            pointer = 0;
+            // strip things to contain only data lists
+            while (pointer < dataBuffer.length()) {
+
+                if (dataBuffer.charAt(pointer) == '(') {
+                    while (dataBuffer.length() > 0
+                            && dataBuffer.charAt(pointer) != ')') {
+                        pointer++;
+                    }
+                    pointer++;
+                    if (dataBuffer.length() < pointer)
+                        dataBuffer.insert(pointer, ',');
+                    pointer++;
                 } else {
-                    // ÊSearchÊforÊelementÊinÊlist
-                    int index =
-                            Collections.binarySearch(dataList.getItemNames(),
-                                    itemNames.get(i));
-                    SimpleDBMap sdbMap = dataList.get(index);
-                    if (sdbMap.getItemName().equals(itemNames.get(i))) {
+                    dataBuffer.deleteCharAt(pointer);
+                }
+            }
+
+            // replace ( and ) with | and then parse like its a | delimited file
+            // todo make beter
+            String data =
+                    dataBuffer.toString().replace('(', '|').replace(')', '|');
+            Object[] valueSequence = SimpleDBParser.parseList(data, "|");
+
+            if (valueSequence.length == 0) {
+                throw new RuntimeException(
+                        "Illegal insertExpression in values: "
+                                + insertExpression);
+            } else {
+                for (int i = 0; i < valueSequence.length; i++) {
+                    String valueString = (String) valueSequence[i];
+                    Object[] values =
+                            SimpleDBParser.parseList(valueString, "'\"");
+                    if (!dataList.getItemNames().contains(itemNames.get(i))) {
+                        SimpleDBMap sdbMap = new SimpleDBMap();
                         for (int j = 0; j < values.length; j++) {
                             Object value = values[j];
                             sdbMap.put(keys[j], value);
                         }
-                        log.error("TODO: improve on method getItemName? "
-                                + sdbMap);
-
+                        sdbMap.setItemName(itemNames.get(i));
+                        dataList.add(sdbMap);
+                        log.error("TODO: in method getItemName? " + sdbMap);
                         log.error(dataList.getItemNames());
-                        log.error(dataList.get(index).toStringF());
-                    } else {
                         log
-                                .error("TODO: improve on method getItemName not found");
-                        log.error(dataList.getItemNames());
+                                .error(dataList.get(dataList.size() - 1)
+                                        .toStringF());
+                    } else {
+                        // ÊSearchÊforÊelementÊinÊlist
+                        int index =
+                                Collections.binarySearch(dataList
+                                        .getItemNames(), itemNames.get(i));
+                        SimpleDBMap sdbMap = dataList.get(index);
+                        if (sdbMap.getItemName().equals(itemNames.get(i))) {
+                            for (int j = 0; j < values.length; j++) {
+                                sdbMap.put(keys[j], values[j]);
+                            }
+                            log.error("TODO: improve on method getItemName? "
+                                    + sdbMap);
+
+                            log.error(dataList.getItemNames());
+                            log.error(dataList.get(index).toStringF());
+                        } else {
+                            log
+                                    .error("TODO: improve on method getItemName not found");
+                            log.error(dataList.getItemNames());
+                        }
                     }
                 }
             }
+        } else {
+
+            // first key is itemName(), assume first column is itemName() unique
+            // key
+
+            String itemSyntax =
+                    parseString.substring(
+                            parseString.toLowerCase().indexOf("values")
+                                    + "values".length()).trim();
+
+            log.trace("Parsing dataSyntax: " + itemSyntax);
+            dataList.setDomainName(domain);
+            StringBuffer dataBuffer = new StringBuffer(itemSyntax);
+            int pointer = 0;
+            // strip things to contain only data lists
+            while (pointer < dataBuffer.length()) {
+
+                if (dataBuffer.charAt(pointer) == '(') {
+                    while (dataBuffer.length() > 0
+                            && dataBuffer.charAt(pointer) != ')') {
+                        pointer++;
+                    }
+                    pointer++;
+                    if (dataBuffer.length() < pointer)
+                        dataBuffer.insert(pointer, ',');
+                    pointer++;
+                } else {
+                    dataBuffer.deleteCharAt(pointer);
+                }
+            }
+
+            // replace ( and ) with | and then parse like its a | delimited file
+            // todo make beter
+            String data =
+                    dataBuffer.toString().replace('(', '|').replace(')', '|');
+            Object[] valueSequence = SimpleDBParser.parseList(data, "|");
+
+            if (valueSequence.length == 0) {
+                throw new RuntimeException(
+                        "Illegal insertExpression in values: "
+                                + insertExpression);
+            } else {
+                for (int i = 0; i < valueSequence.length; i++) {
+                    String valueString = (String) valueSequence[i];
+                    Object[] values =
+                            SimpleDBParser.parseList(valueString, "'\"");
+                    if (!dataList.getItemNames().contains(values[0])) {
+
+                        if (values[0].equals("null")) {
+                            // generate random UUIDs
+                            values[0] = UUID.randomUUID().toString();
+                        }
+                        itemNames.add(values[0]);
+                        SimpleDBMap sdbMap = new SimpleDBMap();
+                        sdbMap.setItemName(values[0]);
+                        for (int j = 1; j < values.length; j++) {
+                            sdbMap.put(keys[j], values[j]);
+                        }
+                        dataList.add(sdbMap);
+                        log.error("TODO: in method getItemName? " + sdbMap);
+                        log.error(dataList.getItemNames());
+                        log
+                                .error(dataList.get(dataList.size() - 1)
+                                        .toStringF());
+                    } else {
+                        // ÊSearchÊforÊelementÊinÊlist
+                        int index =
+                                Collections.binarySearch(dataList
+                                        .getItemNames(), values[0]);
+                        SimpleDBMap sdbMap = dataList.get(index);
+                        if (sdbMap.getItemName().equals(values[0])) {
+                            for (int j = 1; j < values.length; j++) {
+                                sdbMap.put(keys[j], values[j]);
+                            }
+                            log.error("TODO: improve on method getItemName? "
+                                    + sdbMap);
+
+                            log.error(dataList.getItemNames());
+                            log.error(dataList.get(index).toStringF());
+                        } else {
+                            log
+                                    .error("TODO: improve on method getItemName not found");
+                            log.error(dataList.getItemNames());
+                        }
+                    }
+                }
+            }
+
         }
+
         log.trace(dataList);
         batchPutAttributes(dataList);
 
@@ -965,8 +1108,10 @@ public abstract class ASimpleDBCollection extends SimpleDB {
 
         // get the key syntax without brackets
         String keySyntax =
-                insertExpression.substring(insertExpression.indexOf("(") + 1,
-                        insertExpression.indexOf(")")).trim();
+                insertExpression.substring(
+                        insertExpression.indexOf("(") + 1,
+                        SimpleDBParser.indexOfIgnoreCaseRespectQuotes(1,
+                                insertExpression, ")", '`')).trim();
 
         Object[] keys = SimpleDBParser.parseList(keySyntax, "`");
         if (keys.length == 0) {
@@ -1102,98 +1247,228 @@ public abstract class ASimpleDBCollection extends SimpleDB {
 
         // get the key syntax without brackets
         String keySyntax =
-                parseString.substring(1, parseString.indexOf(")")).trim();
+                parseString.substring(
+                        1,
+                        SimpleDBParser.indexOfIgnoreCaseRespectQuotes(1,
+                                parseString, ")", '`')).trim();
 
         Object[] keys = SimpleDBParser.parseList(keySyntax, "`");
 
+        boolean useItemNameColumn = false;
+        if (keys != null && keys.length > 0 && keys[0].equals("itemName()")) {
+            useItemNameColumn = true;
+        }
         parseString = parseString.substring(keySyntax.length() + 2).trim();
-
-        String itemSyntax =
-                parseString.substring(
-                        parseString.toLowerCase().indexOf("values")
-                                + "values".length()).trim();
-
-        log.trace("Parsing itemSyntax: " + itemSyntax);
+        Object[] items;
         ArrayList<Object> itemNames = new ArrayList<Object>();
-        StringBuffer itemBuffer = new StringBuffer(itemSyntax);
-        int pointer = 0;
-        // strip things to contain only item names
-        while (pointer < itemBuffer.length()) {
-            if (itemBuffer.charAt(pointer) == '(') {
-                itemBuffer.deleteCharAt(pointer);
-                while (itemBuffer.length() > 0
-                        && itemBuffer.charAt(pointer) != ')') {
-                    itemBuffer.deleteCharAt(pointer);
-                }
-                if (itemBuffer.charAt(pointer) == ')')
-                    itemBuffer.deleteCharAt(pointer);
-            }
-            pointer++;
-        }
-        log.error("itemBuffer: " + itemBuffer.toString());
-
-        Object[] items = SimpleDBParser.parseList(itemBuffer.toString(), "'\"");
-
-        if (items.length == 0) {
-            // generate random UUIDs
-            itemNames.add(UUID.randomUUID().toString());
-        } else {
-            for (int i = 0; i < items.length; i++) {
-                Object itemName = items[i];
-                if (itemName == null || itemName.toString().equals("")) {
-                    itemNames.add(UUID.randomUUID().toString());
-                    continue;
-                }
-
-                itemNames.add(itemName);
-            }
-        }
-        log.trace("Parsed itemSyntax: " + itemNames);
-
-        log.trace("Parsing dataSyntax: " + itemSyntax);
         SimpleDBDataList dataList = new SimpleDBDataList();
-        StringBuffer dataBuffer = new StringBuffer(itemSyntax);
-        pointer = 0;
-        // strip things to contain only data lists
-        while (pointer < dataBuffer.length()) {
 
-            if (dataBuffer.charAt(pointer) == '(') {
-                while (dataBuffer.length() > 0
-                        && dataBuffer.charAt(pointer) != ')') {
-                    pointer++;
+        // if itemName is not a defined column, then use standard syntax
+        if (!useItemNameColumn) {
+            String itemSyntax =
+                    parseString.substring(
+                            parseString.toLowerCase().indexOf("values")
+                                    + "values".length()).trim();
+
+            log.error("Parsing itemSyntax: " + itemSyntax);
+            StringBuffer itemBuffer = new StringBuffer(itemSyntax);
+            int pointer = 0;
+            // strip things to contain only item names
+            while (pointer < itemBuffer.length()) {
+                if (itemBuffer.charAt(pointer) == '(') {
+                    itemBuffer.deleteCharAt(pointer);
+                    while (itemBuffer.length() > 0
+                            && itemBuffer.charAt(pointer) != ')') {
+                        itemBuffer.deleteCharAt(pointer);
+                    }
+                    if (itemBuffer.charAt(pointer) == ')')
+                        itemBuffer.deleteCharAt(pointer);
                 }
                 pointer++;
-                if (dataBuffer.length() < pointer)
-                    dataBuffer.insert(pointer, ',');
-                pointer++;
+            }
+            log.error("itemBuffer: " + itemBuffer.toString());
+            items = SimpleDBParser.parseList(itemBuffer.toString(), "'\"");
+
+            if (items.length == 0) {
+                // generate random UUIDs
+                itemNames.add(UUID.randomUUID().toString());
             } else {
-                dataBuffer.deleteCharAt(pointer);
-            }
-        }
+                for (int i = 0; i < items.length; i++) {
+                    Object itemName = items[i];
+                    if (itemName == null || itemName.toString().equals("")) {
+                        itemNames.add(UUID.randomUUID().toString());
+                        continue;
+                    }
 
-        // replace ( and ) with | and then parse like its a | delimited file
-        // todo make beter
-        String data = dataBuffer.toString().replace('(', '|').replace(')', '|');
-        Object[] valueSequence = SimpleDBParser.parseList(data, "|");
-
-        if (valueSequence.length == 0) {
-            throw new RuntimeException("Illegal insertExpression in values: "
-                    + replaceExpression);
-        } else {
-            for (int i = 0; i < valueSequence.length; i++) {
-                String valueString = (String) valueSequence[i];
-                Object[] values = SimpleDBParser.parseList(valueString, "'\"");
-                SimpleDBMap sdbMap = new SimpleDBMap();
-                for (int j = 0; j < values.length; j++) {
-                    Object value = values[j];
-                    sdbMap.put(keys[j], value);
+                    itemNames.add(itemName);
                 }
-                sdbMap.setItemName(itemNames.get(i));
-                dataList.add(sdbMap);
             }
+            log.info("Parsed itemSyntax: " + itemNames);
+
+            log.trace("Parsing dataSyntax: " + itemSyntax);
+            dataList.setDomainName(domain);
+            StringBuffer dataBuffer = new StringBuffer(itemSyntax);
+            pointer = 0;
+            // strip things to contain only data lists
+            while (pointer < dataBuffer.length()) {
+
+                if (dataBuffer.charAt(pointer) == '(') {
+                    while (dataBuffer.length() > 0
+                            && dataBuffer.charAt(pointer) != ')') {
+                        pointer++;
+                    }
+                    pointer++;
+                    if (dataBuffer.length() < pointer)
+                        dataBuffer.insert(pointer, ',');
+                    pointer++;
+                } else {
+                    dataBuffer.deleteCharAt(pointer);
+                }
+            }
+
+            // replace ( and ) with | and then parse like its a | delimited file
+            // todo make beter
+            String data =
+                    dataBuffer.toString().replace('(', '|').replace(')', '|');
+            Object[] valueSequence = SimpleDBParser.parseList(data, "|");
+
+            if (valueSequence.length == 0) {
+                throw new RuntimeException(
+                        "Illegal replaceExpression in values: "
+                                + replaceExpression);
+            } else {
+                for (int i = 0; i < valueSequence.length; i++) {
+                    String valueString = (String) valueSequence[i];
+                    Object[] values =
+                            SimpleDBParser.parseList(valueString, "'\"");
+                    if (!dataList.getItemNames().contains(itemNames.get(i))) {
+                        SimpleDBMap sdbMap = new SimpleDBMap();
+                        for (int j = 0; j < values.length; j++) {
+                            Object value = values[j];
+                            sdbMap.put(keys[j], value);
+                        }
+                        sdbMap.setItemName(itemNames.get(i));
+                        dataList.add(sdbMap);
+                        log.error("TODO: in method getItemName? " + sdbMap);
+                        log.error(dataList.getItemNames());
+                        log
+                                .error(dataList.get(dataList.size() - 1)
+                                        .toStringF());
+                    } else {
+                        // ÊSearchÊforÊelementÊinÊlist
+                        int index =
+                                Collections.binarySearch(dataList
+                                        .getItemNames(), itemNames.get(i));
+                        SimpleDBMap sdbMap = dataList.get(index);
+                        if (sdbMap.getItemName().equals(itemNames.get(i))) {
+                            for (int j = 0; j < values.length; j++) {
+                                sdbMap.put(keys[j], values[j]);
+                            }
+                            log.error("TODO: improve on method getItemName? "
+                                    + sdbMap);
+
+                            log.error(dataList.getItemNames());
+                            log.error(dataList.get(index).toStringF());
+                        } else {
+                            log
+                                    .error("TODO: improve on method getItemName not found");
+                            log.error(dataList.getItemNames());
+                        }
+                    }
+                }
+            }
+        } else {
+
+            // first key is itemName(), assume first column is itemName() unique
+            // key
+
+            String itemSyntax =
+                    parseString.substring(
+                            parseString.toLowerCase().indexOf("values")
+                                    + "values".length()).trim();
+
+            log.trace("Parsing dataSyntax: " + itemSyntax);
+            dataList.setDomainName(domain);
+            StringBuffer dataBuffer = new StringBuffer(itemSyntax);
+            int pointer = 0;
+            // strip things to contain only data lists
+            while (pointer < dataBuffer.length()) {
+
+                if (dataBuffer.charAt(pointer) == '(') {
+                    while (dataBuffer.length() > 0
+                            && dataBuffer.charAt(pointer) != ')') {
+                        pointer++;
+                    }
+                    pointer++;
+                    if (dataBuffer.length() < pointer)
+                        dataBuffer.insert(pointer, ',');
+                    pointer++;
+                } else {
+                    dataBuffer.deleteCharAt(pointer);
+                }
+            }
+
+            // replace ( and ) with | and then parse like its a | delimited file
+            // todo make beter
+            String data =
+                    dataBuffer.toString().replace('(', '|').replace(')', '|');
+            Object[] valueSequence = SimpleDBParser.parseList(data, "|");
+
+            if (valueSequence.length == 0) {
+                throw new RuntimeException(
+                        "Illegal replaceExpression in values: "
+                                + replaceExpression);
+            } else {
+                for (int i = 0; i < valueSequence.length; i++) {
+                    String valueString = (String) valueSequence[i];
+                    Object[] values =
+                            SimpleDBParser.parseList(valueString, "'\"");
+                    if (!dataList.getItemNames().contains(values[0])) {
+
+                        if (values[0].equals("null")) {
+                            // generate random UUIDs
+                            values[0] = UUID.randomUUID().toString();
+                        }
+                        itemNames.add(values[0]);
+                        SimpleDBMap sdbMap = new SimpleDBMap();
+                        sdbMap.setItemName(values[0]);
+                        for (int j = 1; j < values.length; j++) {
+                            sdbMap.put(keys[j], values[j]);
+                        }
+                        dataList.add(sdbMap);
+                        log.error("TODO: in method getItemName? " + sdbMap);
+                        log.error(dataList.getItemNames());
+                        log
+                                .error(dataList.get(dataList.size() - 1)
+                                        .toStringF());
+                    } else {
+                        // ÊSearchÊforÊelementÊinÊlist
+                        int index =
+                                Collections.binarySearch(dataList
+                                        .getItemNames(), values[0]);
+                        SimpleDBMap sdbMap = dataList.get(index);
+                        if (sdbMap.getItemName().equals(values[0])) {
+                            for (int j = 1; j < values.length; j++) {
+                                sdbMap.put(keys[j], values[j]);
+                            }
+                            log.error("TODO: improve on method getItemName? "
+                                    + sdbMap);
+
+                            log.error(dataList.getItemNames());
+                            log.error(dataList.get(index).toStringF());
+                        } else {
+                            log
+                                    .error("TODO: improve on method getItemName not found");
+                            log.error(dataList.getItemNames());
+                        }
+                    }
+                }
+            }
+
         }
+
         log.trace(dataList);
-        batchPutReplaceAttributes(domain, dataList);
+        batchPutReplaceAttributes(dataList);
 
         // return a select count(*) from domain formatted list
         SimpleDBDataList list = new SimpleDBDataList();
@@ -1285,8 +1560,10 @@ public abstract class ASimpleDBCollection extends SimpleDB {
 
         // get the key syntax without brackets
         String keySyntax =
-                replaceExpression.substring(replaceExpression.indexOf("(") + 1,
-                        replaceExpression.indexOf(")")).trim();
+                replaceExpression.substring(
+                        replaceExpression.indexOf("(") + 1,
+                        SimpleDBParser.indexOfIgnoreCaseRespectQuotes(1,
+                                replaceExpression, ")", '`')).trim();
 
         Object[] keys = SimpleDBParser.parseList(keySyntax, "`");
         if (keys.length == 0) {
@@ -1302,6 +1579,7 @@ public abstract class ASimpleDBCollection extends SimpleDB {
 
         log.trace("Parsing valueSyntax: " + valueSyntax);
         SimpleDBDataList dataList = new SimpleDBDataList();
+        dataList.setDomainName(domain);
         StringBuffer dataBuffer = new StringBuffer(valueSyntax);
         int pointer = 0;
         // strip things to contain only data lists
@@ -1344,8 +1622,7 @@ public abstract class ASimpleDBCollection extends SimpleDB {
                 dataList.add(sdbMap);
             }
         }
-
-        batchPutReplaceAttributes(domain, dataList);
+        batchPutReplaceAttributes(dataList);
 
         // return a select count(*) from domain formatted list
         SimpleDBDataList list = new SimpleDBDataList();

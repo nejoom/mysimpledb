@@ -1,7 +1,7 @@
 package ac.elements.concurrency;
 
 /**
- * OrderProcessingException.
+ * http://www.devx.com/Java/Article/41377/1954: OrderProcessingException.
  */
 public class OrderProcessingException extends Exception {
 

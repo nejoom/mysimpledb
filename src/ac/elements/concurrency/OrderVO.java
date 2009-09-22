@@ -1,7 +1,7 @@
 package ac.elements.concurrency;
 
 /**
- * OrderVO.
+ * http://www.devx.com/Java/Article/41377/1954: OrderVO.
  */
 public class OrderVO {
 

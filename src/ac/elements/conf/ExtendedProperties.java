@@ -4,14 +4,14 @@
  *
  * License version: CPAL 1.0
  *
- * The Original Code is glowaxes.org code. Please visit glowaxes.org to see how
+ * The Original Code is mysimpledb.com code. Please visit mysimpledb.com to see how
  * you can contribute and improve this software.
  *
  * The contents of this file are licensed under the Common Public Attribution
  * License Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  *
- *    http://glowaxes.org/license.
+ *    http://mysimpledb.com/license.
  *
  * The License is based on the Mozilla Public License Version 1.1.
  *
@@ -26,15 +26,15 @@
  * Elements is the Initial Developer and the Original Developer of the Original
  * Code.
  *
- * The contents of this file may be used under the terms of the Elements 
- * End-User License Agreement (the Elements License), in which case the 
- * provisions of the Elements License are applicable instead of those above.
+ * Based on commercial needs the contents of this file may be used under the
+ * terms of the Elements End-User License Agreement (the Elements License), in
+ * which case the provisions of the Elements License are applicable instead of
+ * those above.
  *
  * You may wish to allow use of your version of this file under the terms of
- * the Elements License please visit http://glowaxes.org/license for details.
+ * the Elements License please visit http://mysimpledb.com/license for details.
  *
  */
-
 package ac.elements.conf;
 
 import java.io.BufferedReader;
@@ -44,7 +44,8 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 /**
- * The Class ExtendedProperties.
+ * The Class ExtendedProperties extends java.util.Properties.
+ * 
  * @author <a href="mailto:eddie@tinyelements.com">Eddie Moojen</a>
  */
 public class ExtendedProperties extends Properties {
@@ -63,14 +64,12 @@ public class ExtendedProperties extends Properties {
     /** The Constant whiteSpaceChars. */
     private static final String whiteSpaceChars = " \t\r\n\f";
 
-    /*
+    /**
      * Returns true if the given line is a line that must be appended to the
      * next line
-     */
-    /**
-     * Continue line.
      * 
-     * @param line the line
+     * @param line
+     *            the line
      * 
      * @return true, if successful
      */
@@ -82,13 +81,11 @@ public class ExtendedProperties extends Properties {
         return (slashCount % 2 == 1);
     }
 
-    /*
-     * Returns true if the given line is not of form key[ ]=[ ]value
-     */
     /**
-     * Fix continue line.
+     * Returns true if the given line is not of form key[ ]=[ ]value
      * 
-     * @param line the line
+     * @param line
+     *            the line
      * 
      * @return true, if successful
      */
@@ -118,13 +115,15 @@ public class ExtendedProperties extends Properties {
         return continueLine(line);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.util.Properties#load(java.io.InputStream)
      */
     public synchronized void load(InputStream inStream) throws IOException {
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(inStream,
-                "8859_1"));
+        BufferedReader in =
+                new BufferedReader(new InputStreamReader(inStream, "8859_1"));
 
         String previousLine = null;
 
@@ -205,8 +204,9 @@ public class ExtendedProperties extends Properties {
                     }
 
                     String key = line.substring(keyStart, separatorIndex);
-                    String value = (separatorIndex < len) ? line.substring(
-                            valueIndex, len) : "";
+                    String value =
+                            (separatorIndex < len) ? line.substring(valueIndex,
+                                    len) : "";
 
                     // Convert then store key and value
                     key = loadConvert(key);
@@ -226,14 +226,12 @@ public class ExtendedProperties extends Properties {
         }// while
     }// load
 
-    /*
-     * Converts encoded &#92;uxxxx to unicode chars and changes special saved
-     * chars to their original forms
-     */
     /**
-     * Load convert.
+     * Converts encoded &#92;uxxxx to unicode chars and changes special saved
+     * chars to their original forms.
      * 
-     * @param theString the the string
+     * @param theString
+     *            the the string
      * 
      * @return the string
      */

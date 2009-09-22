@@ -1,23 +1,43 @@
+/**
+ *
+ * Copyright 2008-2009 Elements. All Rights Reserved.
+ *
+ * License version: CPAL 1.0
+ *
+ * The Original Code is mysimpledb.com code. Please visit mysimpledb.com to see how
+ * you can contribute and improve this software.
+ *
+ * The contents of this file are licensed under the Common Public Attribution
+ * License Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ *    http://mysimpledb.com/license.
+ *
+ * The License is based on the Mozilla Public License Version 1.1.
+ *
+ * Sections 14 and 15 have been added to cover use of software over a computer
+ * network and provide for attribution determined by Elements.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing permissions and limitations under the
+ * License.
+ *
+ * Elements is the Initial Developer and the Original Developer of the Original
+ * Code.
+ *
+ * Based on commercial needs the contents of this file may be used under the
+ * terms of the Elements End-User License Agreement (the Elements License), in
+ * which case the provisions of the Elements License are applicable instead of
+ * those above.
+ *
+ * You may wish to allow use of your version of this file under the terms of
+ * the Elements License please visit http://mysimpledb.com/license for details.
+ *
+ */
 package ac.elements.parser;
 
-/*
- *  Elements Java Object tracking toolkit Library
- *  Copyright (C) 1999-2004 Elements
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  The full license is located at the root of this distribution
- *  in the LICENSE file.
- *
- *  Please report bugs to development@tinyelements.net
+/**
  *  Adapted from Jonathan Lurie
  *  http://java.sun.com/developer/technicalArticles/ALT/cachingservices/
  *

@@ -1,4 +1,4 @@
-/*
+/**
  * Java CSV is a stream based library for reading and writing
  * CSV and other delimited data.
  *   
@@ -32,7 +32,6 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.text.NumberFormat;
 import java.util.HashMap;
-
 
 /**
  * A stream based parser for parsing delimited text data from a file or a
@@ -102,8 +101,8 @@ public class CsvReader {
     public static final int ESCAPE_MODE_BACKSLASH = 2;
 
     /**
-     * Creates a {@link com.csvreader.CsvReader CsvReader} object using a file
-     * as the data source.
+     * Creates a {@link CsvReader CsvReader} object using a file as the data
+     * source.
      * 
      * @param fileName
      *            The path to the file to use as the data source.
@@ -1328,6 +1327,22 @@ public class CsvReader {
         }
     }
 
+    /**
+     * Text Qualifiers are characters used to indicate that everything in
+     * between them should be interpreted by software programs exactly as it
+     * appears. Quotation marks are the most common qualifier. In the case of
+     * Census files, many of the geographic codes have leading zeros (i.e. "070"
+     * rather than "70") in order to sort properly. However, some spreadsheet
+     * programs such as Microsoft Excel, automatically remove the leading zeros.
+     * So, by qualifying the cell content as "text", the leading zeros are
+     * preserved.
+     * 
+     * @param columnIndex
+     *            The column to check if it is qualified text
+     * @return Return if the text is qualified (quoted).
+     * @throws IOException
+     *             Thrown if this object has already been closed.
+     */
     public boolean isQualified(int columnIndex) throws IOException {
         checkClosed();
 

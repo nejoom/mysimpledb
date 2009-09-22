@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * SampleMain.
+ * http://www.devx.com/Java/Article/41377/1954: SampleMain.
  */
 public class OrderProcessorMain {
 

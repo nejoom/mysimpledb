@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 /**
- * OrderProcessorCallable.
+ * http://www.devx.com/Java/Article/41377/1954: OrderProcessorCallable.
  */
 public class OrderProcessorCallable implements Callable<Integer> {
     private BlockingQueue<OrderVO> orderVOQueue;

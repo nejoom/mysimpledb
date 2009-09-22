@@ -1,32 +1,45 @@
-package ac.elements.parser;
-
-/*
- *  Elements Java Object tracking toolkit Library
- *  Copyright (C) 1999-2004 Elements
+/**
  *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2 of the License, or (at your option) any later version.
+ * Copyright 2008-2009 Elements. All Rights Reserved.
  *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
+ * License version: CPAL 1.0
  *
- *  The full license is located at the root of this distribution
- *  in the LICENSE file.
+ * The Original Code is mysimpledb.com code. Please visit mysimpledb.com to see how
+ * you can contribute and improve this software.
  *
- *  Please report bugs to development@tinyelements.net
- *  Adapted from Jonathan Lurie
- *  http://java.sun.com/developer/technicalArticles/ALT/cachingservices/
+ * The contents of this file are licensed under the Common Public Attribution
+ * License Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ *    http://mysimpledb.com/license.
+ *
+ * The License is based on the Mozilla Public License Version 1.1.
+ *
+ * Sections 14 and 15 have been added to cover use of software over a computer
+ * network and provide for attribution determined by Elements.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing permissions and limitations under the
+ * License.
+ *
+ * Elements is the Initial Developer and the Original Developer of the Original
+ * Code.
+ *
+ * Based on commercial needs the contents of this file may be used under the
+ * terms of the Elements End-User License Agreement (the Elements License), in
+ * which case the provisions of the Elements License are applicable instead of
+ * those above.
+ *
+ * You may wish to allow use of your version of this file under the terms of
+ * the Elements License please visit http://mysimpledb.com/license for details.
  *
  */
+package ac.elements.parser;
 
 import java.util.TreeMap;
 import java.util.LinkedHashSet;
 
-// TODO: Auto-generated Javadoc
 /**
  * Class to represent a url in protocol, domain, user-password string port,
  * path, file query, anchor (fragment) format.
@@ -220,8 +233,10 @@ public class UrlPacket {
     /**
      * Gets the value set.
      * 
-     * @param DELIMITER the dELIMITER
-     * @param PART the pART
+     * @param DELIMITER
+     *            the dELIMITER
+     * @param PART
+     *            the pART
      * 
      * @return the value set
      */
@@ -266,9 +281,12 @@ public class UrlPacket {
      * eg. for http://google/search?keyEg=valueEg<br>
      * getKeyValuePairs("&", UrlParser.QUERY) returns keyEg=valueEg
      * 
-     * @param DELIMITER the dELIMITER
-     * @param IDENTIFIER the iDENTIFIER
-     * @param PART the pART
+     * @param DELIMITER
+     *            the dELIMITER
+     * @param IDENTIFIER
+     *            the iDENTIFIER
+     * @param PART
+     *            the pART
      * 
      * @return the key value map
      */
@@ -318,12 +336,17 @@ public class UrlPacket {
      * eg. for http://google/search?keyEg=valueEg<br>
      * getValue("keyEg","=","&") return valueEg
      * 
-     * @param key The key to extract the value for
-     * @param IDENTIFIER The IDENTIFIER (normally =)
-     * @param DELIMITER The DELIMITER (normally &)
-     * @param PART The PART of the url that should be structured
-     * @param DECODE The decode algorithm used, eg unicode "utf-8" decoding pass
-     * null if no decoding should be used.
+     * @param key
+     *            The key to extract the value for
+     * @param IDENTIFIER
+     *            The IDENTIFIER (normally =)
+     * @param DELIMITER
+     *            The DELIMITER (normally &)
+     * @param PART
+     *            The PART of the url that should be structured
+     * @param DECODE
+     *            The decode algorithm used, eg unicode "utf-8" decoding pass
+     *            null if no decoding should be used.
      * 
      * @return the value
      */
@@ -380,10 +403,14 @@ public class UrlPacket {
      * eg. for http://google/search?keyEg=valueEg#fragment<br>
      * getValue("keyEg","=","&") return valueEg
      * 
-     * @param key The SERPERATOR (normally &)
-     * @param IDENTIFIER the iDENTIFIER
-     * @param DELIMITER the dELIMITER
-     * @param PART the pART
+     * @param key
+     *            The SERPERATOR (normally &)
+     * @param IDENTIFIER
+     *            the iDENTIFIER
+     * @param DELIMITER
+     *            the dELIMITER
+     * @param PART
+     *            the pART
      * 
      * @return the value
      */
@@ -398,9 +425,12 @@ public class UrlPacket {
      * eg. for http://google/search?keyEg=valueEg<br>
      * getValue("keyEg","=","&") return valueEg
      * 
-     * @param key The SERPERATOR (normally &)
-     * @param IDENTIFIER the iDENTIFIER
-     * @param DELIMITER the dELIMITER
+     * @param key
+     *            The SERPERATOR (normally &)
+     * @param IDENTIFIER
+     *            the iDENTIFIER
+     * @param DELIMITER
+     *            the dELIMITER
      * 
      * @return the value
      */
@@ -414,7 +444,8 @@ public class UrlPacket {
      * eg. for http://google/search?keyEg=valueEg<br>
      * getValue("keyEg") return valueEg
      * 
-     * @param key The key to extract the value for
+     * @param key
+     *            The key to extract the value for
      * 
      * @return the value
      */
@@ -483,7 +514,8 @@ public class UrlPacket {
     /**
      * Set the protocol for the url.
      * 
-     * @param protocol the protocol
+     * @param protocol
+     *            the protocol
      */
     protected void setProtocol(String protocol) {
         this.protocol = protocol;
@@ -492,7 +524,8 @@ public class UrlPacket {
     /**
      * Set the userPassword for the url.
      * 
-     * @param userPassword the user password
+     * @param userPassword
+     *            the user password
      */
     protected void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
@@ -501,7 +534,8 @@ public class UrlPacket {
     /**
      * Set the domain for the url.
      * 
-     * @param domain the domain
+     * @param domain
+     *            the domain
      */
     protected void setDomain(String domain) {
         this.domain = domain;
@@ -510,7 +544,8 @@ public class UrlPacket {
     /**
      * Set the port for the url.
      * 
-     * @param port the port
+     * @param port
+     *            the port
      */
     protected void setPort(String port) {
         this.port = port;
@@ -519,7 +554,8 @@ public class UrlPacket {
     /**
      * Set the path for the url.
      * 
-     * @param path the path
+     * @param path
+     *            the path
      */
     protected void setPath(String path) {
         // present windows path as c:\my\path\to\file.txt
@@ -532,7 +568,8 @@ public class UrlPacket {
     /**
      * Set the file in the url.
      * 
-     * @param file the file
+     * @param file
+     *            the file
      */
     protected void setFile(String file) {
         this.file = file;
@@ -541,7 +578,8 @@ public class UrlPacket {
     /**
      * Set the query in the url.
      * 
-     * @param query the query
+     * @param query
+     *            the query
      */
     protected void setQuery(String query) {
         this.query = query;
@@ -550,7 +588,8 @@ public class UrlPacket {
     /**
      * Set the originalUrl for the internalized url.
      * 
-     * @param originalUrl the original url
+     * @param originalUrl
+     *            the original url
      */
     protected void setOriginalUrl(String originalUrl) {
         this.originalUrl = originalUrl;
@@ -559,7 +598,8 @@ public class UrlPacket {
     /**
      * Set the fragment (anchor) for the url.
      * 
-     * @param fragment the fragment
+     * @param fragment
+     *            the fragment
      */
     protected void setFragment(String fragment) {
         this.fragment = fragment;

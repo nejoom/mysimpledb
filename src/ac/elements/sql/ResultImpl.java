@@ -1,6 +1,4 @@
-package ac.elements.sql;
-
-/*
+/**
  * Copyright 1999-2004 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +13,8 @@ package ac.elements.sql;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package ac.elements.sql;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;

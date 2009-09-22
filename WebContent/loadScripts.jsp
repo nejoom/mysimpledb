@@ -1,4 +1,19 @@
-<!-- Combo-handled YUI CSS files: -->
+<%--
+ 
+  Copyright 2008-2009 Elements. All Rights Reserved.
+ 
+  License version: CPAL 1.0
+ 
+  The Original Code is mysimpledb.com code. Please visit mysimpledb.com to see how
+  you can contribute and improve this software.
+ 
+  The contents of this file are licensed under the Common Public Attribution
+  License Version 1.0 (the "License"); you may not use this file except in
+  compliance with the License. You may obtain a copy of the License at
+ 
+     http://mysimpledb.com/license.
+     
+     --%><!-- Combo-handled YUI CSS files: -->
 <link
     rel="stylesheet"
     type="text/css"
@@ -7,23 +22,22 @@
 <script
     type="text/javascript"
     src="http://yui.yahooapis.com/combo?2.7.0/build/utilities/utilities.js&2.7.0/build/datasource/datasource-min.js&2.7.0/build/autocomplete/autocomplete-min.js&2.7.0/build/button/button-min.js&2.7.0/build/container/container-min.js"></script>
-<link
-    rel="stylesheet"
-    type="text/css"
-    href="/mysimpledb/assets/css/default.css">
+
 <%--
-<!-- Individual YUI CSS files --> 
-<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/yui/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css"> 
-<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/yui/2.7.0/build/base/base-min.css"> 
-<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/yui/2.7.0/build/assets/skins/sam/skin.css"> 
-<!-- Individual YUI JS files --> 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/yui/2.7.0/build/utilities/utilities.js"></script> 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/yui/2.7.0/build/datasource/datasource-min.js"></script> 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/yui/2.7.0/build/autocomplete/autocomplete-min.js"></script> 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/yui/2.7.0/build/button/button-min.js"></script> 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/yui/2.7.0/build/container/container-min.js"></script> 
+<!-- Combo-handled YUI CSS files: -->
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css&2.8.0r4/build/base/base-min.css&2.8.0r4/build/assets/skins/sam/skin.css">
+<!-- Combo-handled YUI JS files: -->
+<script type="text/javascript" src="http://yui.yahooapis.com/combo?2.8.0r4/build/utilities/utilities.js&2.8.0r4/build/datasource/datasource-min.js&2.8.0r4/build/autocomplete/autocomplete-min.js&2.8.0r4/build/button/button-min.js&2.8.0r4/build/container/container-min.js"></script>
 --%>
-<%-- 
+
+<!-- 
+
+http://developer.yahoo.com/yui/articles/hosting/?treeview&MIN#configure
+Bookmark or mail this configuration:
+http://developer.yahoo.com/yui/articles/hosting/?autocomplete&base&button&connectioncore&containercore&datasource&event&reset-fonts-grids&MIN
+
+ -->
+<%--
 <script
     type="text/javascript"
     src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js"></script>
@@ -59,7 +73,10 @@ SyntaxHighlighter.all();</script>
     href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css"
     id="shTheme" />
 --%>
-
+<link
+    rel="stylesheet"
+    type="text/css"
+    href="/mysimpledb/assets/css/default.css">
 <link
     rel="stylesheet"
     type="text/css"
@@ -96,7 +113,7 @@ function init() {
 	    YAHOO.mysimpledb.wait.hide();
 	    
 	    // update the auto-complete box to make natural querying
-	    if (document.getElementById("copySelect").value == "") {
+	    if (document.getElementById("selectField").value == "") {
 	      document.getElementById("selectField").value = 
 	        document.getElementById("selectField").getAttribute("default");
 	    } 
@@ -158,6 +175,34 @@ function init() {
     
     // Render the Dialog
     YAHOO.mysimpledb.alertDialog.render();
+
+
+
+    // Instantiate the ok dialog
+    YAHOO.mysimpledb.OKDialog = new YAHOO.widget.SimpleDialog("OKDialog", { 
+        modal: true,
+        width : "25em",
+        fixedcenter : true,
+        visible : false, 
+        constraintoviewport : true,
+        buttons: [ 
+        { 
+            text:"OK!",  
+            handler:handleCancel
+        } ]
+    });
+
+    // Validate the entries in the for
+    YAHOO.mysimpledb.OKDialog.validate = function() {
+      return true;
+    };
+
+    // Wire up the success and failure handlers
+    YAHOO.mysimpledb.OKDialog.callback = callback;
+    
+    // Render the Dialog
+    YAHOO.mysimpledb.OKDialog.render();
+
     
     // Instantiate the Dialog
     YAHOO.mysimpledb.deleteDomain = new YAHOO.widget.SimpleDialog("deleteDomain", { 
@@ -298,6 +343,70 @@ function init() {
     
     // Render the Dialog
     YAHOO.mysimpledb.deleteItem.render();
+
+
+    // Instantiate the Dialog
+    YAHOO.mysimpledb.importFile = new YAHOO.widget.SimpleDialog("importFile", { 
+        modal: true,
+        width : "20em",
+        fixedcenter : true,
+        visible : false, 
+        constraintoviewport : true,
+        buttons: [ 
+        { 
+            text:"Yes", 
+            handler:handleSubmit, 
+            isDefault:true 
+        },
+        { 
+            text:"No",  
+            handler:handleCancel
+        } ]
+    });
+
+    // Validate the entries in the for
+    YAHOO.mysimpledb.importFile.validate = function() {
+      YAHOO.mysimpledb.wait.show();
+      return true;
+    };
+
+    // Wire up the success and failure handlers
+    YAHOO.mysimpledb.importFile.callback = callback;
+    
+    // Render the Dialog
+    YAHOO.mysimpledb.importFile.render();
+    
+
+    // Instantiate the Dialog
+    YAHOO.mysimpledb.deleteFile = new YAHOO.widget.SimpleDialog("deleteFile", { 
+        modal: true,
+        width : "20em",
+        fixedcenter : true,
+        visible : false, 
+        constraintoviewport : true,
+        buttons: [ 
+        { 
+            text:"Yes", 
+            handler:handleSubmit, 
+            isDefault:true 
+        },
+        { 
+            text:"No",  
+            handler:handleCancel
+        } ]
+    });
+
+    // Validate the entries in the for
+    YAHOO.mysimpledb.deleteFile.validate = function() {
+      YAHOO.mysimpledb.wait.show();
+      return true;
+    };
+
+    // Wire up the success and failure handlers
+    YAHOO.mysimpledb.deleteFile.callback = callback;
+    
+    // Render the Dialog
+    YAHOO.mysimpledb.deleteFile.render();
     
 	// Instantiate the Dialog
     YAHOO.mysimpledb.deleteValueKey = new YAHOO.widget.SimpleDialog("deleteValueKey", { 
@@ -441,6 +550,21 @@ function makeRequest(domain){
 };
 
 
+function listExport(){
+  //div element to update
+  divElement = "listItemNames";
+  
+  YAHOO.mysimpledb.wait.show();
+  
+  //needed to realy post things, otherwise doesnt work (hard work).
+  YAHOO.mysimpledb.selectDialog.cfg.setProperty("postmethod", "async");
+
+  YAHOO.mysimpledb.selectDialog.form.action="listFiles.jsp";
+
+  YAHOO.mysimpledb.selectDialog.submit();
+};
+
+
 function makeRequestSort(domain, items, where, order, limit){
   //div element to update
   divElement = "listItemNames";
@@ -462,6 +586,13 @@ window.popAlertDialog = function(head, body) {
   YAHOO.mysimpledb.alertDialog.setBody(body); 
   YAHOO.mysimpledb.alertDialog.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_BLOCK);
   YAHOO.mysimpledb.alertDialog.show();
+};
+
+window.popOKDialog = function(head, body) {
+  YAHOO.mysimpledb.OKDialog.setHeader(head); 
+  YAHOO.mysimpledb.OKDialog.setBody(body); 
+  YAHOO.mysimpledb.OKDialog.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_INFO);
+  YAHOO.mysimpledb.OKDialog.show();
 };
 
 window.popDeleteDomain = function(head, body, domain) {
@@ -517,6 +648,35 @@ window.popDeleteItem = function(head, body, item, domain) {
   YAHOO.mysimpledb.deleteItem.cfg.setProperty("postmethod", "async");
   //alert(YAHOO.mysimpledb.deleteItem.body.innerHTML);
   YAHOO.mysimpledb.deleteItem.show();
+};
+
+
+window.popImportFile = function(head, body, file) {
+  //div element to update
+  divElement = "listItemNames";
+  YAHOO.mysimpledb.importFile.setHeader(head); 
+  YAHOO.mysimpledb.importFile.setBody(body); 
+  YAHOO.mysimpledb.importFile.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_WARN); 
+  YAHOO.mysimpledb.importFile.form.action="listItemNames.jsp";
+  YAHOO.mysimpledb.importFile.form.importFile.value = file;
+  //needed to realy post things, otherwise doesnt work (hard work).
+  YAHOO.mysimpledb.importFile.cfg.setProperty("postmethod", "async");
+  //alert(YAHOO.mysimpledb.importFile.body.innerHTML);
+  YAHOO.mysimpledb.importFile.show();
+};
+
+window.popDeleteFile = function(head, body, file) {
+  //div element to update
+  divElement = "listItemNames";
+  YAHOO.mysimpledb.deleteFile.setHeader(head); 
+  YAHOO.mysimpledb.deleteFile.setBody(body); 
+  YAHOO.mysimpledb.deleteFile.cfg.setProperty("icon",YAHOO.widget.SimpleDialog.ICON_WARN); 
+  YAHOO.mysimpledb.deleteFile.form.action="listFiles.jsp";
+  YAHOO.mysimpledb.deleteFile.form.deleteFile.value = file;
+  //needed to realy post things, otherwise doesnt work (hard work).
+  YAHOO.mysimpledb.deleteFile.cfg.setProperty("postmethod", "async");
+  //alert(YAHOO.mysimpledb.deleteFile.body.innerHTML);
+  YAHOO.mysimpledb.deleteFile.show();
 };
 
 window.popCreateItem = function(item, domain) {
@@ -605,6 +765,9 @@ window.popSelect = function(cursorToken) {
   YAHOO.mysimpledb.selectDialog.form.action="listItemNames.jsp?Action=select";
   //alert(YAHOO.mysimpledb.selectDialog.body.innerHTML);
   var select = document.getElementById("selectField");
+  if (select.value.indexOf("[where") != -1) {
+	  select.value = document.getElementById("fallbackSelect").value;
+  }
   var element = getHiddenField("select", select.value);
   
   //alert(select.value);
@@ -620,4 +783,53 @@ window.popSelect = function(cursorToken) {
   YAHOO.mysimpledb.selectDialog.submit();
   
 };
+
+
+window.popExport = function() {
+  
+  var element = YAHOO.mysimpledb.selectDialog.form;
+  
+  //remove any new item elements, cause its not
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
+
+  //needed to realy post things, otherwise doesnt work (hard work).
+  YAHOO.mysimpledb.selectDialog.cfg.setProperty("postmethod", "async");
+  //div element to update
+  divElement = "listItemNames";
+  YAHOO.mysimpledb.selectDialog.form.action="listItemNames.jsp?Action=export";
+  //alert(YAHOO.mysimpledb.selectDialog.body.innerHTML);
+  var select = document.getElementById("selectField");
+  var element = getHiddenField("select", select.value);
+  
+  //alert(select.value);
+  YAHOO.mysimpledb.selectDialog.form.appendChild(element);
+  
+  YAHOO.mysimpledb.selectDialog.submit();
+  
+};
+
+
+var $  = YAHOO.util.Dom.get;
+var $E = YAHOO.util.Event;
+var $D = YAHOO.util.Dom;
+var $C = YAHOO.util.Connect;
+window.uploadButtonClick = function(){
+    var uploadHandler = {
+        upload: function(o) {
+            //console.log(o.responseText);
+            $D.setStyle('indicator', 'visibility', 'hidden');
+            popOKDialog('Upload', o.responseText);
+            listExport();
+        }
+    };
+    $D.setStyle('indicator', 'visibility', 'visible');
+    //the second argument of setForm is crucial,
+    //which tells Connection Manager this is an file upload form
+    $C.setForm('uploadFile', true);
+    $C.asyncRequest('POST', 'uploadFile.jsp', uploadHandler);
+};
+
+
 </script>

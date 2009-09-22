@@ -4,14 +4,14 @@
  *
  * License version: CPAL 1.0
  *
- * The Original Code is glowaxes.org code. Please visit glowaxes.org to see how
+ * The Original Code is mysimpledb.com code. Please visit mysimpledb.com to see how
  * you can contribute and improve this software.
  *
  * The contents of this file are licensed under the Common Public Attribution
  * License Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  *
- *    http://glowaxes.org/license.
+ *    http://mysimpledb.com/license.
  *
  * The License is based on the Mozilla Public License Version 1.1.
  *
@@ -26,12 +26,13 @@
  * Elements is the Initial Developer and the Original Developer of the Original
  * Code.
  *
- * The contents of this file may be used under the terms of the Elements 
- * End-User License Agreement (the Elements License), in which case the 
- * provisions of the Elements License are applicable instead of those above.
+ * Based on commercial needs the contents of this file may be used under the
+ * terms of the Elements End-User License Agreement (the Elements License), in
+ * which case the provisions of the Elements License are applicable instead of
+ * those above.
  *
  * You may wish to allow use of your version of this file under the terms of
- * the Elements License please visit http://glowaxes.org/license for details.
+ * the Elements License please visit http://mysimpledb.com/license for details.
  *
  */
 package ac.elements.conf;
@@ -51,24 +52,39 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-/*
- * Singleton to load configuration files.<br> <br> The getValue(String
- * categoryName, String key) method will return the value for the key.<br> <br>
- * The key will be sought for in the properties file named
- * propertiesFile.properties.<br> <br> The properties file should be located in
- * the class path, preferably the root class (/WEB-INF/classes in a java webapp.<br>
- * <br> If the properties file or key is not found the key will be looked for in
- * the database ot_properties.<br> <br> Any changes to the key value pair will
- * be reloaded after a default of 15 seconds for files, and a set database field
- * ('expire') for database variables.<br> <br> This class does the look up
- * process quite intelligently and is tuned for performance.
+/**
+ * <p>
+ * Singleton to load configuration files.
+ * </p>
+ * <p>
+ * The getValue(String categoryName, String key) method will return the value
+ * for the key. The key will be sought for in the properties file named
+ * propertiesFile.properties.
+ * </p>
+ * <p>
+ * The properties file should be located in the class path, preferably the root
+ * class (/WEB-INF/classes in a java webapp. If the properties file or key is
+ * not found the key will be looked for in the database ot_properties.
+ * <p>
+ * Any changes to the key value pair will be reloaded after a default of 15
+ * seconds for files, and a set database field ('expire') for database
+ * variables.
+ * </p>
+ * <p>
+ * This class does the look up process quite intelligently and is tuned for
+ * performance.
+ * </p>
  * 
  * todo: Missing properties file throws error.
- * 
+ * <p>
  * Caching of values through hashtable means memory should be considered but
  * performance measuremnt show it to be near or better than dynamic generation
- * of String value = "" + i, in for loop.<br> <br> Database structure follows:
- * <pre> CREATE DATABASE ot_properties; USE ot_properties; CREATE TABLE
+ * of String value = "" + i, in for loop.
+ * <p>
+ * Database structure follows:
+ * 
+ * <pre>
+ * CREATE DATABASE ot_properties; USE ot_properties; CREATE TABLE
  * GLOBAL_KEY_VALUES ( category_name CHAR(100) NOT NULL, key_name CHAR(255) NOT
  * NULL, value TEXT NOT NULL, expire INT UNSIGNED NOT NULL, PRIMARY
  * KEY(category_name, key_name) );
@@ -77,13 +93,8 @@ import org.jdom.input.SAXBuilder;
  * key_name CHAR(255) value TEXT expire INT
  * 
  * INSERT INTO GLOBAL_KEY_VALUES VALUES ('tweaking',
- * 'AutoRefreshMap.get.requests', '100', 60000); </pre>
- */
-// @SuppressWarnings("unchecked")
-/**
- * The Class Configuration.
- * 
- * @author <a href="mailto:eddie@tinyelements.com">Eddie Moojen</a>
+ * 'AutoRefreshMap.get.requests', '100', 60000);
+ * </pre>
  */
 public class Configuration implements FileChangeListener {
 
@@ -110,7 +121,6 @@ public class Configuration implements FileChangeListener {
      * 
      * INSERT INTO GLOBAL_KEY_VALUES VALUES ('tweaking',
      * 'AutoRefreshMap.get.requests', '100', 60000);
-     * 
      */
 
     /**
@@ -150,6 +160,7 @@ public class Configuration implements FileChangeListener {
          * @return true, if successful
          */
         boolean hasExpired() {
+            
             if (System.currentTimeMillis() > expiresOn) {
                 return true;
             } else {
@@ -387,11 +398,11 @@ public class Configuration implements FileChangeListener {
      * Get the value for the specified key. <br> The key will be sought for in
      * the properties file named propertiesFile.properties.<br> <br> The
      * properties file should be located in the class path, preferably the root
-     * class (/WEB-INF/classes in a java webapp.<br> <br> If the properties
-     * file *or* key is not found the key will be looked for in the
-     * ot_properties database.<br> <br> Any changes to the key value pair will
-     * be reloaded after a default of 15 seconds for files, and a set database
-     * field ('expire') for database variables.<br>
+     * class (/WEB-INF/classes in a java webapp.<br> <br> If the properties file
+     * *or* key is not found the key will be looked for in the ot_properties
+     * database.<br> <br> Any changes to the key value pair will be reloaded
+     * after a default of 15 seconds for files, and a set database field
+     * ('expire') for database variables.<br>
      */
     /**
      * Gets the value.

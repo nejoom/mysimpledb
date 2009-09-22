@@ -3,7 +3,25 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     errorPage="signature.jsp"
-    import="java.util.*,ac.elements.sdb.*,ac.elements.conf.*,ac.elements.parser.*"%><%@ 
+    import="ac.elements.io.SaveAsFile"
+    import="ac.elements.io.ImportFile"
+    import="java.text.SimpleDateFormat"
+    import="java.util.*,ac.elements.sdb.*,ac.elements.conf.*,ac.elements.parser.*"%><%--
+ 
+  Copyright 2008-2009 Elements. All Rights Reserved.
+ 
+  License version: CPAL 1.0
+ 
+  The Original Code is mysimpledb.com code. Please visit mysimpledb.com to see how
+  you can contribute and improve this software.
+ 
+  The contents of this file are licensed under the Common Public Attribution
+  License Version 1.0 (the "License"); you may not use this file except in
+  compliance with the License. You may obtain a copy of the License at
+ 
+     http://mysimpledb.com/license.
+     
+     --%><%@ 
 taglib
     uri="http://java.sun.com/jstl/core"
     prefix="c"%><%@ 
@@ -14,6 +32,16 @@ taglib
     uri="http://ac.elements/jsp/jstl/functions"
     prefix="fn"%>
 <%
+
+//ensure that we have enough time for updates (eventual concurrency)
+//todo: make beter
+try {
+  Thread.sleep(500);
+} catch (InterruptedException e) {
+  e.printStackTrace();
+}    
+
+
     /**
      * The Access Key ID is associated with your AWS account. You include it in
      * AWS service requests to identify yourself as the sender of the request.
@@ -33,6 +61,8 @@ taglib
             Configuration.getInstance().getValue("aws",
                     "SecretAccessKey");
 
+    String SEPARATOR = System.getProperty("file.separator");
+    
     SimpleDBCollection exampleDB =
             new SimpleDBCollection(accessKeyId, secretAccessKey);
 
@@ -43,9 +73,9 @@ taglib
 
     //System.out.println("domainName");
     String domainName = request.getParameter("domainName");
-    int domainsSize = 0;
+    int domainsSize = exampleDB.getDomainsAsList().size();
     if (domainName == null) {
-        domainsSize = exampleDB.getDomainsAsList().size();
+        
         if (domainsSize > 0) {
             domainName =
                     (String) exampleDB.getDomainsAsList().get(0)
@@ -140,6 +170,40 @@ taglib
             request.setAttribute("itemList", exampleDB.getSelect(
                     (String) session.getAttribute("select"), null));
         }
+    } else if (request.getParameter("Action") != null
+            && request.getParameter("Action").equals("export")
+            && request.getParameter("select") != null) {
+        select = ExtendedFunctions.trim(request.getParameter("select"));
+
+        String path =
+                application.getRealPath(SEPARATOR + "export"
+                        + SEPARATOR);
+
+        //the base for the file name is the domain name 
+        String fileName = SimpleDBParser.getDomain(select);
+
+        // Make a SimpleDateFormat for toString()'s output.
+        SimpleDateFormat format =
+                new SimpleDateFormat(".yyyyMMdd.HHmmss");
+        String timeStamped = format.format(new Date());
+        fileName += timeStamped + ".sql";
+        SaveAsFile.exportSelect(select, path, fileName, accessKeyId,
+                secretAccessKey);
+%><jsp:forward page="listFiles.jsp" /><%
+
+    } else if (request.getParameter("importFile") != null) {
+
+        //System.out.println("importing");
+        
+        String path =
+                application.getRealPath(SEPARATOR + "export"
+                        + SEPARATOR);
+
+        //the base for the file name is the domain name 
+        String fileName = request.getParameter("importFile");
+
+        ImportFile.importFile(path, fileName, accessKeyId,
+                secretAccessKey);
 
     } else if (request.getParameter("Action") != null
             && request.getParameter("Action").equals("select")
@@ -241,7 +305,7 @@ taglib
     //System.out.println("domainName: " + domainName);
     String restSql = "select * from " + domainName;
     if (request.getAttribute("itemList") == null) {
-        System.out.println(exampleDB);
+        //System.out.println(exampleDB);
         list = exampleDB.setExcecute(restSql, null, null);
         request.setAttribute("itemList", list);
     }
@@ -269,7 +333,6 @@ taglib
     // need to reformat to get rid of new line characters 
     // (javascript dont like)
     if (nextToken != null) {
-        System.out.println("remember: " + nextToken);
         nextToken = nextToken.replace('\n', '@');
     }
     if (previousToken != null) {
@@ -286,8 +349,8 @@ taglib
     request.setAttribute("currentToken", currentToken);
     //System.out.println("finished processing");
     //System.out.println(attributes);
-%>
-<input
+    //SaveAsFile.export(list, "/Users/eddie/Documents/workspace/mysimpledb/", true);
+%><input
     id="copySelect"
     value="${select}"
     type="hidden" />
@@ -300,41 +363,53 @@ time: <%=list.getResponseTime()%>[ms] - BoxUsage: <%=list.getBoxUsage()%>
 
 <%
     if (domainsSize > 0) {
-%><div align="right"><span class="jive-paginator">[ <a
-    href="?Action=createItem"
-    title="Click to add item"
-    onclick="popCreateItem('', '${domain}');return false;">create
-new item</a> ]&nbsp;&nbsp;</span></div>
-<div align="right"><span class="jive-paginator">[<c:choose>
-    <c:when test="${previousToken!=null}">
-        <a
-            href="?Action=select"
-            title="Click to view previous list of items"
-            onclick="popSelect('${previousToken}');return false;">previous</a>
-    </c:when>
-    <c:otherwise>previous</c:otherwise>
-</c:choose>] [<c:choose>
-    <c:when test="${nextToken!=null}">
-        <a
-            href="?Action=select"
-            title="Click to view next list of items"
-            onclick="popSelect('${nextToken}');return false;">next</a>
-    </c:when>
-    <c:otherwise>next</c:otherwise>
-</c:choose>]&nbsp;&nbsp;</span></div>
+%>
+<script>
+document.getElementById("fallbackSelect").value="<%= restSql %>";
+</script>
+<table width="100%">
+    <tr>
+        <td style="border-width: 0px;">
+        <div
+            style="margin-top: 5px"
+            align="left"><span class="jive-paginator">[ <a
+            href="?Action=export"
+            title="Click to export the select statement that generated the below table"
+            onclick="if(document.getElementById('selectField').value.toLowerCase().indexOf('[limit limit]')==-1){popExport();return false;}">export</a>
+        ]&nbsp;[ <a
+            href="?Action=viewExport"
+            title="Click to view exported files or import files"
+            onclick="listExport();return false;"">view exports/ import</a> ]</span></div>
+        </td>
+        <td style="border-width: 0px;">
+        <div align="right"><span class="jive-paginator">[ <a
+            href="?Action=createItem"
+            title="Click to add item"
+            onclick="popCreateItem('', '${domain}');return false;">create
+        new item</a> ]&nbsp;&nbsp;</span></div>
+        <div align="right"><span class="jive-paginator">[<c:choose>
+            <c:when test="${previousToken!=null}">
+                <a
+                    href="?Action=select"
+                    title="Click to view previous list of items"
+                    onclick="popSelect('${previousToken}');return false;">previous</a>
+            </c:when>
+            <c:otherwise>previous</c:otherwise>
+        </c:choose>] [<c:choose>
+            <c:when test="${nextToken!=null}">
+                <a
+                    href="?Action=select"
+                    title="Click to view next list of items"
+                    onclick="popSelect('${nextToken}');return false;">next</a>
+            </c:when>
+            <c:otherwise>next</c:otherwise>
+        </c:choose>]&nbsp;&nbsp;</span></div>
+        </td>
+    </tr>
+</table>
 <%
     }
 %>
-<style>
-/* Tables  
------------------------------------------------------------------------------*/
-table { /*border-spacing:  0;
-    border-collapse:  collapse;
-    border-color: #012f7d;*/
-	border: none;
-	margin: 5px;
-}
-</style>
 <table>
     <%
         String token = "";
@@ -455,7 +530,7 @@ table { /*border-spacing:  0;
                     <td><c:forEach
                         var="value"
                         items="${item[attribute]}">
-                    <span class="jive-paginator">[<a
+                        <span class="jive-paginator">[<a
                             href="?Action=deleteValueKey"
                             title="Click to delete key value pair (${value.class}: ${fn:decodeEscUniJs(value)})"
                             onclick="popDeleteValueKey('Are you sure?', 'Delete attribute ${fn:escUniJs(attribute)}?', '${fn:escUniJs(attribute)}', '${fn:decodeEscUniJs(value)}', '${fn:escUniJs(item)}', '${domain}');return false;">x</a>]</span>
