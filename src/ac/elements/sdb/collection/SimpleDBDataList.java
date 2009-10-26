@@ -35,7 +35,7 @@
  * the Elements License please visit http://mysimpledb.com/license for details.
  *
  */
-package ac.elements.sdb;
+package ac.elements.sdb.collection;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SimpleDBDataList.
  */
@@ -306,7 +306,7 @@ public class SimpleDBDataList implements List<SimpleDBMap> {
      * @param responseTime
      *            the response time
      */
-    protected void setResponseTime(long responseTime) {
+    public void setResponseTime(long responseTime) {
         this.responseTime = responseTime;
     }
 
@@ -353,7 +353,7 @@ public class SimpleDBDataList implements List<SimpleDBMap> {
      * @param requestId
      *            the requestId
      */
-    protected void setRequestId(String requestId) {
+    public void setRequestId(String requestId) {
         this.requestId = requestId;
     }
 
@@ -363,7 +363,7 @@ public class SimpleDBDataList implements List<SimpleDBMap> {
      * @param boxUsage
      *            the boxUsage
      */
-    protected void setBoxUsage(String boxUsage) {
+    public void setBoxUsage(String boxUsage) {
         this.boxUsage = boxUsage;
     }
 
@@ -393,23 +393,26 @@ public class SimpleDBDataList implements List<SimpleDBMap> {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     public List getItemNames() {
-        Iterator mapIterator = dataList.iterator();
+        Iterator<SimpleDBMap> mapIterator = dataList.iterator();
         List<String> itemNames = new ArrayList<String>();
         while (mapIterator.hasNext()) {
-            SimpleDBMap map = (SimpleDBMap) mapIterator.next();
+            SimpleDBMap map = mapIterator.next();
             String itemName = (String) map.getItemName();
             itemNames.add(itemName);
         }
         return itemNames;
     }
 
+    @SuppressWarnings("unchecked")
     public Set getAttributes() {
         Set allAttributes = new LinkedHashSet();
-        Iterator mapIterator = dataList.iterator();
+        Iterator<SimpleDBMap> mapIterator = dataList.iterator();
+        @SuppressWarnings("unused")
         List<String> itemNames = new ArrayList<String>();
         while (mapIterator.hasNext()) {
-            SimpleDBMap map = (SimpleDBMap) mapIterator.next();
+            SimpleDBMap map = mapIterator.next();
             Set attributes = map.keySet();
             allAttributes.addAll(attributes);
         }
