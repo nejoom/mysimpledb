@@ -37,26 +37,29 @@
  */
 package ac.elements.sdb;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import ac.elements.io.Signature;
 import ac.elements.parser.SimpleDBConverter;
+import ac.elements.sdb.collection.SimpleDBDataList;
+import ac.elements.sdb.collection.SimpleDBMap;
 
 /**
- * The Class SimpleDB.
+ * The Class ASimpleDBApi is an abstract class implementing the documented
+ * Amazon Simple DB Api ISimpleDBApi.
  */
-public abstract class SimpleDB implements ISimpleDBStatement {
+public abstract class ASimpleDBApi implements ISimpleDBApi {
 
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(SimpleDB.class);
+    private final static Log log = LogFactory.getLog(ASimpleDBApi.class);
 
     /**
      * The Access Key ID is associated with your AWS account. You include it in
@@ -73,7 +76,7 @@ public abstract class SimpleDB implements ISimpleDBStatement {
     private final String key;
 
     /**
-     * Instantiates a new simple db to issue requests to Amazon's SimpleDB.
+     * Instantiates a new simple db to issue requests to Amazon's ASimpleDBApi.
      * 
      * <p>
      * Construction requires authentication to verify that the subscriber is
@@ -86,7 +89,7 @@ public abstract class SimpleDB implements ISimpleDBStatement {
      * @param key
      *            the Secret Access Key
      */
-    public SimpleDB(final String id, final String key) {
+    public ASimpleDBApi(final String id, final String key) {
         this.id = id;
         this.key = key;
     }
@@ -94,7 +97,7 @@ public abstract class SimpleDB implements ISimpleDBStatement {
     /**
      * With the BatchPutAttributes operation, you can perform multiple
      * PutAttribute operations in a single call. This helps you yield savings in
-     * round trips and latencies, and enables Amazon SimpleDB to optimize
+     * round trips and latencies, and enables Amazon ASimpleDBApi to optimize
      * requests, which generally yields better throughput.
      * <p>
      * You can specify attributes and values for items using a combination of
@@ -109,7 +112,7 @@ public abstract class SimpleDB implements ISimpleDBStatement {
      * attribute, Item.1.Attribute.1.Name and Item.1.Attribute.1.Value for the
      * second attribute, and so on.
      * <p>
-     * Amazon SimpleDB uniquely identifies attributes in an item by their
+     * Amazon ASimpleDBApi uniquely identifies attributes in an item by their
      * name/value combinations. For example, a single item can have the
      * attributes { "first_name", "first_value" } and { "first_name",
      * second_value" }. However, it cannot have two attribute instances where
@@ -197,7 +200,7 @@ public abstract class SimpleDB implements ISimpleDBStatement {
             }
 
         }
-        //log.error(parameters);
+        // log.error(parameters);
         String response = Signature.getXMLResponse(parameters, id, key);
         // log.debug(response);
         return response;
@@ -211,8 +214,7 @@ public abstract class SimpleDB implements ISimpleDBStatement {
      * key value pair.
      * <p>
      */
-    public String batchPutReplaceAttributes(
-            final SimpleDBDataList maps) {
+    public String batchPutReplaceAttributes(final SimpleDBDataList maps) {
 
         log.trace("Entering batchPutReplaceAttributes");
 
@@ -379,28 +381,6 @@ public abstract class SimpleDB implements ISimpleDBStatement {
     }
 
     /**
-     * Utility method to delete all the attributes and the item specified.
-     * 
-     * <p>
-     * deleteItem is an idempotent operation; running it multiple times on the
-     * same item does not result in an error response.
-     * 
-     * @param domain
-     *            the domain name
-     * @param item
-     *            the item
-     * 
-     * @return the xml response as a string
-     */
-    public String deleteItem(final String domain, final String item) {
-
-        log.trace("Entering deleteItem");
-        SimpleDBMap sdbMap = new SimpleDBMap();
-        sdbMap.setItemName(item);
-        return deleteAttributes(domain, sdbMap);
-    }
-
-    /**
      * Returns information about the domain, including when the domain was
      * created, the number of items and attributes, and the size of attribute
      * names and values.
@@ -422,32 +402,6 @@ public abstract class SimpleDB implements ISimpleDBStatement {
     }
 
     /**
-     * Utitlity method to returns all of the attributes associated with the
-     * item. without limiting specified attribute name parameters.
-     * 
-     * <p>
-     * If the item does not exist on the replica that was accessed for this
-     * operation, an empty set is returned. The system does not return an error
-     * as it cannot guarantee the item does not exist on other replicas.
-     * 
-     * <p>
-     * This method specifies GetAttributes without any attribute names, all the
-     * attributes for the item are returned.
-     * 
-     * @param domain
-     *            the domain
-     * @param item
-     *            the item
-     * 
-     * @return the xml response as a string
-     */
-    public String getAttributes(final String domain, final String item) {
-
-        log.trace("Entering getAttributes");
-        return getAttributes(domain, item, null);
-    }
-
-    /**
      * Returns all of the attributes associated with the item. Optionally, the
      * attributes returned can be limited to one or more specified attribute
      * name parameters.
@@ -463,17 +417,16 @@ public abstract class SimpleDB implements ISimpleDBStatement {
      * 
      * @param domain
      *            the domain
-     * @param item
-     *            the item
-     * @param attributes
-     *            the attributes
+     * @param sdbMap
+     *            the sdb map containing the item name
      * 
      * @return the xml response as a string
      */
-    public String getAttributes(final String domain, final String item,
-            final List<String> attributes) {
+    public String getAttributes(final String domain, final SimpleDBMap sdbMap) {
 
         log.trace("Entering getAttributes");
+        String item = (String) sdbMap.getItemName();
+        Set<String> attributes = sdbMap.keySet();
 
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("Action", "GetAttributes");
@@ -492,53 +445,6 @@ public abstract class SimpleDB implements ISimpleDBStatement {
         }
 
         return Signature.getXMLResponse(parameters, id, key);
-    }
-
-    /**
-     * Utility method to perform the ListDomains operation which lists all
-     * domains associated with the Access Key ID.
-     * 
-     * @return the xml response as a string
-     */
-    public String listDomains() {
-
-        log.trace("Entering listDomains");
-        return listDomains(null, null);
-    }
-
-    /**
-     * Utility method to perform the query operation which lists all item names
-     * in the domain.
-     * 
-     * @param domain
-     *            the domain
-     * 
-     * @return the xml response as a string
-     */
-    public String listItems(String domain) {
-
-        log.trace("Entering listItems");
-        return listItems(domain, null, null);
-    }
-
-    /**
-     * Utility method to perform the query operation which lists all item names
-     * in the domain.
-     * 
-     * @param domain
-     *            the domain
-     * @param nextToken
-     *            the next token
-     * @param maxNumberOfItems
-     *            the max number of items
-     * 
-     * @return the xml response as a string
-     */
-    public String listItems(String domain, String nextToken,
-            String maxNumberOfItems) {
-
-        log.trace("Entering listItems");
-        return query(domain, null, nextToken, maxNumberOfItems);
     }
 
     /**
@@ -607,8 +513,8 @@ public abstract class SimpleDB implements ISimpleDBStatement {
      * You cannot specify an empty string as an attribute name.
      * 
      * <p>
-     * Because Amazon SimpleDB makes multiple copies of your data and uses an
-     * eventual consistency update model, an immediate GetAttributes or Query
+     * Because Amazon ASimpleDBApi makes multiple copies of your data and uses
+     * an eventual consistency update model, an immediate GetAttributes or Query
      * request (read) immediately after a DeleteAttributes request (write) might
      * not return the updated data.
      * 
@@ -629,10 +535,10 @@ public abstract class SimpleDB implements ISimpleDBStatement {
      * 
      * @return the xml response as a string
      */
-    public String putAttributes(final String domain, String item,
-            final SimpleDBMap sdbMap) {
+    public String putAttributes(final String domain, final SimpleDBMap sdbMap) {
 
         log.trace("Entering putAttributes");
+        String item = SimpleDBConverter.encodeValue(sdbMap.getItemName());
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("Action", "PutAttributes");
 
@@ -663,155 +569,7 @@ public abstract class SimpleDB implements ISimpleDBStatement {
                         SimpleDBConverter.encodeValue(value));
 
             }
-            ++count;
-        }
-
-        return Signature.getXMLResponse(parameters, id, key);
-
-    }
-
-    /**
-     * The Query operation returns a set of ItemNames that match the query
-     * expression.
-     * 
-     * <p>
-     * A Query with no QueryExpression matches all items in the domain.
-     * 
-     * <p>
-     * The current timeout for long queries is 5 seconds.
-     * 
-     * <p>
-     * Your application should not excessively retry queries that return
-     * RequestTimeout errors.
-     * 
-     * <p>
-     * If you receive too many RequestTimeout errors, reduce the complexity of
-     * your query expression.
-     * 
-     * <p>
-     * For information about limits that affect Query, see Amazon SimpleDB
-     * Limits
-     * 
-     * @param domain
-     *            the domain
-     * @param queryExpression
-     *            the query expression
-     * @param nextToken
-     *            the next token, string that tells Amazon SimpleDB where to
-     *            start the next list of ItemNames.
-     * @param maxNumberOfItems
-     *            the max number of items to return in the response, the default
-     *            setting is 100, the maximum is 250
-     * 
-     * @return the xml response as a string
-     */
-    public String query(final String domain, final String queryExpression,
-            final String nextToken, String maxNumberOfItems) {
-
-        log.trace("Entering query");
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("Action", "Query");
-        parameters.put("DomainName", domain);
-
-        if (maxNumberOfItems != null) {
-            parameters.put("MaxNumberOfItems", maxNumberOfItems);
-        }
-
-        if (nextToken != null) {
-            parameters.put("NextToken", nextToken);
-        }
-
-        if (queryExpression != null) {
-            parameters.put("QueryExpression", queryExpression);
-        }
-
-        return Signature.getXMLResponse(parameters, id, key);
-
-    }
-
-    /**
-     * Query with attributes, with the default setting of 100 items.
-     * 
-     * @param domain
-     *            the domain
-     * @param queryExpression
-     *            the query expression
-     * @param nextToken
-     *            the next token, string that tells Amazon SimpleDB where to
-     *            start the next list of ItemNames.
-     * 
-     * @return the xml response as a string
-     */
-    public String queryWithAttributes(final String domain,
-            final String queryExpression, final String nextToken) {
-
-        log.trace("Entering queryWithAttributes");
-        return queryWithAttributes(domain, queryExpression, nextToken, null);
-    }
-
-    /**
-     * The QueryWithAttributes operation returns a set of Attributes for
-     * ItemNames that match the query expression.
-     * 
-     * <p>
-     * A QueryWithAttributes with no QueryExpression matches all items in the
-     * domain. Operations that run longer than 5 seconds return a time-out error
-     * response or a partial result set.
-     * 
-     * <p>
-     * Responses larger than one megabyte return a partial result set. Your
-     * application should not excessively retry queries that return
-     * RequestTimeout errors.
-     * 
-     * <p>
-     * If you receive too many RequestTimeout errors, reduce the complexity of
-     * your query expression. When designing your application, keep in mind that
-     * Amazon SimpleDB does not guarantee how attributes are ordered in the
-     * returned response. For information about limits that affect Query, see
-     * Amazon SimpleDB Limits
-     * 
-     * <p>
-     * The total size of the response cannot exceed 1 MB in total size. Amazon
-     * SimpleDB automatically adjusts the number of items returned per page to
-     * enforce this limit. For example, even if you ask to retrieve 250 items,
-     * but each individual item is 100 kB in size, the system returns 10 items
-     * and an appropriate NextToken to get the next page of results.
-     * 
-     * <p>
-     * For information on how to construct query expressions, see Using Query.
-     * 
-     * @param domain
-     *            the domain
-     * @param queryExpression
-     *            the query expression
-     * @param nextToken
-     *            the next token, string that tells Amazon SimpleDB where to
-     *            start the next list of ItemNames.
-     * @param maxNumberOfItems
-     *            Maximum number of ItemNames to return in the response. The
-     *            range is 1 to 250. The default setting is 100.
-     * 
-     * @return the xml response as a string
-     */
-    public String queryWithAttributes(final String domain,
-            final String queryExpression, final String nextToken,
-            final String maxNumberOfItems) {
-
-        log.trace("Entering queryWithAttributes");
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("Action", "QueryWithAttributes");
-        parameters.put("DomainName", domain);
-
-        if (maxNumberOfItems != null) {
-            parameters.put("MaxNumberOfItems", maxNumberOfItems);
-        }
-
-        if (nextToken != null) {
-            parameters.put("NextToken", nextToken);
-        }
-
-        if (queryExpression != null) {
-            parameters.put("QueryExpression", queryExpression);
+            count++;
         }
 
         return Signature.getXMLResponse(parameters, id, key);
@@ -825,11 +583,12 @@ public abstract class SimpleDB implements ISimpleDBStatement {
      * 
      * <p>
      * The total size of the response cannot exceed 1 MB in total size. Amazon
-     * SimpleDB automatically adjusts the number of items returned per page to
-     * enforce this limit. For example, even if you ask to retrieve 250 items,
-     * but each individual item is 100 kB in size, the system returns 10 items
-     * and an appropriate next token so you can get the next page of results.
-     * For information on how to construct select expressions, see Using Select
+     * ASimpleDBApi automatically adjusts the number of items returned per page
+     * to enforce this limit. For example, even if you ask to retrieve 250
+     * items, but each individual item is 100 kB in size, the system returns 10
+     * items and an appropriate next token so you can get the next page of
+     * results. For information on how to construct select expressions, see
+     * Using Select
      * 
      * <p>
      * Operations that run longer than 5 seconds return a time-out error
@@ -842,17 +601,17 @@ public abstract class SimpleDB implements ISimpleDBStatement {
      * application should not excessively retry queries that return
      * RequestTimeout errors. If you receive too many RequestTimeout errors,
      * reduce the complexity of your query expression. When designing your
-     * application, keep in mind that Amazon SimpleDB does not guarantee how
+     * application, keep in mind that Amazon ASimpleDBApi does not guarantee how
      * attributes are ordered in the returned response.
      * 
      * <p>
-     * For information about limits that affect Select, see Amazon SimpleDB
+     * For information about limits that affect Select, see Amazon ASimpleDBApi
      * Limits
      * 
      * @param selectExpression
      *            the select expression used to query the domain.
      * @param nextToken
-     *            the next token, string that tells Amazon SimpleDB where to
+     *            the next token, string that tells Amazon ASimpleDBApi where to
      *            start the next list of ItemNames.
      * 
      * @return the xml response as a string

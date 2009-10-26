@@ -2,7 +2,7 @@
     language="java"
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import="ac.elements.sdb.*,ac.elements.conf.*"
+    import="ac.elements.conf.PropertiesParser,java.io.StringWriter,java.io.PrintWriter"
     isErrorPage="true"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
@@ -18,7 +18,8 @@
  
      http://mysimpledb.com/license.
      
-     --%><%
+     --%>
+<%
     String DEFAULT_FILE = "aws"; //.proerties gets added auto
     String FILE_BASE =
             request.getSession().getServletContext().getRealPath(
@@ -47,18 +48,21 @@
         response.sendRedirect("index.jsp");
 
     }
+    exception.getStackTrace();
+
+    if (exception instanceof RuntimeException) {
 %>
 <br />
-<h2 style="color: red"><%=exception != null ? exception.getLocalizedMessage()
-                    : ""%></h2>
+<h2 style="color: red"><%=exception != null ? exception.getMessage() : ""%></h2>
 <br />
 <hr />
 <br />
 <p>Please edit the properties file manually (see bottom of screen)
 or enter information to submit to the server located at <%=request.getRemoteHost()%>.</p>
-<p style="background-color: yellow">Please note that you will either need to restart the Tomcat
-server, or if tomcat reloads properties files on the fly, you will need
-to retry after some seconds before changes take effect.</p>
+<p style="background-color: yellow">Please note that you will either
+need to restart the Tomcat server, or if tomcat reloads properties files
+on the fly, you will need to retry after some seconds before changes
+take effect.</p>
 <form
     method="post"
     action="/mysimpledb/signature.jsp">
@@ -89,7 +93,7 @@ to retry after some seconds before changes take effect.</p>
 <br />
 <hr />
 <br />
-<p>You can also copy & paste the following path-file to an editor on
+<p>You can also copy &amp; paste the following path-file to an editor on
 the server and edit manually: <input
     type="text"
     name="file"
@@ -118,3 +122,20 @@ the server and edit manually: <input
         allowfullscreen="true"
         width="425"
         height="344"></embed></object>
+<%
+    } else {
+%>
+<h2 style="color: red"><%=exception != null ? exception.getMessage() : ""%></h2>
+<pre>
+<%
+    try {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            exception.printStackTrace(pw);
+            out.println(sw.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//else
+%>
+</pre>

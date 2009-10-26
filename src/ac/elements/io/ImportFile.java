@@ -42,19 +42,23 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import ac.elements.concurrency.StatementAsync;
 import ac.elements.parser.SimpleDBParser;
-import ac.elements.sdb.SimpleDBCollection;
 
 public class ImportFile {
 
     // private static String NEWLINE = System.getProperty("line.separator");
 
+    /** The Constant log. */
+    private final static Log log = LogFactory.getLog(ImportFile.class);
+
     private static String SEPARATOR = System.getProperty("file.separator");
 
     public static void importFile(String path, String file, String id,
             String key) {
-
-        SimpleDBCollection sdbc = new SimpleDBCollection(id, key);
 
         try {
             if (path.lastIndexOf(SEPARATOR) != path.length() - 1) {
@@ -86,8 +90,12 @@ public class ImportFile {
                     sql += cutLine.substring(0, end);
                     cutLine = cutLine.substring(end + 1);
 
-                    // Print the content on the console
-                    sdbc.setExcecute(sql.trim(), null);
+                    // Excecute the invoke statement in thread framework
+                    if (log.isDebugEnabled())
+                        log.trace("Running " + sql);
+                    StatementAsync.SINGLETON.setStaticExecuteAsync(sql.trim());
+
+                    // sdbc.setExcecute(sql.trim(), null);
                     // System.out.println("importing: " + sql.trim());
 
                     sql = " ";
@@ -105,5 +113,4 @@ public class ImportFile {
             System.err.println("Error: " + e.getMessage());
         }
     }
-
 }

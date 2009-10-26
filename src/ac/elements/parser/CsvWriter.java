@@ -562,6 +562,7 @@ public class CsvWriter {
 
         public static final char BACKSLASH = '\\';
 
+        @SuppressWarnings("unused")
         public static final char NULL = '\0';
     }
 

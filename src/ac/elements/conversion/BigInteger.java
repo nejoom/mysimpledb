@@ -79,6 +79,7 @@ import ac.elements.parser.SimpleDBConverter;
  * @since JDK1.1
  */
 
+@SuppressWarnings("unused")
 public class BigInteger extends Number implements Comparable<BigInteger> {
     /**
      * The signum of this BigInteger: -1 for negative, 0 for zero, or 1 for
@@ -2901,7 +2902,7 @@ public class BigInteger extends Number implements Comparable<BigInteger> {
                         + digitsPerInt[radix]);
                 System.out.println("i: " + radix + ", i**digitsPerInt[i]: "
                         + Math.pow(radix, digitsPerInt[radix]));
-                System.out.println((new Integer(intRadix[radix])).toString(16));
+                System.out.println(extracted(radix));
             } catch (Exception e) {
                 System.out.println("unknown territory i");
             }
@@ -2919,6 +2920,11 @@ public class BigInteger extends Number implements Comparable<BigInteger> {
                     .toString(16));
             // }
         }
+    }
+
+    @SuppressWarnings("static-access")
+    private static String extracted(int radix) {
+        return (new Integer(intRadix[radix])).toString(16);
     }
 
     /**

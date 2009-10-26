@@ -3,10 +3,7 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     errorPage="signature.jsp"
-    import="ac.elements.io.SaveAsFile"
-    import="ac.elements.io.ImportFile"
-    import="java.text.SimpleDateFormat"
-    import="java.util.*,ac.elements.sdb.*,ac.elements.conf.*,ac.elements.parser.*"%><%--
+    import="ac.elements.sdb.SimpleDBImplementation,ac.elements.sdb.collection.SimpleDBDataList,ac.elements.sdb.collection.SimpleDBMap,ac.elements.parser.ExtendedFunctions,ac.elements.conf.Configuration,ac.elements.io.SaveAsFile,ac.elements.io.ImportFile,ac.elements.parser.SimpleDBParser,java.text.SimpleDateFormat,java.util.HashMap,java.util.Set,java.util.TreeSet,java.util.Date"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
  
@@ -32,16 +29,6 @@ taglib
     uri="http://ac.elements/jsp/jstl/functions"
     prefix="fn"%>
 <%
-
-//ensure that we have enough time for updates (eventual concurrency)
-//todo: make beter
-try {
-  Thread.sleep(500);
-} catch (InterruptedException e) {
-  e.printStackTrace();
-}    
-
-
     /**
      * The Access Key ID is associated with your AWS account. You include it in
      * AWS service requests to identify yourself as the sender of the request.
@@ -62,24 +49,24 @@ try {
                     "SecretAccessKey");
 
     String SEPARATOR = System.getProperty("file.separator");
-    
-    SimpleDBCollection exampleDB =
-            new SimpleDBCollection(accessKeyId, secretAccessKey);
+
+    SimpleDBImplementation exampleDB =
+            new SimpleDBImplementation(accessKeyId, secretAccessKey);
 
     String itemName = null;
     SimpleDBMap map = null;
-    SimpleDBDataList list = null;
+    SimpleDBDataList simpleDBDataList = null;
     String select = null;
 
     //System.out.println("domainName");
     String domainName = request.getParameter("domainName");
-    int domainsSize = exampleDB.getDomainsAsList().size();
+    int domainsSize = exampleDB.getDomainsAsSimpleDBDataList().size();
     if (domainName == null) {
-        
+
         if (domainsSize > 0) {
             domainName =
-                    (String) exampleDB.getDomainsAsList().get(0)
-                            .getItemName();
+                    (String) exampleDB.getDomainsAsSimpleDBDataList()
+                            .get(0).getItemName();
         }
     }
     request.setAttribute("domain", domainName);
@@ -97,104 +84,214 @@ try {
     }
 
     //System.out.println("Actions");
-    if (request.getParameter("Action") != null
-            && request.getParameter("Action").equals("exploreDomain")) {
-        //System.out.println("exploreDomain");
-        //if we load this screen, then get rid of select in session
-        session.setAttribute("select", null);
-    } else if (request.getParameter("Action") != null
-            && request.getParameter("Action").equals("createItem")
-            && request.getParameter("itemName") != null) {
+    if (request.getParameter("Action") != null) {
+        if (request.getParameter("Action").equals("exploreDomain")) {
 
-        //System.out.println("createItem");
-        itemName = request.getParameter("itemName");
-        String keyName = request.getParameter("keyName");
-        String value = request.getParameter("value");
-
-        map = new SimpleDBMap();
-        map.put(keyName, value);
-        //System.out.println(exampleDB.putAttributes(domainName,
-        //        itemName, map));
-        exampleDB.putAttributes(domainName, itemName, map);
-
-        String itemNew = request.getParameter("itemNew");
-
-        if (itemNew != null) {
+            //System.out.println("exploreDomain");
             //if we load this screen, then get rid of select in session
             session.setAttribute("select", null);
-        } else {
+
+        } else if (request.getParameter("Action").equals("createItem")
+                && request.getParameter("itemName") != null) {
+
+            //System.out.println("createItem");
+            itemName = request.getParameter("itemName");
+            String keyName = request.getParameter("keyName");
+            String value = request.getParameter("value");
+
+            map = new SimpleDBMap();
+            map.put(keyName, value);
+            map.setItemName(itemName);
+
+            exampleDB.putAttributes(domainName, map);
+
+            String itemNew = request.getParameter("itemNew");
+
+            if (itemNew != null) {
+
+                //if we load this screen, then get rid of select in session
+                session.setAttribute("select", null);
+
+            } else {
+
+                //if there is a select statement in session then use it
+                if (session.getAttribute("select") != null) {
+                    request.setAttribute("simpleDBDataList", exampleDB
+                            .setSelect((String) session
+                                    .getAttribute("select"), null));
+                }
+
+            }
+        } else if (request.getParameter("Action").equals("deleteItem")
+                && request.getParameter("deleteItem") != null) {
+            itemName = request.getParameter("deleteItem");
+
+            //System.out.println("deleteItem");
+            exampleDB.deleteItem(domainName, itemName);
 
             //if there is a select statement in session then use it
             if (session.getAttribute("select") != null) {
-                request.setAttribute("itemList", exampleDB.getSelect(
+                //todo: due to replication lag a double select works more often then not
+                exampleDB.setSelect((String) session
+                        .getAttribute("select"), null);
+                request.setAttribute("simpleDBDataList", exampleDB.setSelect(
                         (String) session.getAttribute("select"), null));
             }
+        } else if (request.getParameter("Action").equals(
+                "deleteValueKey")
+                && request.getParameter("itemName") != null
+                && request.getParameter("keyName") != null
+                && request.getParameter("value") != null
+                && request.getParameter("domainName") != null) {
 
+            //System.out.println("deleteValueKey");
+            itemName = request.getParameter("itemName");
+
+            String keyName = request.getParameter("keyName");
+            String value = request.getParameter("value");
+
+            domainName = request.getParameter("domainName");
+            map = new SimpleDBMap();
+            map.put(keyName, value);
+            map.setItemName(itemName);
+            //System.out.println(exampleDB.deleteAttributes(domainName,
+            //        itemName, map));
+            exampleDB.deleteAttributes(domainName, map);
+
+            //if there is a select statement in session then use it
+            if (session.getAttribute("select") != null) {
+                //todo: due to replication lag a double select works more often then not
+                exampleDB.setSelect((String) session
+                        .getAttribute("select"), null);
+                request.setAttribute("simpleDBDataList", exampleDB.setSelect(
+                        (String) session.getAttribute("select"), null));
+            }
+            
+        } else if (request.getParameter("Action").equals("select")
+                && request.getParameter("select") != null) {
+
+            //System.out.println("select");
+            select =
+                    ExtendedFunctions.trim(request
+                            .getParameter("select"));
+            //result = exampleDB.select(select, null);
+            //request.setAttribute("result", result);
+
+            //System.out.println("hi: " + currentToken);
+
+            simpleDBDataList = exampleDB.setExcecute(select, null, currentToken);
+
+            domainName = simpleDBDataList.getDomainName();
+
+            request.setAttribute("domain", domainName);
+            request.setAttribute("simpleDBDataList", simpleDBDataList);
+
+            //save select statement between sessions
+            session.setAttribute("select", select);
+
+            // System.out.println(simpleDBDataList.size());
+
+            //check if we need to update or insert
+            String check =
+                    "select * from select_history where selectStatement='"
+                            + ExtendedFunctions.escapeSql(select)
+                            + "' limit 1";
+
+            SimpleDBDataList checkList =
+                    exampleDB.setSelect(check, null);
+
+            int count = checkList.size();
+
+            //System.out.println("count: " + count);
+
+            // if select statement is not there, then put it there
+            if (count == 0) {
+                String itemKey = "" + System.currentTimeMillis();
+
+                String keyName = "modifiedTimeMillies";
+                String value = itemKey;
+                map = new SimpleDBMap();
+                map.put(keyName, value);
+
+                keyName = "hasItems";
+                if (simpleDBDataList.size() > 0)
+                    value = "true";
+                else
+                    value = "false";
+                map.put(keyName, value);
+
+                keyName = "selectStatement";
+                value = select;
+                map.put(keyName, value);
+                map.setItemName(itemKey);
+
+                //System.out.println(exampleDB.putAttributes(
+                //        "select_history", itemKey, map));
+                exampleDB.putAttributes("select_history", map);
+            } else {
+
+                // otherwise delete it and then put it there
+                Object itemKey = null;
+
+                for (int i = 0; i < checkList.size(); i++) {
+                    itemKey = checkList.get(i).getItemName();
+                    exampleDB.deleteItem("select_history",
+                            (String) itemKey);
+
+                    //System.out.println("deleted: " + itemKey);
+                }
+                String keyName = "modifiedTimeMillies";
+                String value = "" + System.currentTimeMillis();
+                map = new SimpleDBMap();
+                map.put(keyName, value);
+
+                keyName = "hasItems";
+                if (simpleDBDataList.size() > 0)
+                    value = "true";
+                else
+                    value = "false";
+                map.put(keyName, value);
+
+                keyName = "selectStatement";
+                value = select;
+                map.put(keyName, value);
+                map.setItemName(itemKey);
+
+                //replace current item with modified tag
+                //System.out.println(exampleDB.putAttributes(
+                //        "select_history", itemKey, map));
+                exampleDB.putAttributes("select_history", map);
+            }
+
+            //System.out.println(select);
+        } else if (request.getParameter("Action").equals("export")
+                && request.getParameter("select") != null) {
+            
+            select =
+                    ExtendedFunctions.trim(request
+                            .getParameter("select"));
+
+            String path =
+                    application.getRealPath(SEPARATOR + "export"
+                            + SEPARATOR);
+
+            //the base for the file name is the domain name 
+            String fileName = SimpleDBParser.getDomain(select);
+
+            // Make a SimpleDateFormat for toString()'s output.
+            SimpleDateFormat format =
+                    new SimpleDateFormat(".yyyyMMdd.HHmmss");
+            String timeStamped = format.format(new Date());
+            fileName += timeStamped + ".sql";
+            SaveAsFile.exportSelect(select, path, fileName,
+                    accessKeyId, secretAccessKey);
+            
+%><jsp:forward page="listFiles.jsp" />
+<%
         }
-    } else if (request.getParameter("Action") != null
-            && request.getParameter("Action").equals("deleteItem")
-            && request.getParameter("deleteItem") != null) {
-        itemName = request.getParameter("deleteItem");
-
-        //System.out.println("deleteItem");
-        exampleDB.deleteItem(domainName, itemName);
-
-        //if there is a select statement in session then use it
-        if (session.getAttribute("select") != null) {
-            request.setAttribute("itemList", exampleDB.getSelect(
-                    (String) session.getAttribute("select"), null));
-        }
-    } else if (request.getParameter("Action") != null
-            && request.getParameter("Action").equals("deleteValueKey")
-            && request.getParameter("itemName") != null
-            && request.getParameter("keyName") != null
-            && request.getParameter("value") != null
-            && request.getParameter("domainName") != null) {
-
-        //System.out.println("deleteValueKey");
-        itemName = request.getParameter("itemName");
-
-        String keyName = request.getParameter("keyName");
-        String value = request.getParameter("value");
-
-        domainName = request.getParameter("domainName");
-        map = new SimpleDBMap();
-        map.put(keyName, value);
-        map.setItemName(itemName);
-        //System.out.println(exampleDB.deleteAttributes(domainName,
-        //        itemName, map));
-        exampleDB.deleteAttributes(domainName, map);
-
-        //if there is a select statement in session then use it
-        if (session.getAttribute("select") != null) {
-            request.setAttribute("itemList", exampleDB.getSelect(
-                    (String) session.getAttribute("select"), null));
-        }
-    } else if (request.getParameter("Action") != null
-            && request.getParameter("Action").equals("export")
-            && request.getParameter("select") != null) {
-        select = ExtendedFunctions.trim(request.getParameter("select"));
-
-        String path =
-                application.getRealPath(SEPARATOR + "export"
-                        + SEPARATOR);
-
-        //the base for the file name is the domain name 
-        String fileName = SimpleDBParser.getDomain(select);
-
-        // Make a SimpleDateFormat for toString()'s output.
-        SimpleDateFormat format =
-                new SimpleDateFormat(".yyyyMMdd.HHmmss");
-        String timeStamped = format.format(new Date());
-        fileName += timeStamped + ".sql";
-        SaveAsFile.exportSelect(select, path, fileName, accessKeyId,
-                secretAccessKey);
-%><jsp:forward page="listFiles.jsp" /><%
-
     } else if (request.getParameter("importFile") != null) {
 
         //System.out.println("importing");
-        
         String path =
                 application.getRealPath(SEPARATOR + "export"
                         + SEPARATOR);
@@ -205,117 +302,20 @@ try {
         ImportFile.importFile(path, fileName, accessKeyId,
                 secretAccessKey);
 
-    } else if (request.getParameter("Action") != null
-            && request.getParameter("Action").equals("select")
-            && request.getParameter("select") != null) {
-
-        //System.out.println("select");
-        select = ExtendedFunctions.trim(request.getParameter("select"));
-        //result = exampleDB.select(select, null);
-        //request.setAttribute("result", result);
-
-        //System.out.println("hi: " + currentToken);
-
-        list = exampleDB.setExcecute(select, null, currentToken);
-
-        domainName = list.getDomainName();
-
-        request.setAttribute("domain", domainName);
-        request.setAttribute("itemList", list);
-
-        //save select statement between sessions
-        session.setAttribute("select", select);
-
-        // System.out.println(list.size());
-
-        //check if we need to update or insert
-        String check =
-                "select * from select_history where selectStatement='"
-                        + ExtendedFunctions.escapeSql(select)
-                        + "' limit 1";
-
-        SimpleDBDataList checkList = exampleDB.getSelect(check, null);
-
-        int count = checkList.size();
-
-        //System.out.println("count: " + count);
-
-        // if select statement is not there, then put it there
-        if (count == 0) {
-            String itemKey = "" + System.currentTimeMillis();
-
-            String keyName = "modifiedTimeMillies";
-            String value = itemKey;
-            map = new SimpleDBMap();
-            map.put(keyName, value);
-
-            keyName = "hasItems";
-            if (list.size() > 0)
-                value = "true";
-            else
-                value = "false";
-            map.put(keyName, value);
-
-            keyName = "selectStatement";
-            value = select;
-            map.put(keyName, value);
-
-            //System.out.println(exampleDB.putAttributes(
-            //        "select_history", itemKey, map));
-            exampleDB.putAttributes("select_history", itemKey, map);
-        } else {
-
-            // otherwise delete it and then put it there
-            Object itemKey = null;
-
-            for (int i = 0; i < checkList.size(); i++) {
-                itemKey = checkList.get(i).getItemName();
-                exampleDB
-                        .deleteItem("select_history", (String) itemKey);
-
-                //System.out.println("deleted: " + itemKey);
-            }
-            String keyName = "modifiedTimeMillies";
-            String value = "" + System.currentTimeMillis();
-            map = new SimpleDBMap();
-            map.put(keyName, value);
-
-            keyName = "hasItems";
-            if (list.size() > 0)
-                value = "true";
-            else
-                value = "false";
-            map.put(keyName, value);
-
-            keyName = "selectStatement";
-            value = select;
-            map.put(keyName, value);
-
-            //replace current item with modified tag
-            //System.out.println(exampleDB.putAttributes(
-            //        "select_history", itemKey, map));
-            exampleDB.putAttributes("select_history", (String) itemKey,
-                    map);
-        }
-
-        //System.out.println(select);
     }
-
-    //System.out.println("itemList");
-    //System.out.println("domainName: " + domainName);
+    
+    // we should of processed an action above, if not then make on based
+    // on the current domainName
     String restSql = "select * from " + domainName;
-    if (request.getAttribute("itemList") == null) {
+    if (request.getAttribute("simpleDBDataList") == null) {
         //System.out.println(exampleDB);
-        list = exampleDB.setExcecute(restSql, null, null);
-        request.setAttribute("itemList", list);
+        simpleDBDataList = exampleDB.setExcecute(restSql, null, null);
+        request.setAttribute("simpleDBDataList", simpleDBDataList);
     }
-    //System.out.println("itemList: " + request.getAttribute("itemList"));
-    list = (SimpleDBDataList) request.getAttribute("itemList");
 
-    //System.out.println("restSql: '" + restSql + "'");
-    //System.out.println("list: " + list);
-    //System.out.println("list: " + list.getAttributes());
-    //System.out.println("tokens");
+    simpleDBDataList = (SimpleDBDataList) request.getAttribute("simpleDBDataList");
+
+    // itemTokens is 
     HashMap<String, String> tokens =
             (HashMap<String, String>) session
                     .getAttribute("itemTokens");
@@ -324,10 +324,10 @@ try {
     if (currentToken == null) {
         currentToken = "";
     }
-    tokens.put(list.getNextToken(), currentToken);
+    tokens.put(simpleDBDataList.getNextToken(), currentToken);
     session.setAttribute("itemTokens", tokens);
 
-    String nextToken = list.getNextToken();
+    String nextToken = simpleDBDataList.getNextToken();
     String previousToken = tokens.get(currentToken);
 
     // need to reformat to get rid of new line characters 
@@ -341,31 +341,30 @@ try {
     if (select == null) {
         select = restSql;
     }
-    Set attributes = new TreeSet(list.getAttributes());
-    request.setAttribute("itemList", list);
+    Set attributes = new TreeSet(simpleDBDataList.getAttributes());
+    request.setAttribute("simpleDBDataList", simpleDBDataList);
     request.setAttribute("attributes", attributes);
     request.setAttribute("nextToken", nextToken);
     request.setAttribute("previousToken", previousToken);
     request.setAttribute("currentToken", currentToken);
     //System.out.println("finished processing");
     //System.out.println(attributes);
-    //SaveAsFile.export(list, "/Users/eddie/Documents/workspace/mysimpledb/", true);
+    //SaveAsFile.export(simpleDBDataList, "/Users/eddie/Documents/workspace/mysimpledb/", true);
 %><input
     id="copySelect"
     value="${select}"
     type="hidden" />
 
 <fieldset style="border: 2px ridge navy;"><legend>&nbsp;Showing
-<%=list.size()%> item(s) in <b>${domain}</b> follow.&nbsp; Response
-time: <%=list.getResponseTime()%>[ms] - BoxUsage: <%=list.getBoxUsage()%>
-- <%=list.getBoxUsage() == null ? 0 : Math.round(Float
-                    .parseFloat(list.getBoxUsage()) * 100000000f) / 100f%>&micro;$</legend>
+<%=simpleDBDataList.size()%> item(s) in <b>${domain}</b> follow.&nbsp; Response
+time: <%=simpleDBDataList.getResponseTime()%>[ms] - BoxUsage: <%=simpleDBDataList.getBoxUsage()%>
+- <%=simpleDBDataList.getBoxUsage() == null ? 0 : Math.round(Float
+                    .parseFloat(simpleDBDataList.getBoxUsage()) * 100000000f) / 100f%>&micro;$</legend>
 
 <%
     if (domainsSize > 0) {
-%>
-<script>
-document.getElementById("fallbackSelect").value="<%= restSql %>";
+%> <script>
+document.getElementById("fallbackSelect").value="<%=restSql%>";
 </script>
 <table width="100%">
     <tr>
@@ -379,7 +378,8 @@ document.getElementById("fallbackSelect").value="<%= restSql %>";
         ]&nbsp;[ <a
             href="?Action=viewExport"
             title="Click to view exported files or import files"
-            onclick="listExport();return false;"">view exports/ import</a> ]</span></div>
+            onclick="listExport();return false;"">view exports/
+        import</a> ]</span></div>
         </td>
         <td style="border-width: 0px;">
         <div align="right"><span class="jive-paginator">[ <a
@@ -450,7 +450,7 @@ document.getElementById("fallbackSelect").value="<%= restSql %>";
         <tr>
             <td>
             <%
-                if (list.size() > 0) {
+                if (simpleDBDataList.size() > 0) {
             %><span class="jive-paginator"><a
                 title="Click to sort"
                 href="?Action=exploreDomain&domainName=${domain}"
@@ -507,7 +507,7 @@ document.getElementById("fallbackSelect").value="<%= restSql %>";
     </thead>
     <tbody>
         <c:forEach
-            items="${itemList}"
+            items="${simpleDBDataList}"
             var="item"
             varStatus="status">
             <tr>

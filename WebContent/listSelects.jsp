@@ -2,7 +2,9 @@
     language="java"
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import="ac.elements.sdb.*,ac.elements.conf.*"%><%--
+    import="ac.elements.sdb.SimpleDBImplementation,
+    ac.elements.sdb.collection.SimpleDBDataList,
+    ac.elements.conf.Configuration"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
  
@@ -26,8 +28,7 @@ taglib
     prefix="fmt"%><%@  
 taglib
     uri="http://ac.elements/jsp/jstl/functions"
-    prefix="fn"%><%-- 
- --%>
+    prefix="fn"%>
 <%
     /**
      * The Access Key ID is associated with your AWS account. You include it in
@@ -48,8 +49,8 @@ taglib
             Configuration.getInstance().getValue("aws",
                     "SecretAccessKey");
 
-    SimpleDBCollection exampleDB =
-            new SimpleDBCollection(accessKeyId, secretAccessKey);
+    SimpleDBImplementation exampleDB =
+            new SimpleDBImplementation(accessKeyId, secretAccessKey);
     String query = request.getParameter("query");
     if (query == null)
         return;

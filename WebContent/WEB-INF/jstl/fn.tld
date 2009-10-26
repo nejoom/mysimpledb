@@ -193,7 +193,7 @@
       Capitalize a sentence.
     </description>
     <name>capitalize</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String capitalize(java.lang.String)</function-signature>
     <example>
       Name: ${fn.capitalize(name)}
@@ -204,7 +204,7 @@
       Chop the url to print nicely with given int character length
     </description>
     <name>chopUrl</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String chopUrl(java.lang.String, int)</function-signature>
     <example>
       Name: ${fn.chopUrl(url, 50)}
@@ -215,7 +215,7 @@
       Escapes Html.
     </description>
     <name>escapeHtml</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String escapeHtml(java.lang.String)</function-signature>
     <example>
       Name: ${fn.escapeHtml(name)}
@@ -226,7 +226,7 @@
       Escapes java.
     </description>
     <name>escapeJava</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String escapeJava(java.lang.String)</function-signature>
     <example>
       Name: ${fn.escapeJava(name)}
@@ -238,7 +238,7 @@
       regular expression pattern with a specified replacement string.
     </description>
     <name>regex</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String regex(java.lang.String, java.lang.String, java.lang.String)</function-signature>
     <example>
       Name: ${fn.regex("aabfooaabfooabfoob", "a*b", "-")}
@@ -249,7 +249,7 @@
       Swaps the case of all letters.
     </description>
     <name>swapCase</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String swapCase(java.lang.String)</function-signature>
     <example>
       Name: ${fn.swapCase(name)}
@@ -260,7 +260,7 @@
       Uncapitalizes.
     </description>
     <name>uncapitalize</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String uncapitalize(java.lang.String)</function-signature>
     <example>
       Name: ${fn.uncapitalize(name)}
@@ -271,7 +271,7 @@
       Escapes javascript.
     </description>
     <name>escapeJavaScript</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String escapeJavaScript(java.lang.String)</function-signature>
     <example>
       Name: ${fn.escapeJavaScript(name)}
@@ -282,7 +282,7 @@
       Unescapes html.
     </description>
     <name>unescapeHtml</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String unescapeHtml(java.lang.String)</function-signature>
     <example>
       Name: ${fn.unescapeHtml(name)}
@@ -293,7 +293,7 @@
       Unescapes Java.
     </description>
     <name>unescapeJava</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String unescapeJava(java.lang.String)</function-signature>
     <example>
       Name: ${fn.unescapeJava(name)}
@@ -304,7 +304,7 @@
       Unescapes JavaScript.
     </description>
     <name>unescapeJavaScript</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String unescapeJavaScript(java.lang.String)</function-signature>
     <example>
       Name: ${fn.unescapeJavaScript(name)}
@@ -315,7 +315,7 @@
       Unescapes Xml.
     </description>
     <name>unescapeXml</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String unescapeXml(java.lang.String)</function-signature>
     <example>
       Name: ${fn.unescapeXml(name)}
@@ -326,7 +326,7 @@
       Converts unicode java string to Unicode HTML (&amp;#xxxx) .
     </description>
     <name>toUnicodeHTML</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String toUnicodeHTML(java.lang.String)</function-signature>
     <example>
       Name: ${fn.toUnicodeHTML(name)}
@@ -337,7 +337,7 @@
       Escapes a unicode java string for javascript.
     </description>
     <name>escUniJs</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String escUniJs(java.lang.String)</function-signature>
     <example>
       Name: ${fn.escUniJs(name)}
@@ -348,7 +348,7 @@
       Formats/ pretty prints the calid/ well-formed xml given.
     </description>
     <name>formatXml</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String formatXml(java.lang.String)</function-signature>
     <example>
       Name: ${fn.formatXml(name)}
@@ -359,7 +359,7 @@
       Formats/ pretty prints the bytes given.
     </description>
     <name>formatBytes</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String formatBytes(java.lang.String)</function-signature>
     <example>
       Name: ${fn.formatBytes(bytes)}
@@ -370,10 +370,32 @@
       Decode the object and then escape the unicode for javascript use.
     </description>
     <name>decodeEscUniJs</name>
-    <function-class>ac.elements.sdb.ExtendedFunctions</function-class>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
     <function-signature>java.lang.String decodeEscUniJs(java.lang.Object)</function-signature>
     <example>
       Name: ${fn.decodeEscUniJs(name)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Print the object (date/ long) as a time period (w days x hours y minutes z seconds).
+    </description>
+    <name>timePeriod</name>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String timePeriod(java.lang.Object)</function-signature>
+    <example>
+      Name: ${fn.timePeriod(long)}
+    </example>
+  </function>
+  <function>
+    <description>
+      Print a new line
+    </description>
+    <name>newLine</name>
+    <function-class>ac.elements.parser.ExtendedFunctions</function-class>
+    <function-signature>java.lang.String newLine()</function-signature>
+    <example>
+      Name: ${fn.newLine()}
     </example>
   </function>
 </taglib>

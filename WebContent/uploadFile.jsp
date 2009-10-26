@@ -2,7 +2,7 @@
     language="java"
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import="java.io.*"%><%--
+    import="java.io.DataInputStream,java.io.FileOutputStream"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
  
@@ -17,12 +17,13 @@
  
   http://mysimpledb.com/license.
      
-     --%><%--
+     --%>
+<%--
 
   http://www.roseindia.net/jsp/file_upload/Sinle_upload.xhtml.shtml
 
---%><%
-
+--%>
+<%
     String SEPARATOR = System.getProperty("file.separator");
 
     //to get the content type information from JSP Request Header

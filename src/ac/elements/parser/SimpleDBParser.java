@@ -39,18 +39,24 @@ package ac.elements.parser;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ac.elements.sdb.ExtendedFunctions;
+import ac.elements.sdb.ASimpleDBApiExtended;
+import ac.elements.sdb.collection.SimpleDBDataList;
+import ac.elements.sdb.collection.SimpleDBMap;
 
 public class SimpleDBParser {
     /** The Constant log. */
     private final static Log log = LogFactory.getLog(SimpleDBParser.class);
 
     public static Object[] parseList(String keySyntax, String optionalDelimiters) {
-        log.error("Parsing list: " + keySyntax);
+        if (log.isDebugEnabled())
+            log.trace("Parsing list: " + keySyntax);
 
         CsvReader reader = CsvReader.parse(keySyntax);
 
@@ -105,6 +111,250 @@ public class SimpleDBParser {
         }
         // System.out.println("**** got: " + subclause);
         return subclause;
+    }
+
+    /*
+     * Returns the type of operation being performed: SELECT DELETE REPLACE
+     * INSERT CREATE
+     */
+    public static String getOperation(String sql) {
+        if (sql == null)
+            return null;
+        String operation = sql.trim().split(" ")[0].trim();
+        if (operation.toLowerCase().equals("select")) {
+            return "SELECT";
+        } else if (operation.toLowerCase().equals("delete")) {
+            return "DELETE";
+        } else if (operation.toLowerCase().equals("replace")) {
+            return "REPLACE";
+        } else if (operation.toLowerCase().equals("insert")) {
+            return "INSERT";
+        } else if (operation.toLowerCase().equals("create")) {
+            return "CREATE";
+        } else {
+            return "UNKNOWN";
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static ArrayList<Object> getItemNames(String sql) {
+
+        log.trace("Entering insert getKeys");
+        String insertExpression = sql;
+        insertExpression.replaceAll("replace", "insert");
+        String parseString =
+                insertExpression.substring("insert into ".length());
+        parseString =
+                parseString.substring(
+                        parseString.substring(0, parseString.indexOf(" "))
+                                .length()).trim();
+
+        // get the key syntax without brackets
+        String keySyntax =
+                parseString.substring(
+                        1,
+                        SimpleDBParser.indexOfIgnoreCaseRespectQuotes(1,
+                                parseString, ")", '`')).trim();
+
+        parseString = parseString.substring(keySyntax.length() + 2).trim();
+
+        Object[] items = null;
+        ArrayList<Object> itemNames = new ArrayList<Object>();
+
+        boolean useItemNameColumn = false;
+        Object[] keys = getKeys(sql);
+
+        if (keys != null && keys.length > 0 && keys[0].equals("itemName()")) {
+            useItemNameColumn = true;
+        }
+
+        // if itemName is not a defined column, then use standard syntax
+        if (!useItemNameColumn) {
+            String itemSyntax =
+                    parseString.substring(
+                            parseString.toLowerCase().indexOf("values")
+                                    + "values".length()).trim();
+
+            log.error("Parsing itemSyntax: " + itemSyntax);
+            StringBuffer itemBuffer = new StringBuffer(itemSyntax);
+            int pointer = 0;
+            // strip things to contain only item names
+            while (pointer < itemBuffer.length()) {
+                if (itemBuffer.charAt(pointer) == '(') {
+                    itemBuffer.deleteCharAt(pointer);
+                    while (itemBuffer.length() > 0
+                            && itemBuffer.charAt(pointer) != ')') {
+                        itemBuffer.deleteCharAt(pointer);
+                    }
+                    if (itemBuffer.charAt(pointer) == ')')
+                        itemBuffer.deleteCharAt(pointer);
+                }
+                pointer++;
+            }
+            log.error("itemBuffer: " + itemBuffer.toString());
+            items = SimpleDBParser.parseList(itemBuffer.toString(), "'\"");
+
+            if (items.length == 0) {
+                // generate random UUIDs
+                itemNames.add(UUID.randomUUID().toString());
+            } else {
+                for (int i = 0; i < items.length; i++) {
+                    Object itemName = items[i];
+                    if (itemName == null || itemName.toString().equals("")) {
+                        itemNames.add(UUID.randomUUID().toString());
+                        continue;
+                    }
+
+                    itemNames.add(itemName);
+                }
+            }
+            log.info("Parsed itemSyntax: " + itemNames);
+
+        } else {
+
+            // first key is itemName(), assume first column is itemName()
+            // unique
+            // key
+
+            String itemSyntax =
+                    parseString.substring(
+                            parseString.toLowerCase().indexOf("values")
+                                    + "values".length()).trim();
+
+            if (log.isDebugEnabled())
+                log.trace("Parsing dataSyntax: " + itemSyntax);
+
+            StringBuffer dataBuffer = new StringBuffer(itemSyntax);
+            int pointer = 0;
+            // strip things to contain only data lists
+            while (pointer < dataBuffer.length()) {
+
+                if (dataBuffer.charAt(pointer) == '(') {
+                    while (dataBuffer.length() > 0
+                            && dataBuffer.charAt(pointer) != ')') {
+                        pointer++;
+                    }
+                    pointer++;
+                    if (dataBuffer.length() < pointer)
+                        dataBuffer.insert(pointer, ',');
+                    pointer++;
+                } else {
+                    dataBuffer.deleteCharAt(pointer);
+                }
+            }
+
+            // replace ( and ) with | and then parse like its a | delimited
+            // file
+            // todo make beter
+            String data =
+                    dataBuffer.toString().replace('(', '|').replace(')', '|');
+            Object[] valueSequence = SimpleDBParser.parseList(data, "|");
+
+            SimpleDBDataList dataList = new SimpleDBDataList();
+            if (valueSequence.length == 0) {
+                throw new RuntimeException(
+                        "Illegal insertExpression in values: "
+                                + insertExpression);
+            } else {
+                for (int i = 0; i < valueSequence.length; i++) {
+                    String valueString = (String) valueSequence[i];
+                    Object[] values =
+                            SimpleDBParser.parseList(valueString, "'\"");
+                    if (!dataList.getItemNames().contains(values[0])) {
+
+                        if (values[0].equals("null")) {
+                            // generate random UUIDs
+                            values[0] = UUID.randomUUID().toString();
+                        }
+                        itemNames.add(values[0]);
+                    } else {
+                        // Search for element in list
+                        int index =
+                                Collections.binarySearch(dataList
+                                        .getItemNames(), values[0]);
+                        SimpleDBMap sdbMap = dataList.get(index);
+                        if (sdbMap.getItemName().equals(values[0])) {
+                            for (int j = 1; j < values.length; j++) {
+                                sdbMap.put(keys[j], values[j]);
+                            }
+                            if (log.isDebugEnabled()) {
+                                log
+                                        .trace("TODO: improve on method getItemName? "
+                                                + sdbMap);
+
+                                log.trace(dataList.getItemNames());
+                                log.trace(dataList.get(index).toStringF());
+                            }
+                        } else {
+                            log.error("TODO: improve on method "
+                                    + "getItemName not found");
+                            log.error(dataList.getItemNames());
+                        }
+                    }
+                }
+            }
+
+        }
+        return itemNames;
+    }
+
+    public static Object[] getKeys(String sql) {
+
+        log.trace("Entering insert getKeys");
+        String insertExpression = sql;
+        insertExpression.replaceAll("replace", "insert");
+
+        // make sure spaces are ok and we have no enters
+        insertExpression = ExtendedFunctions.trimSentence(insertExpression);
+
+        log.trace("Got insert expression: " + insertExpression);
+        // basic check if expression has good syntax
+        if (insertExpression.trim().toLowerCase().indexOf("insert") != 0
+                && insertExpression.trim().toLowerCase().indexOf("values") != 0) {
+            throw new RuntimeException(
+                    "Illegal insertExpression/ replaceExpression: "
+                            + insertExpression);
+        }
+
+        String parseString =
+                insertExpression.substring("insert into ".length());
+
+        parseString =
+                parseString.substring(
+                        parseString.substring(0, parseString.indexOf(" "))
+                                .length()).trim();
+
+        // get the key syntax without brackets
+        String keySyntax =
+                parseString.substring(
+                        1,
+                        SimpleDBParser.indexOfIgnoreCaseRespectQuotes(1,
+                                parseString, ")", '`')).trim();
+
+        Object[] keys = SimpleDBParser.parseList(keySyntax, "`");
+
+        return keys;
+    }
+
+    /*
+     * Returns the type of operation being performed: SELECT DELETE REPLACE
+     * INSERT CREATE
+     */
+    public static boolean isBatchOperation(String sql) {
+        log.error("isBatchOperation(String sql)");
+        if (sql == null)
+            return false;
+        if (!SimpleDBParser.getOperation(sql).equals("INSERT")
+                && !SimpleDBParser.getOperation(sql).equals("REPLACE")) {
+            return false;
+        } else if (SimpleDBParser.getOperation(sql).equals("INSERT")
+                || SimpleDBParser.getOperation(sql).equals("REPLACE")) {
+            SimpleDBDataList dataList =
+                    ASimpleDBApiExtended.extractSimpleDBList(sql);
+            if (dataList.getItemNames().size() > 1)
+                return true;
+        }
+        return false;
     }
 
     /*
@@ -609,6 +859,39 @@ public class SimpleDBParser {
      *            the arguments
      */
     public static void main(String[] args) {
+
+        String statement =
+                "The question as to whether the jab is"
+                        + " superior to the cross has been debated for some time in"
+                        + " boxing circles. However, it is my opinion that this"
+                        + " false dichotomy misses the point. I call your attention"
+                        + " to the fact that the best boxers often use a combination of"
+                        + " the two. I call your attention to the fact that Mohammed"
+                        + " Ali,the Greatest of the sport of boxing, used both. He had"
+                        + " a tremendous jab, yet used his cross effectively, often,"
+                        + " and well";
+
+        String newStmt =
+                statement.replaceAll("The question as to whether", "Whether");
+
+        newStmt = newStmt.replaceAll(" of the sport of boxing", "");
+        newStmt = newStmt.replaceAll("amount of success", "success");
+        newStmt =
+                newStmt.replaceAll("However, it is my opinion that this",
+                        "This");
+
+        newStmt = newStmt.replaceAll("a combination of the two", "both");
+        newStmt =
+                newStmt.replaceAll(
+                        "This is in spite of the fact that" + " the", "The");
+        newStmt =
+                newStmt
+                        .replaceAll("I call your attention to the fact that",
+                                "");
+
+        System.out.println("BEFORE:\n" + statement + "\n");
+        System.out.println("AFTER:\n" + newStmt);
+
         String sql =
                 "SELECT * FROM ijoasijdasd AS blabal where key=' \" ON DUPLICATE KEY UPDATE \"'";
 

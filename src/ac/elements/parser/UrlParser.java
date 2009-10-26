@@ -54,7 +54,6 @@ package ac.elements.parser;
 
 import java.util.WeakHashMap;
 
-import ac.elements.sdb.ExtendedFunctions;
 
 /**
  * Class to produce a UrlPackets. Internal methods parse url and take care of

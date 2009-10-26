@@ -15,7 +15,6 @@
  */
 package ac.elements.sql;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,12 +28,14 @@ import javax.servlet.jsp.jstl.sql.Result;
 
 /**
  * <p>
- * This class creates a cached version of a <tt>ResultSet</tt>. It's
- * represented as a <tt>Result</tt> implementation, capable of returing an
- * array of <tt>Row</tt> objects containing a <tt>Column</tt> instance for
- * each column in the row. It is not part of the JSTL API; it serves merely as a
- * back-end to ResultSupport's static methods. Thus, we scope its access to the
- * file://localhost/Users/eddie/Downloads/jakarta-taglibs-standard-1.1.2-src/standard/src/javax/servlet/jsp/jstl/sql/SQLExecutionTag.javapackage.
+ * This class creates a cached version of a <tt>ResultSet</tt>. It's represented
+ * as a <tt>Result</tt> implementation, capable of returing an array of
+ * <tt>Row</tt> objects containing a <tt>Column</tt> instance for each column in
+ * the row. It is not part of the JSTL API; it serves merely as a back-end to
+ * ResultSupport's static methods. Thus, we scope its access to the
+ * file://localhost
+ * /Users/eddie/Downloads/jakarta-taglibs-standard-1.1.2-src/standard
+ * /src/javax/servlet/jsp/jstl/sql/SQLExecutionTag.javapackage.
  * 
  * @author Hans Bergsten
  * @author Justyna Horwat
@@ -128,7 +129,7 @@ public class ResultImpl implements Result, Serializable {
      * 
      * @return an array of Map, or null if there are no rows
      */
-    @SuppressWarnings( { "unchecked", "unchecked" })
+    @SuppressWarnings("unchecked")
     public SortedMap[] getRows() {
         if (rowMap == null) {
             return null;
@@ -146,7 +147,7 @@ public class ResultImpl implements Result, Serializable {
      * 
      * @return an array of Map, or null if there are no rows
      */
-    @SuppressWarnings( { "unchecked", "unchecked" })
+    @SuppressWarnings("unchecked")
     public ArrayList getRowsAsList() {
         if (rowMap == null) {
             return null;

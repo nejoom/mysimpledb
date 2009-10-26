@@ -44,18 +44,19 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ac.elements.conversion.TypeConverter;
+import ac.elements.parser.ExtendedFunctions;
 import ac.elements.parser.SimpleDBConverter;
 import ac.elements.parser.SimpleDBParser;
-import ac.elements.sdb.ExtendedFunctions;
-import ac.elements.sdb.SimpleDBCollection;
-import ac.elements.sdb.SimpleDBDataList;
-import ac.elements.sdb.SimpleDBMap;
+import ac.elements.sdb.SimpleDBImplementation;
+import ac.elements.sdb.collection.SimpleDBDataList;
+import ac.elements.sdb.collection.SimpleDBMap;
 
 public class SaveAsFile {
     /** The Constant log. */
@@ -65,6 +66,8 @@ public class SaveAsFile {
 
     private static String SEPARATOR = System.getProperty("file.separator");
 
+    private static final int MAX_BATCH = 25;
+
     /**
      */
     public static void exportSelect(final String selectExpression, String path,
@@ -72,13 +75,13 @@ public class SaveAsFile {
         if (path.lastIndexOf(SEPARATOR) != path.length() - 1) {
             path += SEPARATOR;
         }
-        SimpleDBCollection sdbc =
-                new SimpleDBCollection(accessKeyId, secretAccessKey);
+        SimpleDBImplementation sdbc =
+                new SimpleDBImplementation(accessKeyId, secretAccessKey);
 
         // modify expression to first perform select
         if (selectExpression.trim().toLowerCase().indexOf("select") != 0) {
             throw new RuntimeException("Illegal deleteExpression: "
-                    + selectExpression + ", index 0 !="
+                    + selectExpression + ", indexOf(\"select\") !="
                     + selectExpression.trim().toLowerCase().indexOf("select"));
         }
 
@@ -90,8 +93,9 @@ public class SaveAsFile {
                 TypeConverter.getInt(SimpleDBParser
                         .getLimitClause(selectExpression), -1);
         int rows = 0;
+
         do {
-            sdbList = sdbc.getSelect(selectExpression, nextToken);
+            sdbList = sdbc.setSelect(selectExpression, nextToken);
             export(sdbList, path, file, true);
             rows += sdbList.size();
 
@@ -108,6 +112,7 @@ public class SaveAsFile {
 
     public static void export(SimpleDBDataList sdb, String path, String file,
             boolean append) {
+
         long t0 = System.currentTimeMillis();
         Writer pw = null;
         LinkedHashSet<String> keys = new LinkedHashSet<String>();
@@ -123,46 +128,79 @@ public class SaveAsFile {
                     new BufferedWriter(new OutputStreamWriter(fos, "UTF8"));
             pw = new PrintWriter(osw);
             // pw = osw;
+            StringBuffer line =
+                    new StringBuffer("INSERT INTO " + sdb.getDomainName()
+                            + " (`itemName()`");
             for (int i = 0; i < sdb.size(); i++) {
                 SimpleDBMap map = sdb.get(i);
-                StringBuffer line =
-                        new StringBuffer("INSERT INTO " + sdb.getDomainName()
-                                + " (`itemName()`");
 
                 for (String key : map.keySet()) {
-                    line.append(", ");
-                    line.append("`");
-                    line.append(key);
-                    line.append("`");
                     if (!keys.contains(key)) {
                         keys.add(key);
                     }
                 }
+            }
 
-                line.append(") VALUES ");
+            // format the string for keys
+            for (Iterator<String> key = keys.iterator(); key.hasNext();) {
+                line.append(", ");
+                line.append("`");
+                line.append(key.next());
+                line.append("`");
+            }
+
+            line.append(") VALUES ");
+
+            String prependInsertLine = line.toString();
+
+            int multipleRowsCounter = 0;
+            boolean firstRow = true;
+
+            for (int i = 0; i < sdb.size(); i++) {
 
                 int listCounter = 0;
                 int counter = 0;
 
+                // loop while there is a list
                 while (counter <= listCounter) {
-                    if (counter != 0) {
-                        line.append(", ('");
-                    } else {
-                        line.append("('");
+
+                    if (multipleRowsCounter >= MAX_BATCH) {
+                        line.append(";");
+                        ((PrintWriter) pw).println(line);
+                        line = new StringBuffer(prependInsertLine);
+                        multipleRowsCounter = 0;
+                        firstRow = true;
                     }
+
+                    if (firstRow) {
+                        line.append("('");
+                        firstRow = false;
+                    } else {
+                        line.append(", ('");
+                    }
+
+                    SimpleDBMap map = sdb.get(i);
                     line.append(ExtendedFunctions.escapeSql((String) map
                             .getItemName()));
                     line.append("'");
+                    // format the string for keys
+                    for (Iterator<String> itKey = keys.iterator(); itKey
+                            .hasNext();) {
+                        String key = itKey.next();
 
-                    for (String key : map.keySet()) {
+                        // log.error("key, value: " + key + ", " +
+                        // map.get(key));
                         line.append(", ");
+
                         // increase the loop if attributes are list
-                        if (map.get(key).toArray().length - 1 > listCounter) {
+                        if (map.get(key) != null
+                                && map.get(key).toArray().length - 1 > listCounter) {
                             listCounter = map.get(key).toArray().length - 1;
                         }
-                        if (map.get(key).toArray().length > counter) {
-                            line.append("'");
 
+                        if (map.get(key) != null
+                                && map.get(key).toArray().length > counter) {
+                            line.append("'");
                             // convert integers/ numbers to the encoded value
                             String val =
                                     SimpleDBConverter.encodeValue(map.get(key)
@@ -173,24 +211,32 @@ public class SaveAsFile {
                         } else {
                             line.append("NULL");
                         }
-                    }
+                    }// end keys
                     line.append(")");
+                    // log.error("i: " + i);
+                    // log.error("line: " + line);
                     counter++;
-                }
-                line.append(";");
+                    multipleRowsCounter++;
+                }// while
+            }// for
+            line.append(";");
 
-                ((PrintWriter) pw).println(line);
-                // pw.write(line.toString());
-                // File filed = new File(pathFile);
-                // writeUtf8ToFile(filed, true, line.toString());
-                System.out.println(line.toString());
-            }
+            // log.error("line: " + line);
+            ((PrintWriter) pw).println(line);
+            // pw.write(line.toString());
+            // File filed = new File(pathFile);
+            // writeUtf8ToFile(filed, true, line.toString());
+            // System.out.println(line.toString());
 
         } catch (IOException e) {
-            System.err.println(e);
+            log.error(e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            log.error(e);
+            e.printStackTrace();
         } finally {
             if (pw != null) {
-                log.error("Saving fileName: " + pathFile);
+                // log.error("Saving fileName: " + pathFile);
                 try {
                     pw.close();
                 } catch (IOException e) {

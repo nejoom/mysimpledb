@@ -35,7 +35,7 @@
  * the Elements License please visit http://mysimpledb.com/license for details.
  *
  */
-package ac.elements.sdb;
+package ac.elements.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,6 +75,8 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
+
 /**
  * This class defines common routines for generating authentication signatures
  * for AWS requests.
@@ -91,10 +93,10 @@ public class Signature {
     public static HttpClient httpClient = configureHttpClient();
 
     /** The Constant MAX_CONNECTIONS. */
-    private static final int MAX_CONNECTIONS = 100;
+    private static final int MAX_CONNECTIONS = 5000;
 
     /** The Constant MAX_RETRY_ERROR. */
-    private static final int MAX_RETRY_ERROR = 3;
+    private static final int MAX_RETRY_ERROR = 50;
 
     /** The Constant SERVICE_URL. */
     private static final String SERVICE_URL = "https://sdb.amazonaws.com/";
@@ -242,31 +244,29 @@ public class Signature {
 
                     public boolean retryMethod(HttpMethod method,
                             IOException exception, int executionCount) {
-                        if (executionCount > 3) {
-                            log
-                                    .debug("Maximum Number of Retry attempts reached, will not retry");
+                        if (executionCount > MAX_RETRY_ERROR) {
+                            log.warn("Maximum Number of Retry attempts "
+                                    + "reached, will not retry");
                             return false;
                         }
-                        log
-                                .debug("Retrying request. Attempt "
-                                        + executionCount);
+                        log.warn("Retrying request. Attempt " + executionCount);
                         if (exception instanceof NoHttpResponseException) {
-                            log.debug("Retrying on NoHttpResponseException");
+                            log.warn("Retrying on NoHttpResponseException");
                             return true;
                         }
                         if (exception instanceof InterruptedIOException) {
-                            log.debug(
+                            log.warn(
                                     "Will not retry on InterruptedIOException",
                                     exception);
                             return false;
                         }
                         if (exception instanceof UnknownHostException) {
-                            log.debug("Will not retry on UnknownHostException",
+                            log.warn("Will not retry on UnknownHostException",
                                     exception);
                             return false;
                         }
                         if (!method.isRequestSent()) {
-                            log.debug("Retrying on failed sent request");
+                            log.warn("Retrying on failed sent request");
                             return true;
                         }
                         return false;
@@ -328,7 +328,7 @@ public class Signature {
      * @return the parameters
      * @throws SignatureException
      */
-    public static Map<String, String> getParameters(
+    private static Map<String, String> getParameters(
             Map<String, String> keyValuePairs, String id, String key)
             throws SignatureException {
 
@@ -480,7 +480,6 @@ public class Signature {
                     }
                 } catch (ConnectException ce) {
                     shouldRetry = false;
-                    ++retries;
                     en =
 
                             "ConnectException: This webapp is not able to "
@@ -489,7 +488,6 @@ public class Signature {
 
                 } catch (UnknownHostException uhe) {
                     shouldRetry = false;
-                    ++retries;
                     en =
 
                             "UnknownHostException: This webapp is not able to "
@@ -510,7 +508,18 @@ public class Signature {
                 } finally {
                     method.releaseConnection();
                 }
+                // if (shouldRetry && retries == 1) {
+                // concurrentRetries++;
+                // log.warn("concurrentRetries: " + concurrentRetries);
+                // }
+                // if (concurrentRetries >= 1) {
+                // StatementAsync.throttleDown();
+                // } else {
+                // StatementAsync.throttleUp();
+                // }
             } while (shouldRetry);
+            // if (retries > 0 && concurrentRetries > 0)
+            // concurrentRetries--;
         } catch (Exception e) {
             log.error("Caught Exception: ", e);
             e.printStackTrace();
@@ -558,18 +567,15 @@ public class Signature {
      * 
      * @return true, if pause if retry needed
      * 
-     * @throws java.lang.InterruptedException
-     *             *
      * @throws InterruptedException
-     *             the interrupted exception
+     *             the interrupted exception if the thread fails to sleep
      */
     private static boolean pauseIfRetryNeeded(int retries)
             throws InterruptedException {
         if (retries <= MAX_RETRY_ERROR) {
-            long delay = (long) (Math.pow(4, retries) * 100L);
-            // log.debug("Retriable error detected, will retry in " + delay +
-            // "ms, attempt
-            // numer: " + retries);
+            long delay = (long) (Math.pow(2, retries) * 100L);
+            log.warn("Retriable error detected, will retry in " + delay
+                    + "ms, attempt numer: " + retries);
             Thread.sleep(delay);
             return true;
         } else {
@@ -685,7 +691,7 @@ public class Signature {
      * 
      * @return the string
      */
-    public static String urlEncode(String value, boolean path) {
+    private static String urlEncode(String value, boolean path) {
         if (value == null)
             return null;
         String encoded = null;

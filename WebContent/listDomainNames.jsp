@@ -3,7 +3,7 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     errorPage="error.jsp"
-    import="ac.elements.sdb.*,ac.elements.conf.*,java.util.HashMap"%><%--
+    import="ac.elements.sdb.SimpleDBImplementation,ac.elements.sdb.collection.SimpleDBDataList,ac.elements.parser.ExtendedFunctions,ac.elements.conf.Configuration,java.util.HashMap"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
  
@@ -48,35 +48,36 @@ taglib
             Configuration.getInstance().getValue("aws",
                     "SecretAccessKey");
 
-    SimpleDBCollection exampleDB =
-            new SimpleDBCollection(accessKeyId, secretAccessKey);
+    SimpleDBImplementation exampleDB =
+            new SimpleDBImplementation(accessKeyId, secretAccessKey);
 
-    if (request.getParameter("Action") != null
-            && request.getParameter("Action").equals("createDomain")
-            && request.getParameter("domainName") != null) {
-        String domainName = request.getParameter("domainName");
-        exampleDB.createDomain(domainName);
-    } else if (request.getParameter("Action") != null
-            && request.getParameter("Action").equals("deleteDomain")
-            && request.getParameter("deleteDomain") != null) {
-        String domainName = request.getParameter("deleteDomain");
-        exampleDB.deleteDomain(domainName);
-    } else if (request.getParameter("Action") != null
-            && request.getParameter("Action").equals("select")
-            && request.getParameter("select") != null) {
-
-        String select = ExtendedFunctions.trim(request.getParameter("select"));
-        //result = exampleDB.select(select, null);
-        //request.setAttribute("result", result);
-
-        exampleDB.setExcecute(select, null);
-
+    if (request.getParameter("Action") != null) {
+        if (request.getParameter("Action").equals("createDomain")
+                && request.getParameter("domainName") != null) {
+            
+            String domainName = request.getParameter("domainName");
+            exampleDB.createDomain(domainName);
+            
+        } else if (request.getParameter("Action").equals("deleteDomain")
+                && request.getParameter("deleteDomain") != null) {
+            
+            String domainName = request.getParameter("deleteDomain");
+            exampleDB.deleteDomain(domainName);
+            
+        } else if (request.getParameter("Action").equals("select")
+                && request.getParameter("select") != null) {
+    
+            String select =
+                    ExtendedFunctions.trim(request.getParameter("select"));    
+            exampleDB.setExcecute(select, null);
+    
+        }
     }
 
-    SimpleDBDataList sdbList = exampleDB.getDomainsAsList();
+    SimpleDBDataList sdbList = exampleDB.getDomainsAsSimpleDBDataList();
 
     String domainName = request.getParameter("domainName");
-    if (domainName == null && sdbList.size()>0) {
+    if (domainName == null && sdbList.size() > 0) {
         domainName = (String) sdbList.get(0).getItemName();
     }
 
@@ -84,11 +85,13 @@ taglib
     String currentToken = request.getParameter("domainNextToken");
     HashMap<String, String> tokens =
             (HashMap<String, String>) session.getAttribute("domainTokens");
+    
     if (tokens == null)
         tokens = new HashMap<String, String>();
     if (currentToken == null) {
         currentToken = "";
     }
+    
     tokens.put(sdbList.getNextToken(), currentToken);
     session.setAttribute("domainTokens", tokens);
 
@@ -96,6 +99,7 @@ taglib
     request.setAttribute("nextToken", sdbList.getNextToken());
     request.setAttribute("previousToken", tokens.get(currentToken));
     request.setAttribute("currentToken", currentToken);
+    
 %>
 <fieldset style="border: 2px ridge navy;"><legend><b>&nbsp;Domains:</b></legend>
 <div align="right"><span class="jive-paginator">[ <a
@@ -157,9 +161,10 @@ taglib
     <div class="label-content">
     <center><b>DomainMetaData: &nbsp;&nbsp;</b></center>
     <hr />
-    Domain: <b>${domain}</b><br /><%
+    Domain: <b>${domain}</b><br />
+    <%
         request.setAttribute("metaData", exampleDB
-                    .getMetaDataAsMap(request.getAttribute("domain")
+                    .getMetaDataAsTreeMap(request.getAttribute("domain")
                             .toString()));
     %><c:forEach
         items="${metaData}"

@@ -125,7 +125,7 @@ function init() {
 	var handleFailure = function(o) {
 	    YAHOO.mysimpledb.wait.hide();
 	    popAlertDialog("Handling submit failure: ", 
-	        "Err code: " + o.status + ", " + o.statusText + ".<br />");
+	        "Err code: " + o.status + ", " + o.statusText + ".<br />" + o + o.responseText);
 	};
 
 	var callback = {
@@ -832,4 +832,29 @@ window.uploadButtonClick = function(){
 };
 
 
+</script>
+<script type="text/javascript">
+  var uservoiceJsHost = ("https:" == document.location.protocol) ? "https://uservoice.com" : "http://cdn.uservoice.com";
+  document.write(unescape("%3Cscript src='" + uservoiceJsHost + "/javascripts/widgets/tab.js' type='text/javascript'%3E%3C/script%3E"))
+</script>
+<script type="text/javascript">
+UserVoice.Tab.show({ 
+  /* required */
+  key: 'mysimpledb',
+  host: 'mysimpledb.uservoice.com', 
+  forum: '28433', 
+  /* optional */
+  alignment: 'right',
+  background_color:'#aa0000', 
+  text_color: 'white',
+  hover_color: '#012f7d',
+  lang: 'en'
+})
+
+UserVoice.Popin.setup({ 
+  key: 'mysimpledb',
+  host: 'mysimpledb.uservoice.com', 
+  forum: 'general', 
+  lang: 'en'
+})
 </script>

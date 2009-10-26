@@ -1095,6 +1095,7 @@ public class PropertiesParser {
      * the prefix "hidden." are skipped (so that variables can be hidden) the
      * key hiddenAnchor is skipped
      */
+    @SuppressWarnings("unchecked")
     public synchronized void setProperties(Map propertiesMap) {
 
         for (Iterator e = propertiesMap.keySet().iterator(); e.hasNext();) {

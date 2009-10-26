@@ -171,6 +171,7 @@ class MutableBigInteger {
      * index. This method is not used because it is not inlined on all
      * platforms.
      */
+    @SuppressWarnings("unused")
     private final int getInt(int index) {
         return value[offset+index];
     }
@@ -180,6 +181,7 @@ class MutableBigInteger {
      * use in this MutableBigInteger at the specified index. This method is
      * not used because it is not inlined on all platforms.
      */
+    @SuppressWarnings("unused")
     private final long getLong(int index) {
         return value[offset+index] & LONG_MASK;
     }
@@ -213,6 +215,7 @@ class MutableBigInteger {
      * If this MutableBigInteger cannot hold len words, increase the size
      * of the value array to len words.
      */
+    @SuppressWarnings("unused")
     private final void ensureCapacity(int len) {
         if (value.length < len) {
             value = new int[len];
@@ -995,6 +998,7 @@ class MutableBigInteger {
     private MutableBigInteger binaryGCD(MutableBigInteger v) {
         // Algorithm B from Knuth section 4.5.2
         MutableBigInteger u = this;
+        @SuppressWarnings("unused")
         MutableBigInteger q = new MutableBigInteger(),
             r = new MutableBigInteger();
 

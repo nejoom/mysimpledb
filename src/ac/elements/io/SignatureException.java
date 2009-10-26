@@ -35,7 +35,7 @@
  * the Elements License please visit http://mysimpledb.com/license for details.
  *
  */
-package ac.elements.sdb;
+package ac.elements.io;
 
 /**
  * Exception for invalid signature cases.

@@ -131,6 +131,7 @@ public class DebuggableStatement implements PreparedStatement {
 
     private static boolean triggerRegex = true;
 
+    @SuppressWarnings("null")
     public static void main(String[] args) {
 
         System.out.println("Hello World");
@@ -158,7 +159,7 @@ public class DebuggableStatement implements PreparedStatement {
         System.out.println(databaseURL);
         String user = "root";
         String password = "";
-        @SuppressWarnings("unused")
+
         String driverName = "com.mysql.jdbc.Driver";
         int interval = 500;
         // test debuggable

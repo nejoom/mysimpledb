@@ -12,8 +12,8 @@ import junit.framework.TestCase;
 import ac.elements.parser.SimpleDBConverter;
 
 /**
- * The Class SimpleDBCollectionTest. Test for converting string types to encoded
- * types for Amazon's SimpleDB. Sorting order is also tested see Amazon's
+ * The Class SimpleDBImplementationTest. Test for converting string types to encoded
+ * types for Amazon's ASimpleDBApi. Sorting order is also tested see Amazon's
  * documentation .
  */
 @SuppressWarnings("unchecked")

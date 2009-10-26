@@ -37,6 +37,8 @@
  */
 package ac.elements.sdb;
 
+import ac.elements.sdb.collection.SimpleDBDataList;
+
 /**
  * <p>
  * This interface defines sql-like expressions that can be used on Amazon's
@@ -55,7 +57,7 @@ package ac.elements.sdb;
  * </ul>
  * 
  */
-public interface ISimpleDBStatement {
+public interface ISimpleDBCustom {
 
     /**
      * The Delete operation is a custom utility method that first selects a set
@@ -224,5 +226,7 @@ public interface ISimpleDBStatement {
      * @return the number of itemNames modified/ inserted as a SimpleDBDataList
      */
     public SimpleDBDataList setReplaceWhere(String replaceExpression);
+
+    public SimpleDBDataList setSelect(String selectExpression);
 
 }

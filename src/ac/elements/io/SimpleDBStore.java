@@ -35,7 +35,7 @@
  * the Elements License please visit http://mysimpledb.com/license for details.
  *
  */
-package ac.elements.sdb;
+package ac.elements.io;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -61,6 +61,9 @@ import org.apache.commons.codec.binary.Base64;
 //import ac.elements.conf.Base64Encoder;
 //import ac.elements.conf.Base64FormatException;
 import ac.elements.conf.Configuration;
+import ac.elements.parser.ExtendedFunctions;
+import ac.elements.sdb.SimpleDBImplementation;
+import ac.elements.sdb.collection.SimpleDBDataList;
 
 /**
  * Implementation of the <code>Store</code> interface that stores serialized
@@ -105,8 +108,8 @@ public class SimpleDBStore extends StoreBase implements Store {
     /** Context name associated with this Store. */
     private String name = null;
 
-    private final SimpleDBCollection exampleDB =
-            new SimpleDBCollection(accessKeyId, secretAccessKey);
+    private final SimpleDBImplementation exampleDB =
+            new SimpleDBImplementation(accessKeyId, secretAccessKey);
 
     /** Column to use for /Engine/Host/Context name. */
     protected String sessionAppCol = "app";
@@ -208,7 +211,7 @@ public class SimpleDBStore extends StoreBase implements Store {
                             + sessionAppCol + "` = '"
                             + ExtendedFunctions.escapeSql(getName()) + "'";
 
-            SimpleDBDataList result = exampleDB.getSelect(keysSql, null);
+            SimpleDBDataList result = exampleDB.setSelect(keysSql, null);
 
             size =
                     new Integer(
@@ -482,7 +485,7 @@ public class SimpleDBStore extends StoreBase implements Store {
                             + " WHERE `" + sessionAppCol + "` = '"
                             + ExtendedFunctions.escapeSql(getName()) + "'";
 
-            SimpleDBDataList result = exampleDB.getSelect(keysSql, null);
+            SimpleDBDataList result = exampleDB.setSelect(keysSql, null);
             ArrayList<String> tmpkeys = new ArrayList<String>();
 
             for (int i = 0; i < result.size(); i++) {
@@ -556,7 +559,7 @@ public class SimpleDBStore extends StoreBase implements Store {
                                 + sessionIdCol + "` = '" + id + "' AND `"
                                 + sessionAppCol + "` = '" + getName() + "'";
                 log.error(keysSql);
-                result = exampleDB.getSelect(keysSql, null);
+                result = exampleDB.setSelect(keysSql, null);
             } catch (Exception e) {
                 log.fatal("not loading: " + e);
             }

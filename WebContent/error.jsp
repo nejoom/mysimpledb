@@ -19,5 +19,9 @@
      http://mysimpledb.com/license.
      
      --%>
+<%
+    if (exception != null)
+        exception.printStackTrace();
+%>
 <br />
 <h2>Error encountered.</h2>

@@ -44,7 +44,6 @@ import java.util.Date;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import ac.elements.sdb.ExtendedFunctions;
 
 public class SimpleDBConverter {
 

@@ -35,10 +35,14 @@
  * the Elements License please visit http://mysimpledb.com/license for details.
  *
  */
-package ac.elements.sdb;
+package ac.elements.parser;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,9 +56,6 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
-import ac.elements.parser.SimpleDBConverter;
-import ac.elements.parser.UrlPacket;
-import ac.elements.parser.UrlParser;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -244,6 +245,10 @@ public class ExtendedFunctions extends Functions {
         return sb.toString();
     }
 
+    public static String newLine() {
+        return "\n";
+    }
+    
     public static String formatBytes(String byteString) {
 
         int intBytes = 0;
@@ -307,6 +312,25 @@ public class ExtendedFunctions extends Functions {
      *            the arguments
      */
     public static void main(String[] args) {
+
+        java.math.BigInteger myInt = new java.math.BigInteger("1223");
+        System.out.println(myInt);
+        System.out.println(ExtendedFunctions.timePeriod(myInt));
+        myInt = new java.math.BigInteger("59000");
+        System.out.println(myInt);
+        System.out.println(ExtendedFunctions.timePeriod(myInt));
+        myInt = new java.math.BigInteger("59900");
+        System.out.println(myInt);
+        System.out.println(ExtendedFunctions.timePeriod(myInt));
+        myInt = new java.math.BigInteger("5990000");
+        System.out.println(myInt);
+        System.out.println(ExtendedFunctions.timePeriod(myInt));
+        myInt = new java.math.BigInteger("599000000");
+        System.out.println(myInt);
+        System.out.println(ExtendedFunctions.timePeriod(myInt));
+        myInt = new java.math.BigInteger("59900000000");
+        System.out.println(myInt);
+        System.out.println(ExtendedFunctions.timePeriod(myInt));
 
         String sql =
                 "select * from domain where `this`='test' and this2=\"test\"";
@@ -592,4 +616,70 @@ public class ExtendedFunctions extends Functions {
         return StringEscapeUtils.unescapeXml(str);
     }
 
+    /**
+     * Formats a number given as the number of milliseconds String or Long and
+     * converts it to a format "H'h' m'm' s's'". Periods longer then a day do
+     * not work in this method. If conversion doesn't work it returns the Object
+     * casted as a string. (SimpleDateFormat syntax).
+     * 
+     * @returns null if myObject is null, otherwise a formatted time period as a
+     *          string.
+     * @see java.text.SimpleDateFormat
+     */
+    public static String timePeriod(Object myObject) {
+
+        long timePeriodInMilliseceonds = 0;
+
+        if (myObject == null)
+            return null;
+
+        try {
+
+            if (myObject instanceof String) {
+                timePeriodInMilliseceonds = Long.parseLong(myObject.toString());
+            } else if (myObject instanceof Number) {
+                timePeriodInMilliseceonds = ((Number) myObject).longValue();
+            } else {
+                return "Not supported: ".concat(myObject.getClass().getName());
+            }
+
+            String format = "D' days' H'h' mm'm' ss's'";
+            if (timePeriodInMilliseceonds < 60 * 1000l)
+                format = "ss's'";
+            else if (timePeriodInMilliseceonds < 3600 * 1000l)
+                format = "mm'm' ss's'";
+            else if (timePeriodInMilliseceonds < 3600 * 24 * 1000l)
+                format = "H'h' mm'm' ss's'";
+            else if (timePeriodInMilliseceonds < 3600 * 48 * 1000l) {
+                format = "D' day' H'h' mm'm' ss's'";
+            }
+
+            // Get Greenwich time zone.
+            TimeZone theTz = TimeZone.getTimeZone("GMT");
+
+            SimpleDateFormat mySimpleDateFormat = new SimpleDateFormat(format);
+            mySimpleDateFormat.setTimeZone(theTz);
+
+            // create a date in the locale's calendar,
+            // set its timezone and hour.
+            Calendar day = Calendar.getInstance();
+            day.setTimeZone(theTz);
+            day.setTime(new Date(timePeriodInMilliseceonds));
+            day.roll(Calendar.DAY_OF_MONTH, false);
+            day.set(Calendar.HOUR, day.get(Calendar.HOUR));
+
+            return mySimpleDateFormat.format(day.getTime());
+
+        } catch (NullPointerException npe) {
+            // npe.printStackTrace();
+            return null;
+        } catch (NumberFormatException nfe) {
+            // nfe.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 }
