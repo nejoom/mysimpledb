@@ -37,19 +37,15 @@
  */
 package ac.elements.sdb.test;
 
-import java.sql.Date;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import ac.elements.conf.Configuration;
-import ac.elements.sdb.ASimpleDBCollection;
-import ac.elements.sdb.SimpleDBCollection;
-import ac.elements.sdb.SimpleDBDataList;
-import ac.elements.sdb.SimpleDBMap;
+import ac.elements.sdb.SimpleDBImplementation;
+import ac.elements.sdb.collection.SimpleDBDataList;
 
 /**
  * The Class SimpleDBSyntaxParser.
@@ -57,14 +53,16 @@ import ac.elements.sdb.SimpleDBMap;
 public class SimpleDBSyntaxParser extends TestCase {
 
     /** The Constant log. */
+    @SuppressWarnings("unused")
     private final static Log log =
             LogFactory.getLog(SimpleDBSyntaxParser.class);
 
     /** The example db. */
-    private SimpleDBCollection exampleDB;
-
-    /** The maps. */
-    private SimpleDBDataList maps;
+    @SuppressWarnings("unused")
+    private SimpleDBImplementation exampleDB;
+//
+//    /** The maps. */
+//    private SimpleDBDataList maps;
 
     /**
      * Suite.
