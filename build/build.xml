@@ -149,7 +149,7 @@ then find replace "./"
     <copy file="mysimpledb.version.jar" todir="mysimpledb/WEB-INF/lib/" />
   </target>
 
-  <target name="web-archive"
+  <target name="make-web-archive"
           description="make web archive file"
           depends="make-jar, setup-war">
     <jar jarfile="mysimpledb.war"
