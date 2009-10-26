@@ -35,7 +35,7 @@
  * the Elements License please visit http://mysimpledb.com/license for details.
  *
  */
-package ac.elements.sdb;
+package ac.elements.sdb.collection;
 
 import java.util.Collection;
 import java.util.Iterator;
