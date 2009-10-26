@@ -2,8 +2,7 @@
     language="java"
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    errorPage="signature.jsp"
-    import="ac.elements.sdb.*,ac.elements.conf.*"%><%--
+    errorPage="signature.jsp"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
  
@@ -61,30 +60,5 @@ Id: <%=session.getId()%>| Last access: <%=new java.util.Date(session.getLastAcce
 <center>Copyright elements (c)/ <a href="http://mysimpledb.com">mysimpledb.com</a>
 </center> <!-- end footer --></div>
 <!-- end document wrapper --></div>
-<script type="text/javascript">
-  var uservoiceJsHost = ("https:" == document.location.protocol) ? "https://uservoice.com" : "http://cdn.uservoice.com";
-  document.write(unescape("%3Cscript src='" + uservoiceJsHost + "/javascripts/widgets/tab.js' type='text/javascript'%3E%3C/script%3E"))
-</script>
-<script type="text/javascript">
-UserVoice.Tab.show({ 
-  /* required */
-  key: 'mysimpledb',
-  host: 'mysimpledb.uservoice.com', 
-  forum: '28433', 
-  /* optional */
-  alignment: 'right',
-  background_color:'#aa0000', 
-  text_color: 'white',
-  hover_color: '#012f7d',
-  lang: 'en'
-})
-
-UserVoice.Popin.setup({ 
-  key: 'mysimpledb',
-  host: 'mysimpledb.uservoice.com', 
-  forum: 'general', 
-  lang: 'en'
-})
-</script>
 </body>
 </html>
