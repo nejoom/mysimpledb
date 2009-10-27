@@ -60,10 +60,10 @@ att</a> | <a
 att where *</a> ] [ <a
     href="mysimpledb.war"
     target="_blank"
-    title="Click to download tomcat war">tomcat war</a> | <a
+    title="Click to download tomcat war">download tomcat war</a> | <a
     title="Click to view source on github.com"
     target="_blank"
-    href="http://github.com/nejoom/mysimpledb/tree/master">github
+    href="http://github.com/nejoom/mysimpledb/tree/master">view github
 source</a> | <a
     href="#"
     title="Click to give feedback on how to improve (thanks!)"
