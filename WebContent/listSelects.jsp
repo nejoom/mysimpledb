@@ -64,7 +64,7 @@ taglib
 
     //System.out.println(sql);
 
-    SimpleDBDataList checkList = exampleDB.getSelect(sql, null);
+    SimpleDBDataList checkList = exampleDB.setSelect(sql, null);
 
     //System.out.println(checkList);
 
