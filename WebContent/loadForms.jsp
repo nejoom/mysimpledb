@@ -15,9 +15,6 @@
      
      --%><fieldset style="border: 2px ridge navy;"><legend>&nbsp;Construct
 <b>query</b> <span class="jive-paginator">[ <a
-    href="http://docs.amazonwebservices.com/AmazonSimpleDB/2009-04-15/DeveloperGuide/index.html?UsingSelect.html"
-    title="Click for help"
-    target="_blank">help</a> ]&nbsp;[ <a
     href=#
     "
     title="Click to create domain that retains your sql history"
@@ -67,7 +64,10 @@ att where *</a> ] [ <a
 source</a> | <a
     href="#"
     title="Click to give feedback on how to improve (thanks!)"
-    onclick="UserVoice.Popin.show(); return false;">feedback</a> ]</span> </legend>
+    onclick="UserVoice.Popin.show(); return false;">feedback</a> ]&nbsp;[<a
+    href="http://docs.amazonwebservices.com/AmazonSimpleDB/2009-04-15/DeveloperGuide/index.html?UsingSelect.html"
+    title="Click for help"
+    target="_blank">amazon's docs</a> ]</span></legend>
 
 <div align="right"><span class="jive-paginator">[ <a
     href="?Action=submitSelect"
