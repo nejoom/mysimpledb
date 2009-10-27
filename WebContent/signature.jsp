@@ -48,7 +48,8 @@
         response.sendRedirect("index.jsp");
 
     }
-    exception.getStackTrace();
+    if (exception != null)
+        exception.getStackTrace();
 
     if (exception instanceof RuntimeException) {
 %>
@@ -93,8 +94,8 @@ take effect.</p>
 <br />
 <hr />
 <br />
-<p>You can also copy &amp; paste the following path-file to an editor on
-the server and edit manually: <input
+<p>You can also copy &amp; paste the following path-file to an
+editor on the server and edit manually: <input
     type="text"
     name="file"
     value="<%=file%>"></input></p>
