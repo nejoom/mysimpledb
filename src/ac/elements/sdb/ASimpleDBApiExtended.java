@@ -38,7 +38,6 @@
 package ac.elements.sdb;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
@@ -372,7 +371,6 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
 
     }
 
-    @SuppressWarnings("unchecked")
     public static SimpleDBDataList extractSimpleDBList(String sql) {
 
         // make sure spaces are ok and we have no enters
