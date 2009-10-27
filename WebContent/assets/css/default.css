@@ -148,8 +148,7 @@ p {
 }
 
 li {
-    font-size: 116%; /*15px*/
-    font: verdana;
+	font: verdana;
     color: #012f7d;
 }
 
