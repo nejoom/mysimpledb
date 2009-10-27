@@ -51,7 +51,8 @@ taglib
     String SEPARATOR = System.getProperty("file.separator");
 
     SimpleDBImplementationAsync exampleDB =
-            new SimpleDBImplementationAsync(accessKeyId, secretAccessKey);
+            new SimpleDBImplementationAsync(accessKeyId,
+                    secretAccessKey);
 
     String itemName = null;
     SimpleDBMap map = null;
@@ -134,8 +135,9 @@ taglib
                 //todo: due to replication lag a double select works more often then not
                 exampleDB.setSelect((String) session
                         .getAttribute("select"), null);
-                request.setAttribute("simpleDBDataList", exampleDB.setSelect(
-                        (String) session.getAttribute("select"), null));
+                request.setAttribute("simpleDBDataList", exampleDB
+                        .setSelect((String) session
+                                .getAttribute("select"), null));
             }
         } else if (request.getParameter("Action").equals(
                 "deleteValueKey")
@@ -163,10 +165,11 @@ taglib
                 //todo: due to replication lag a double select works more often then not
                 exampleDB.setSelect((String) session
                         .getAttribute("select"), null);
-                request.setAttribute("simpleDBDataList", exampleDB.setSelect(
-                        (String) session.getAttribute("select"), null));
+                request.setAttribute("simpleDBDataList", exampleDB
+                        .setSelect((String) session
+                                .getAttribute("select"), null));
             }
-            
+
         } else if (request.getParameter("Action").equals("select")
                 && request.getParameter("select") != null) {
 
@@ -179,7 +182,8 @@ taglib
 
             //System.out.println("hi: " + currentToken);
 
-            simpleDBDataList = exampleDB.setExcecute(select, null, currentToken);
+            simpleDBDataList =
+                    exampleDB.setExcecute(select, null, currentToken);
 
             domainName = simpleDBDataList.getDomainName();
 
@@ -266,7 +270,7 @@ taglib
             //System.out.println(select);
         } else if (request.getParameter("Action").equals("export")
                 && request.getParameter("select") != null) {
-            
+
             select =
                     ExtendedFunctions.trim(request
                             .getParameter("select"));
@@ -285,10 +289,9 @@ taglib
             fileName += timeStamped + ".sql";
             SaveAsFile.exportSelect(select, path, fileName,
                     accessKeyId, secretAccessKey);
-            
 %><jsp:forward page="listFiles.jsp" />
 <%
-        }
+    }
     } else if (request.getParameter("importFile") != null) {
 
         //System.out.println("importing");
@@ -303,7 +306,7 @@ taglib
                 secretAccessKey);
 
     }
-    
+
     // we should of processed an action above, if not then make on based
     // on the current domainName
     String restSql = "select * from " + domainName;
@@ -313,7 +316,8 @@ taglib
         request.setAttribute("simpleDBDataList", simpleDBDataList);
     }
 
-    simpleDBDataList = (SimpleDBDataList) request.getAttribute("simpleDBDataList");
+    simpleDBDataList =
+            (SimpleDBDataList) request.getAttribute("simpleDBDataList");
 
     // itemTokens is 
     HashMap<String, String> tokens =
@@ -356,10 +360,11 @@ taglib
     type="hidden" />
 
 <fieldset style="border: 2px ridge navy;"><legend>&nbsp;Showing
-<%=simpleDBDataList.size()%> item(s) in <b>${domain}</b> follow.&nbsp; Response
-time: <%=simpleDBDataList.getResponseTime()%>[ms] - BoxUsage: <%=simpleDBDataList.getBoxUsage()%>
-- <%=simpleDBDataList.getBoxUsage() == null ? 0 : Math.round(Float
-                    .parseFloat(simpleDBDataList.getBoxUsage()) * 100000000f) / 100f%>&micro;$</legend>
+<%=simpleDBDataList.size()%> item(s) in <b>${domain}</b> follow.&nbsp;
+Response time: <%=simpleDBDataList.getResponseTime()%>[ms] - BoxUsage: <%=simpleDBDataList.getBoxUsage()%>
+- <%=simpleDBDataList.getBoxUsage() == null ? 0
+                    : Math.round(Float.parseFloat(simpleDBDataList
+                            .getBoxUsage()) * 100000000f) / 100f%>&micro;$</legend>
 
 <%
     if (domainsSize > 0) {
@@ -511,14 +516,19 @@ document.getElementById("fallbackSelect").value="<%=restSql%>";
             var="item"
             varStatus="status">
             <tr>
-                <td><span class="jive-paginator">[<a
-                    href="?Action=deleteItem"
-                    title="Click to delete item"
-                    onclick="popDeleteItem('Delete item ${fn:escUniJs(item)}', 'Are you very sure?', '${fn:escUniJs(item)}', '${fn:escUniJs(domain)}');return false;">x</a>]
-                [<a
+                <td><span class="jive-paginator"><a
                     href="?Action=createItem"
                     title="Click to add key value pair"
-                    onclick="popCreateItem('${fn:escUniJs(item)}', '${fn:escUniJs(domain)}');return false;">+</a>]</span>
+                    onclick="popCreateItem('${fn:escUniJs(item)}', '${fn:escUniJs(domain)}');return false;"><img
+                    border="0"
+                    align="absbottom"
+                    src="/mysimpledb/assets/img/add16.gif" /></a> <a
+                    href="?Action=deleteItem"
+                    title="Click to delete item"
+                    onclick="popDeleteItem('Delete item ${fn:escUniJs(item)}', 'Are you very sure?', '${fn:escUniJs(item)}', '${fn:escUniJs(domain)}');return false;"><img
+                    border="0"
+                    align="absbottom"
+                    src="/mysimpledb/assets/img/delete16.gif" /></a></span>
                 ${item} <!--  
             
             Loop through attributes (entry)
@@ -530,10 +540,13 @@ document.getElementById("fallbackSelect").value="<%=restSql%>";
                     <td><c:forEach
                         var="value"
                         items="${item[attribute]}">
-                        <span class="jive-paginator">[<a
+                        <span class="jive-paginator"><a
                             href="?Action=deleteValueKey"
                             title="Click to delete key value pair (${value.class}: ${fn:decodeEscUniJs(value)})"
-                            onclick="popDeleteValueKey('Are you sure?', 'Delete attribute ${fn:escUniJs(attribute)}?', '${fn:escUniJs(attribute)}', '${fn:decodeEscUniJs(value)}', '${fn:escUniJs(item)}', '${domain}');return false;">x</a>]</span>
+                            onclick="popDeleteValueKey('Are you sure?', 'Delete attribute ${fn:escUniJs(attribute)}?', '${fn:escUniJs(attribute)}', '${fn:decodeEscUniJs(value)}', '${fn:escUniJs(item)}', '${domain}');return false;"><img
+                            border="0"
+                            align="absbottom"
+                            src="/mysimpledb/assets/img/delete16.gif" /></a></span>
                         <!--   ${attribute}: -->${value}
                         </c:forEach></td>
                 </c:forEach>

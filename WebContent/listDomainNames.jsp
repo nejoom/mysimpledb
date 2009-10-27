@@ -49,28 +49,31 @@ taglib
                     "SecretAccessKey");
 
     SimpleDBImplementationAsync exampleDB =
-            new SimpleDBImplementationAsync(accessKeyId, secretAccessKey);
+            new SimpleDBImplementationAsync(accessKeyId,
+                    secretAccessKey);
 
     if (request.getParameter("Action") != null) {
         if (request.getParameter("Action").equals("createDomain")
                 && request.getParameter("domainName") != null) {
-            
+
             String domainName = request.getParameter("domainName");
             exampleDB.createDomain(domainName);
-            
-        } else if (request.getParameter("Action").equals("deleteDomain")
+
+        } else if (request.getParameter("Action")
+                .equals("deleteDomain")
                 && request.getParameter("deleteDomain") != null) {
-            
+
             String domainName = request.getParameter("deleteDomain");
             exampleDB.deleteDomain(domainName);
-            
+
         } else if (request.getParameter("Action").equals("select")
                 && request.getParameter("select") != null) {
-    
+
             String select =
-                    ExtendedFunctions.trim(request.getParameter("select"));    
+                    ExtendedFunctions.trim(request
+                            .getParameter("select"));
             exampleDB.setExcecute(select, null);
-    
+
         }
     }
 
@@ -84,14 +87,15 @@ taglib
     //map next/ previous token pairs
     String currentToken = request.getParameter("domainNextToken");
     HashMap<String, String> tokens =
-            (HashMap<String, String>) session.getAttribute("domainTokens");
-    
+            (HashMap<String, String>) session
+                    .getAttribute("domainTokens");
+
     if (tokens == null)
         tokens = new HashMap<String, String>();
     if (currentToken == null) {
         currentToken = "";
     }
-    
+
     tokens.put(sdbList.getNextToken(), currentToken);
     session.setAttribute("domainTokens", tokens);
 
@@ -99,7 +103,6 @@ taglib
     request.setAttribute("nextToken", sdbList.getNextToken());
     request.setAttribute("previousToken", tokens.get(currentToken));
     request.setAttribute("currentToken", currentToken);
-    
 %>
 <fieldset style="border: 2px ridge navy;"><legend><b>&nbsp;Domains:</b></legend>
 <div align="right"><span class="jive-paginator">[ <a
@@ -129,11 +132,13 @@ taglib
         items="${domainList}"
         var="domain"
         varStatus="status">
-        <li><span class="jive-paginator">[<a
+        <li><span class="jive-paginator"><a
             href="?Action=deleteDomain"
             title="Click to delete domain"
-            onclick="popDeleteDomain('Delete Domain: ${domain}', 'Are you very sure?', '${domain}');return false;">del</a>]
-        <a
+            onclick="popDeleteDomain('Delete Domain: ${domain}', 'Are you very sure?', '${domain}');return false;"><img
+            border="0"
+            align="bottom"
+            src="/mysimpledb/assets/img/delete16.gif" /></a><a
             href="?Action=exploreDomain&domainName=${domain}"
             onmouseout="_hide();"
             onmouseover="_show(event,'id${status.count}');"
