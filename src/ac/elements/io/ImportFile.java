@@ -45,7 +45,6 @@ import java.io.InputStreamReader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import ac.elements.concurrency.StatementAsync;
 import ac.elements.parser.SimpleDBParser;
 import ac.elements.sdb.SimpleDBImplementationAsync;
 
