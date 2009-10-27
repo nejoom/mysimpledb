@@ -48,8 +48,8 @@ import ac.elements.parser.SimpleDBParser;
 
 public class ThreadPoolExecutorFactory {
 
-    private static ConcurrentHashMap<String, ThreadPoolExecutor> threadPoolExecutors =
-            new ConcurrentHashMap<String, ThreadPoolExecutor>();
+    private static ConcurrentHashMap<String, CustomThreadPoolExecuter> threadPoolExecutors =
+            new ConcurrentHashMap<String, CustomThreadPoolExecuter>();
 
     /** The Constant log. */
     private final static Log log =
@@ -57,15 +57,17 @@ public class ThreadPoolExecutorFactory {
 
     private static final int CAPACITY = 1000;
 
-    private static ThreadPoolExecutor getExcecutor(String key, int N_THREADS) {
-        ThreadPoolExecutor executor = threadPoolExecutors.get(key);
+    private static CustomThreadPoolExecuter getExcecutor(String key, int N_THREADS) {
+        CustomThreadPoolExecuter executor = threadPoolExecutors.get(key);
         if (executor == null) {
+            log.error("Creating thread for domain: " + key + " with N_THREADS "
+                    + N_THREADS);
             return createExecutor(key, N_THREADS);
         }
         return executor;
     }
 
-    private static ThreadPoolExecutor createExecutor(String key, int N_THREADS) {
+    private static CustomThreadPoolExecuter createExecutor(String key, int N_THREADS) {
 
         LinkedBlockingQueue<Runnable> lbq =
                 new LinkedBlockingQueue<Runnable>(CAPACITY);
@@ -83,14 +85,14 @@ public class ThreadPoolExecutorFactory {
          * the Source (eg. TCP layer/ OS layer), and eventually to the client
          * enabling more graceful degradation under load.
          */
-        ThreadPoolExecutor executor =
-                new ThreadPoolExecutor(N_THREADS, N_THREADS, 0L,
+        CustomThreadPoolExecuter executor =
+                new CustomThreadPoolExecuter(N_THREADS, N_THREADS, 0L,
                         TimeUnit.MILLISECONDS, lbq);
         threadPoolExecutors.put(key, executor);
         return executor;
     }
 
-    public static ThreadPoolExecutor getExecuter(String sql) {
+    public static CustomThreadPoolExecuter getExecuter(String sql) {
         // parse the sql to set up the key which maps to the correct executer
 
         // /*
@@ -109,7 +111,7 @@ public class ThreadPoolExecutorFactory {
         String domain = SimpleDBParser.getDomain(sql);
         String key = domain;
 
-//        log.error("Creating thread for domain: " + key);
+        // log.error("Creating thread for domain: " + key);
 
         // there are x for thread pools for each domain, figure out which one to
         // get
@@ -121,7 +123,6 @@ public class ThreadPoolExecutorFactory {
                 // concurrent threads, this can actually be more thread, but 2
                 // is optimal for a batch of 25 items being inserted
                 key = key + ".batchput";
-                log.error("Creating thread for domain: " + key);
                 return getExcecutor(key, 2);
             } else {
 
@@ -129,28 +130,24 @@ public class ThreadPoolExecutorFactory {
                 // with 100
                 // threads
                 key = key + ".put";
-                log.error("Creating thread for domain: " + key);
                 return getExcecutor(key, 60);
             }
         } else if (SimpleDBParser.getOperation(sql).equals("CREATE")) {
 
             // is it a create operation
             key = key + ".create";
-            log.error("Creating thread for domain: " + key);
             return getExcecutor(key, 2);
 
         } else if (SimpleDBParser.getOperation(sql).equals("SELECT")) {
 
             // is it a create operation
             key = key + ".select";
-            log.error("Creating thread for domain: " + key);
             return getExcecutor(key, 80);
 
         } else if (SimpleDBParser.getOperation(sql).equals("DELETE")) {
 
             // is it a create operation
             key = key + ".select";
-            log.error("Creating thread for domain: " + key);
             return getExcecutor(key, 60);
 
         } else {
@@ -162,7 +159,6 @@ public class ThreadPoolExecutorFactory {
             // with 100
             // threads
             key = key + ".other";
-            log.error("Creating thread for domain: " + key);
             return getExcecutor(key, 50);
         }
         // else {

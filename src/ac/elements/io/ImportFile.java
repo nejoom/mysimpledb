@@ -47,6 +47,7 @@ import org.apache.commons.logging.LogFactory;
 
 import ac.elements.concurrency.StatementAsync;
 import ac.elements.parser.SimpleDBParser;
+import ac.elements.sdb.SimpleDBImplementationAsync;
 
 public class ImportFile {
 
@@ -92,8 +93,8 @@ public class ImportFile {
 
                     // Excecute the invoke statement in thread framework
                     if (log.isDebugEnabled())
-                        log.trace("Running " + sql);
-                    StatementAsync.SINGLETON.setStaticExecuteAsync(sql.trim());
+                        log.debug("Running " + sql);
+                    SimpleDBImplementationAsync.setStaticExecute(sql.trim());
 
                     // sdbc.setExcecute(sql.trim(), null);
                     // System.out.println("importing: " + sql.trim());

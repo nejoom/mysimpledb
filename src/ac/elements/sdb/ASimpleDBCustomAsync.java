@@ -346,7 +346,7 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
         log.error("Parsing itemSyntax: " + itemSyntax);
         ArrayList<Object> itemNames = new ArrayList<Object>();
         ArrayList<Future<String>> futures = new ArrayList<Future<String>>();
-        
+
         StringBuffer itemBuffer = new StringBuffer(itemSyntax);
         int pointer = 0;
         // strip things to contain only item names
@@ -428,9 +428,7 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
         }
 
         // async
-        Future<String> future =
-                AsyncOperation.deleteAttributes(
-                        domain, sdbMap);
+        Future<String> future = AsyncOperation.deleteAttributes(domain, sdbMap);
         futures.add(future);
 
         // return a select count(*) from domain formatted list
@@ -484,15 +482,15 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
     @SuppressWarnings("unchecked")
     public SimpleDBDataList setInsert(String insertExpression) {
         long t0 = System.currentTimeMillis();
-        log.trace("Entering insert");
+        if (log.isDebugEnabled())
+            log.debug("Entering insert");
         SimpleDBDataList dataList = extractSimpleDBList(insertExpression);
         ArrayList<Future<String>> futures = new ArrayList<Future<String>>();
 
         // async
-        Future<String> future =
-                AsyncOperation.batchPutAttributes(dataList);
+        Future<String> future = AsyncOperation.batchPutAttributes(dataList);
         futures.add(future);
-        
+
         // return a select count(*) from domain formatted list
         SimpleDBDataList list = new SimpleDBDataList();
         list.setDomainName(dataList.getDomainName());
@@ -654,10 +652,8 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
         ArrayList<Future<String>> futures = new ArrayList<Future<String>>();
 
         // async
-        Future<String> future =
-                AsyncOperation.batchPutAttributes(dataList);
+        Future<String> future = AsyncOperation.batchPutAttributes(dataList);
         futures.add(future);
-
 
         // return a select count(*) from domain formatted list
         SimpleDBDataList list = new SimpleDBDataList();
@@ -885,7 +881,6 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
         Future<String> future =
                 AsyncOperation.batchPutReplaceAttributes(dataList);
         futures.add(future);
-
 
         // return a select count(*) from domain formatted list
         SimpleDBDataList list = new SimpleDBDataList();

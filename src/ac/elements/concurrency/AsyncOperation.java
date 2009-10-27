@@ -74,7 +74,7 @@ public class AsyncOperation {
 
     private final static SimpleDBImplementation sdbimpl =
             new SimpleDBImplementation(staticAccessKeyId, staticSecretAccessKey);
-    
+
     private static ThreadPoolExecutor getStaticExcecutor(String key,
             int N_THREADS) {
         ThreadPoolExecutor executor = threadPoolExecutors.get(key);
@@ -115,7 +115,6 @@ public class AsyncOperation {
 
         String key = domain;
         key = key + ".deleteAttributes";
-        log.error("Creating thread for domain: " + key);
 
         ThreadPoolExecutor executor =
                 AsyncOperation.getStaticExcecutor(key, 50);
@@ -136,7 +135,6 @@ public class AsyncOperation {
 
         String key = domain;
         key = key + ".deleteAttributes";
-        log.error("Creating thread for domain: " + key);
 
         ThreadPoolExecutor executor =
                 AsyncOperation.getStaticExcecutor(key, 50);
@@ -154,10 +152,13 @@ public class AsyncOperation {
     // todo async
     public static Future<String> batchPutAttributes(
             final SimpleDBDataList dataList) {
+
+        if (log.isDebugEnabled())
+            log.debug("Entering batchPutAttributes");
+
         String domain = dataList.getDomainName();
         String key = domain;
         key = key + ".batchPutAttributes";
-        log.error("Creating thread for domain: " + key);
 
         ThreadPoolExecutor executor = AsyncOperation.getStaticExcecutor(key, 2);
 
@@ -178,7 +179,6 @@ public class AsyncOperation {
         String domain = dataList.getDomainName();
         String key = domain;
         key = key + ".batchPutAttributes";
-        log.error("Creating thread for domain: " + key);
 
         ThreadPoolExecutor executor = AsyncOperation.getStaticExcecutor(key, 2);
 
@@ -198,7 +198,6 @@ public class AsyncOperation {
 
         String key = domain;
         key = key + ".deleteAttributes";
-        log.error("Creating thread for domain: " + key);
 
         ThreadPoolExecutor executor =
                 AsyncOperation.getStaticExcecutor(key, 50);
@@ -219,7 +218,6 @@ public class AsyncOperation {
 
         String key = SimpleDBParser.getDomain(selectExpression);
         key = key + ".getSelect";
-        log.error("Creating thread for domain: " + key);
 
         ThreadPoolExecutor executor =
                 AsyncOperation.getStaticExcecutor(key, 100);

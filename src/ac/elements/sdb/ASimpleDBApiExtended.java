@@ -378,21 +378,23 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
         // make sure spaces are ok and we have no enters
         sql = ExtendedFunctions.trimSentence(sql);
 
-        log.trace("Got sql expression: " + sql);
+        if (log.isDebugEnabled())
+            log.debug("Got sql expression: " + sql);
 
         if (sql.toLowerCase().indexOf("replace ") == 0)
             sql = sql.replace("replace ", "insert ");
 
         // basic check if expression has good syntax
-        if (sql.trim().toLowerCase().indexOf("insert") != 0
-                && sql.trim().toLowerCase().indexOf("values") != 0) {
+        if (sql.trim().toLowerCase().indexOf("insert ") != 0
+                && sql.trim().toLowerCase().indexOf(" values ") != 0) {
             throw new RuntimeException("Illegal sql expression: " + sql);
         }
 
-        String parseString = sql.substring("insert into ".length());
         String domain = SimpleDBParser.getDomain(sql);
+        if (log.isDebugEnabled())
+            log.debug("Found domain: " + domain);
 
-        log.trace("Found domain: " + domain);
+        String parseString = sql.substring("insert into ".length());
 
         parseString = parseString.substring(domain.length()).trim();
 
@@ -402,6 +404,8 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
                         1,
                         SimpleDBParser.indexOfIgnoreCaseRespectQuotes(1,
                                 parseString, ")", '`')).trim();
+        if (log.isDebugEnabled())
+            log.debug("Found keySyntax: " + keySyntax);
 
         Object[] keys = SimpleDBParser.parseList(keySyntax, "`");
 
@@ -409,19 +413,32 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
         if (keys != null && keys.length > 0 && keys[0].equals("itemName()")) {
             useItemNameColumn = true;
         }
+        if (log.isDebugEnabled())
+            log.debug("Found useItemNameColumn: " + useItemNameColumn);
+
         parseString = parseString.substring(keySyntax.length() + 2).trim();
+        if (log.isDebugEnabled())
+            log.debug("Found parseString: " + parseString);
+
         Object[] items;
         ArrayList<Object> itemNames = new ArrayList<Object>();
         SimpleDBDataList dataList = new SimpleDBDataList();
 
         // if itemName is not a defined column, then use standard syntax
         if (!useItemNameColumn) {
+
+            if (log.isDebugEnabled()) {
+                log.debug("Debug !useItemNameColum");
+            }
             String itemSyntax =
                     parseString.substring(
                             parseString.toLowerCase().indexOf("values")
                                     + "values".length()).trim();
 
-            log.error("Parsing itemSyntax: " + itemSyntax);
+            if (log.isDebugEnabled()) {
+                log.debug("Parsing itemSyntax: " + itemSyntax);
+            }
+
             StringBuffer itemBuffer = new StringBuffer(itemSyntax);
             int pointer = 0;
             // strip things to contain only item names
@@ -437,7 +454,9 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
                 }
                 pointer++;
             }
-            log.error("itemBuffer: " + itemBuffer.toString());
+            if (log.isDebugEnabled()) {
+                log.debug("Parsing itemBuffer: " + itemBuffer);
+            }
             items = SimpleDBParser.parseList(itemBuffer.toString(), "'\"");
 
             if (items.length == 0) {
@@ -454,9 +473,7 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
                     itemNames.add(itemName);
                 }
             }
-            log.info("Parsed itemSyntax: " + itemNames);
 
-            log.trace("Parsing dataSyntax: " + itemSyntax);
             dataList.setDomainName(domain);
             StringBuffer dataBuffer = new StringBuffer(itemSyntax);
             pointer = 0;
@@ -507,12 +524,20 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
                         }
 
                     } else {
+
                         //  Search for element in list
                         int index =
-                                Collections.binarySearch(dataList
-                                        .getItemNames(), itemNames.get(i));
-                        SimpleDBMap sdbMap = dataList.get(index);
-                        if (sdbMap.getItemName().equals(itemNames.get(i))) {
+                                dataList.getItemNames().indexOf(
+                                        itemNames.get(i));
+
+                        //  Search for element in list
+                        // int index =
+                        // Collections.binarySearch(dataList
+                        // .getItemNames(), itemNames.get(i));
+
+                        if (index != -1) {
+
+                            SimpleDBMap sdbMap = dataList.get(index);
                             for (int j = 0; j < values.length; j++) {
                                 sdbMap.put(keys[j], values[j]);
                             }
@@ -534,6 +559,9 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
             }
         } else {
 
+            if (log.isDebugEnabled()) {
+                log.debug("Debug useItemNameColum");
+            }
             // first key is itemName(), assume first column is itemName() unique
             // key
 
@@ -542,8 +570,9 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
                             parseString.toLowerCase().indexOf("values")
                                     + "values".length()).trim();
 
-            if (log.isDebugEnabled())
-                log.trace("Parsing dataSyntax: " + itemSyntax);
+            if (log.isDebugEnabled()) {
+                log.debug("Parsing itemSyntax: " + itemSyntax);
+            }
 
             dataList.setDomainName(domain);
             StringBuffer dataBuffer = new StringBuffer(itemSyntax);
@@ -565,12 +594,21 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
                 }
             }
 
+            if (log.isDebugEnabled()) {
+                log.debug("Parsing dataBuffer: " + dataBuffer);
+            }
+
             // replace ( and ) with | and then parse like its a | delimited file
             // todo make beter
             String data =
                     dataBuffer.toString().replace('(', '|').replace(')', '|');
             Object[] valueSequence = SimpleDBParser.parseList(data, "|");
 
+            if (log.isDebugEnabled()) {
+                log.debug("1. Parsing valueSequence "
+                        + "(array of the list of values): "
+                        + valueSequence.length);
+            }
             if (valueSequence.length == 0) {
                 throw new RuntimeException("Illegal sql expression in values: "
                         + sql);
@@ -579,11 +617,27 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
                     String valueString = (String) valueSequence[i];
                     Object[] values =
                             SimpleDBParser.parseList(valueString, "'\"");
+
+                    if (log.isDebugEnabled()) {
+                        log.debug("1. Parsing i, valueString: " + i + ", "
+                                + valueString);
+                        log.debug("1. Got x values from valueString: "
+                                + values.length);
+                        log.debug("1. values[0] is itemName(): " + values[0]);
+                        log.debug("1. dataList has itemName(): "
+                                + dataList.getItemNames());
+                    }
+
                     if (!dataList.getItemNames().contains(values[0])) {
 
+                        if (log.isDebugEnabled())
+                            log.debug("1. values[0] not yet in dataList");
                         if (values[0].equals("null")) {
                             // generate random UUIDs
                             values[0] = UUID.randomUUID().toString();
+                            if (log.isDebugEnabled()) {
+                                log.debug("1. uuid for: " + values[0]);
+                            }
                         }
                         itemNames.add(values[0]);
                         SimpleDBMap sdbMap = new SimpleDBMap();
@@ -593,32 +647,45 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
                         }
                         dataList.add(sdbMap);
                         if (log.isDebugEnabled()) {
-                            log.trace("TODO: in method getItemName? " + sdbMap);
-                            log.trace(dataList.getItemNames());
-                            log.trace(dataList.get(dataList.size() - 1)
+                            log.debug("1. TODO: in method getItemName? "
+                                    + sdbMap);
+                            log.debug(dataList.getItemNames());
+                            log.debug(dataList.get(dataList.size() - 1)
                                     .toStringF());
                         }
                     } else {
+
                         //  Search for element in list
-                        int index =
-                                Collections.binarySearch(dataList
-                                        .getItemNames(), itemNames.get(i));
-                        SimpleDBMap sdbMap = dataList.get(index);
-                        if (sdbMap.getItemName().equals(values[0])) {
+                        int index = dataList.getItemNames().indexOf(values[0]);
+
+                        if (log.isDebugEnabled()) {
+                            log.debug("1. values[0] already in dataList: "
+                                    + values[0]);
+                            log.debug("1. dataList has itemName(): "
+                                    + dataList.getItemNames());
+
+                            log.debug("1. Found index: " + index);
+                        }
+
+                        if (index != -1) {
+
+                            SimpleDBMap sdbMap = dataList.get(index);
                             for (int j = 1; j < values.length; j++) {
                                 sdbMap.put(keys[j], values[j]);
                             }
                             if (log.isDebugEnabled()) {
                                 log
-                                        .trace("TODO: improve on method getItemName? "
+                                        .debug("1 TODO: improve on method getItemName? "
                                                 + sdbMap);
-                                log.trace(dataList.getItemNames());
-                                log.trace(dataList.get(index).toStringF());
+                                log.debug(dataList.getItemNames());
+                                log.debug(dataList.get(index).toStringF());
                             }
 
                         } else {
                             log.error("TODO: improve on method "
                                     + "getItemName not found");
+                            log.error("1. values[0] already in dataList: "
+                                    + values[0]);
                             log.error(dataList.getItemNames());
                         }
                     }

@@ -47,12 +47,12 @@ import org.apache.commons.logging.LogFactory;
 /**
  * http://www.devx.com/Java/Article/41377/1954: CustomThreadPoolExecutor.
  */
-public class ThreadPoolExecutor extends java.util.concurrent.ThreadPoolExecutor {
+public class CustomThreadPoolExecuter extends java.util.concurrent.ThreadPoolExecutor {
 
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(ThreadPoolExecutor.class);
-    
-    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
+    private final static Log log = LogFactory.getLog(CustomThreadPoolExecuter.class);
+
+    public CustomThreadPoolExecuter(int corePoolSize, int maximumPoolSize,
             long keepAliveTime, TimeUnit unit,
             BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory,
             RejectedExecutionHandler handler) {
@@ -60,14 +60,14 @@ public class ThreadPoolExecutor extends java.util.concurrent.ThreadPoolExecutor 
                 threadFactory, handler);
     }
 
-    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
+    public CustomThreadPoolExecuter(int corePoolSize, int maximumPoolSize,
             long keepAliveTime, TimeUnit unit,
             BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
                 threadFactory);
     }
 
-    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
+    public CustomThreadPoolExecuter(int corePoolSize, int maximumPoolSize,
             long keepAliveTime, TimeUnit unit,
             BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
@@ -75,34 +75,34 @@ public class ThreadPoolExecutor extends java.util.concurrent.ThreadPoolExecutor 
 
     }
 
-    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
+    public CustomThreadPoolExecuter(int corePoolSize, int maximumPoolSize,
             long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
     }
 
     @Override
     public void beforeExecute(Thread t, Runnable r) {
-      super.beforeExecute(t, r);
-      log.debug("After calling beforeExecute() method for a thread "
-          + r);
+        super.beforeExecute(t, r);
+        if (log.isDebugEnabled())
+            log.debug("After calling beforeExecute() method for a thread " + r);
     }
 
     @Override
     public void afterExecute(Runnable r, Throwable t) {
-      super.afterExecute(r, t);
-      log.debug("After calling afterExecute() method for a thread "
-          + r);
+        super.afterExecute(r, t);
+        if (log.isDebugEnabled())
+            log.debug("After calling afterExecute() method for a thread " + r);
     }
 
     @Override
     public void terminated() {
-      super.terminated();
-      log.debug("Threadpool terminated");
+        super.terminated();
+        if (log.isDebugEnabled())
+            log.debug("Threadpool terminated");
     }
-    
+
     /*
      * http://gafter.blogspot.com/2006/11/thread-pool-puzzler.html
-     * 
      */
     @SuppressWarnings("unchecked")
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
