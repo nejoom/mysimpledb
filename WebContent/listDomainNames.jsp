@@ -137,7 +137,7 @@ taglib
             title="Click to delete domain"
             onclick="popDeleteDomain('Delete Domain: ${domain}', 'Are you very sure?', '${domain}');return false;"><img
             border="0"
-            align="bottom"
+            align="absbottom"
             src="/mysimpledb/assets/img/delete16.gif" /></a><a
             href="?Action=exploreDomain&domainName=${domain}"
             onmouseout="_hide();"
