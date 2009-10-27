@@ -50,8 +50,8 @@ import ac.elements.sdb.collection.SimpleDBDataList;
 import ac.elements.sdb.collection.SimpleDBMap;
 
 /**
- * The Class ASimpleDBApi is an abstract class implementing the documented
- * Amazon Simple DB Api ISimpleDBApi.
+ * The Class ASimpleDBCustom is an abstract class implementing the
+ * ISimpleDBCustom interface.
  */
 public abstract class ASimpleDBCustom extends ASimpleDBApiExtended implements
         ISimpleDBCustom {

@@ -54,7 +54,8 @@ import ac.elements.sdb.collection.SimpleDBDataList;
 import ac.elements.sdb.collection.SimpleDBMap;
 
 /**
- * The Class SimpleDBCollection.
+ * The Class ASimpleDBApiExtended extends amazon's documented api with useful
+ * utility operations.
  */
 public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
 

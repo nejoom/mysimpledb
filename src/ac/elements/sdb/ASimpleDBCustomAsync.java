@@ -52,11 +52,11 @@ import ac.elements.sdb.collection.SimpleDBDataList;
 import ac.elements.sdb.collection.SimpleDBMap;
 
 /**
- * The Class ASimpleDBApi is an abstract class implementing the documented
- * Amazon Simple DB Api ISimpleDBApi.
+ * The Class ASimpleDBCustom is an abstract class implementing the
+ * ISimpleDBCustom interface asynchronously.
  */
 public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
-        implements ISimpleDBCustomAsync {
+        implements ISimpleDBCustom {
 
     /** The Constant log. */
     private final static Log log =
