@@ -18,10 +18,12 @@ solid_state_sessions/track.jsp
 solid_state_sessions/track2.jsp
 testDb.jsp
 assets/css/default.css
+assets/img/add16.gif
 assets/img/download16.gif
 assets/img/delete16.gif
 assets/img/import16.gif
 assets/img/indicator.gif
+assets/img/mysimpledb.ico
 assets/js/tooltip.css
 assets/js/tooltip.js
 assets/js/tooltip.png
