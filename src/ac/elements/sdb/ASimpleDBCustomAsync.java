@@ -574,8 +574,10 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
         do {
             sdbList = setSelect(selectExpression, nextToken);
             size += sdbList.size();
-            if (size == 0)
-                return null;
+            if (size == 0) {
+                SimpleDBDataList list = new SimpleDBDataList();
+                list.setDomainName(domain);
+            }
             for (int i = 0; i < sdbList.size(); i++) {
                 Object itemName = sdbList.get(i).getItemName();
                 itemNames.add(SimpleDBConverter.encodeValue(itemName));

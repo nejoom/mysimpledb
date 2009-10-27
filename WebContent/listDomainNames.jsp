@@ -3,7 +3,7 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     errorPage="error.jsp"
-    import="ac.elements.sdb.SimpleDBImplementation,ac.elements.sdb.collection.SimpleDBDataList,ac.elements.parser.ExtendedFunctions,ac.elements.conf.Configuration,java.util.HashMap"%><%--
+    import="ac.elements.sdb.SimpleDBImplementationAsync,ac.elements.sdb.collection.SimpleDBDataList,ac.elements.parser.ExtendedFunctions,ac.elements.conf.Configuration,java.util.HashMap"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
  
@@ -48,8 +48,8 @@ taglib
             Configuration.getInstance().getValue("aws",
                     "SecretAccessKey");
 
-    SimpleDBImplementation exampleDB =
-            new SimpleDBImplementation(accessKeyId, secretAccessKey);
+    SimpleDBImplementationAsync exampleDB =
+            new SimpleDBImplementationAsync(accessKeyId, secretAccessKey);
 
     if (request.getParameter("Action") != null) {
         if (request.getParameter("Action").equals("createDomain")

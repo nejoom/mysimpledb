@@ -3,7 +3,7 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     errorPage="signature.jsp"
-    import="ac.elements.sdb.SimpleDBImplementation,ac.elements.sdb.collection.SimpleDBDataList,ac.elements.sdb.collection.SimpleDBMap,ac.elements.parser.ExtendedFunctions,ac.elements.conf.Configuration,ac.elements.io.SaveAsFile,ac.elements.io.ImportFile,ac.elements.parser.SimpleDBParser,java.text.SimpleDateFormat,java.util.HashMap,java.util.Set,java.util.TreeSet,java.util.Date"%><%--
+    import="ac.elements.sdb.SimpleDBImplementationAsync,ac.elements.sdb.collection.SimpleDBDataList,ac.elements.sdb.collection.SimpleDBMap,ac.elements.parser.ExtendedFunctions,ac.elements.conf.Configuration,ac.elements.io.SaveAsFile,ac.elements.io.ImportFile,ac.elements.parser.SimpleDBParser,java.text.SimpleDateFormat,java.util.HashMap,java.util.Set,java.util.TreeSet,java.util.Date"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
  
@@ -50,8 +50,8 @@ taglib
 
     String SEPARATOR = System.getProperty("file.separator");
 
-    SimpleDBImplementation exampleDB =
-            new SimpleDBImplementation(accessKeyId, secretAccessKey);
+    SimpleDBImplementationAsync exampleDB =
+            new SimpleDBImplementationAsync(accessKeyId, secretAccessKey);
 
     String itemName = null;
     SimpleDBMap map = null;
