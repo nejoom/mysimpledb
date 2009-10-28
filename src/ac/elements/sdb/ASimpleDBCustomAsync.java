@@ -48,6 +48,7 @@ import ac.elements.concurrency.AsyncOperation;
 import ac.elements.conversion.TypeConverter;
 import ac.elements.parser.SimpleDBConverter;
 import ac.elements.parser.SimpleDBParser;
+import ac.elements.parser.ExtendedFunctions;
 import ac.elements.sdb.collection.SimpleDBDataList;
 import ac.elements.sdb.collection.SimpleDBMap;
 
