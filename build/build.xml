@@ -152,10 +152,14 @@ then find replace "./"
   <target name="make-web-archive"
           description="make web archive file"
           depends="make-jar, setup-war">
+    <delete file="mysimpledb/mysimpledb.war"/>
     <jar jarfile="mysimpledb.war"
          includesfile="wared.txt"
          basedir="mysimpledb" />
     <copy file="mysimpledb.war" todir="mysimpledb" />
+    <jar jarfile="mysimpledb.war"
+         includesfile="wared.txt"
+         basedir="mysimpledb" />
   </target>
 
 
