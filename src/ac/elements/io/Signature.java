@@ -75,8 +75,6 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
-
 /**
  * This class defines common routines for generating authentication signatures
  * for AWS requests.
