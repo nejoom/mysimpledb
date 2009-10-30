@@ -41,8 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.parser.SimpleDBParser;
 
@@ -52,12 +51,13 @@ public class ThreadPoolExecutorFactory {
             new ConcurrentHashMap<String, CustomThreadPoolExecuter>();
 
     /** The Constant log. */
-    private final static Log log =
-            LogFactory.getLog(ThreadPoolExecutorFactory.class);
+    private final static Logger log =
+            Logger.getLogger(ThreadPoolExecutorFactory.class);
 
     private static final int CAPACITY = 1000;
 
-    private static CustomThreadPoolExecuter getExcecutor(String key, int N_THREADS) {
+    private static CustomThreadPoolExecuter getExcecutor(String key,
+            int N_THREADS) {
         CustomThreadPoolExecuter executor = threadPoolExecutors.get(key);
         if (executor == null) {
             log.error("Creating thread for domain: " + key + " with N_THREADS "
@@ -67,7 +67,8 @@ public class ThreadPoolExecutorFactory {
         return executor;
     }
 
-    private static CustomThreadPoolExecuter createExecutor(String key, int N_THREADS) {
+    private static CustomThreadPoolExecuter createExecutor(String key,
+            int N_THREADS) {
 
         LinkedBlockingQueue<Runnable> lbq =
                 new LinkedBlockingQueue<Runnable>(CAPACITY);

@@ -44,8 +44,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.io.Signature;
 import ac.elements.parser.SimpleDBConverter;
@@ -59,7 +58,7 @@ import ac.elements.sdb.collection.SimpleDBMap;
 public abstract class ASimpleDBApi implements ISimpleDBApi {
 
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(ASimpleDBApi.class);
+    private final static Logger log = Logger.getLogger(ASimpleDBApi.class);
 
     /**
      * The Access Key ID is associated with your AWS account. You include it in

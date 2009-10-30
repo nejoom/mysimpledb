@@ -47,8 +47,7 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.conversion.TypeConverter;
 import ac.elements.parser.ExtendedFunctions;
@@ -60,7 +59,7 @@ import ac.elements.sdb.collection.SimpleDBMap;
 
 public class SaveAsFile {
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(SaveAsFile.class);
+    private final static Logger log = Logger.getLogger(SaveAsFile.class);
 
     private static String NEWLINE = System.getProperty("line.separator");
 

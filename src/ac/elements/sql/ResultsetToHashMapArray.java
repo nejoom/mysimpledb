@@ -44,8 +44,7 @@ import java.sql.SQLWarning;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * ResultsetToHashMapArray is a static object that accepts resultSets and
@@ -63,8 +62,8 @@ import org.apache.commons.logging.LogFactory;
 public class ResultsetToHashMapArray {
 
     /** The Constant log. */
-    private final static Log logger =
-            LogFactory.getLog(ResultsetToHashMapArray.class);
+    private final static Logger logger =
+        Logger.getLogger(ResultsetToHashMapArray.class);
 
     /**
      * Get the (Linked)HashMap representation of the resultset. <br>

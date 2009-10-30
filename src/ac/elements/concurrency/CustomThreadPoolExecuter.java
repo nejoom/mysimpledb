@@ -41,16 +41,17 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * http://www.devx.com/Java/Article/41377/1954: CustomThreadPoolExecutor.
  */
-public class CustomThreadPoolExecuter extends java.util.concurrent.ThreadPoolExecutor {
+public class CustomThreadPoolExecuter extends
+        java.util.concurrent.ThreadPoolExecutor {
 
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(CustomThreadPoolExecuter.class);
+    private final static Logger log =
+            Logger.getLogger(CustomThreadPoolExecuter.class);
 
     public CustomThreadPoolExecuter(int corePoolSize, int maximumPoolSize,
             long keepAliveTime, TimeUnit unit,

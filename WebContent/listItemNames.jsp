@@ -415,7 +415,8 @@ document.getElementById("fallbackSelect").value="<%=restSql%>";
 <%
     }
 %>
-<table>
+<div id="markup">
+<table id="myTable">
     <%
         String token = "";
         String sqlAtt = SimpleDBParser.getAttributes(select);
@@ -456,11 +457,11 @@ document.getElementById("fallbackSelect").value="<%=restSql%>";
             <td>
             <%
                 if (simpleDBDataList.size() > 0) {
-            %><span class="jive-paginator"><a
+            %><%--span class="jive-paginator" --%><a
                 title="Click to sort"
                 href="?Action=exploreDomain&domainName=${domain}"
                 onclick="makeRequestSort('${domain}','<%=sqlAtt.trim()%>','<%=sqlWhere.trim()%>','<%=sqlOrder.trim()%>', '<%=sqlLimit.trim()%>');return false;">
-            itemName()</a> <%=token%></span> <%
+            itemName()</a> <%=token%><%--/span --%> <%
      } else {
  %>[empty result set, no results]<%
      }
@@ -502,11 +503,11 @@ document.getElementById("fallbackSelect").value="<%=restSql%>";
                         }
                 %>
 
-                <td><span class="jive-paginator"><a
+                <td><%--span class="jive-paginator" --%><a
                     href="?Action=exploreDomain&domainName=${domain}"
                     title="Click to sort"
                     onclick="makeRequestSort('${domain}','<%=sqlAtt.trim()%>','<%=sqlWhere.trim()%>','<%=sqlOrder.trim()%>', '<%=sqlLimit.trim()%>');return false;">
-                ${attribute}</a> <%=token%></span></td>
+                ${attribute}</a> <%=token%><%--/span --%></td>
             </c:forEach>
         </tr>
     </thead>
@@ -554,6 +555,7 @@ document.getElementById("fallbackSelect").value="<%=restSql%>";
         </c:forEach>
     </tbody>
 </table>
+</div>
 </fieldset>
 
 <!-- fieldset style="border: 2px ridge navy;"><legend>&nbsp;Construct

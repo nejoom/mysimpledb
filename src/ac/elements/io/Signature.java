@@ -72,8 +72,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * This class defines common routines for generating authentication signatures
@@ -109,7 +108,7 @@ public class Signature {
     private static final String VERSION = "2007-11-07";
 
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(Signature.class);
+    private final static Logger log = Logger.getLogger(Signature.class);
 
     /**
      * Add authentication related and version parameter and set request body

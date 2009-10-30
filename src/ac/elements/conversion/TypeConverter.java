@@ -47,8 +47,7 @@ import java.util.Locale;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -59,7 +58,8 @@ import org.apache.commons.logging.LogFactory;
 public class TypeConverter {
 
     /** The Constant log. */
-    private final static Log logger = LogFactory.getLog(TypeConverter.class);
+    private final static Logger logger =
+        Logger.getLogger(TypeConverter.class);
 
     // private static final String hexArray = "0123456789ABCDEF";
 

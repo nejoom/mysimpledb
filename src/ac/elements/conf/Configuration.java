@@ -46,8 +46,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
+
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -160,7 +160,7 @@ public class Configuration implements FileChangeListener {
          * @return true, if successful
          */
         boolean hasExpired() {
-            
+
             if (System.currentTimeMillis() > expiresOn) {
                 return true;
             } else {
@@ -192,7 +192,7 @@ public class Configuration implements FileChangeListener {
     private static final long DEFAULT_FILE_EXPIRE_TIME_MS = 15000;
 
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(Configuration.class);
+    private final static Logger log = Logger.getLogger(Configuration.class);
 
     /** The Constant SUFFIX. */
     private static final String SUFFIX = ".properties";

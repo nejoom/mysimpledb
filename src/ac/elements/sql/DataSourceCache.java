@@ -45,8 +45,7 @@ import java.util.Map;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * DataSourceCache.
@@ -59,7 +58,7 @@ public class DataSourceCache {
     private static InitialContext ctx = null;
 
     /** The Constant log. */
-    private final static Log logger = LogFactory.getLog(DataSourceCache.class);
+    private final static Logger logger = Logger.getLogger(DataSourceCache.class);
 
     /** The Constant SINGLETON. */
     public static final DataSourceCache SINGLETON = new DataSourceCache();

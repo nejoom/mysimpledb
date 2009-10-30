@@ -39,8 +39,7 @@ package ac.elements.sdb;
 
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.conf.Configuration;
 import ac.elements.parser.ExtendedFunctions;
@@ -53,8 +52,8 @@ import ac.elements.sdb.collection.SimpleDBDataList;
 public class SimpleDBImplementationAsync extends ASimpleDBCustomAsync {
 
     /** The Constant log. */
-    private final static Log log =
-            LogFactory.getLog(SimpleDBImplementationAsync.class);
+    private final static Logger log =
+        Logger.getLogger(SimpleDBImplementationAsync.class);
 
     /** The access key id. */
     private final static String staticAccessKeyId =
@@ -128,14 +127,19 @@ public class SimpleDBImplementationAsync extends ASimpleDBCustomAsync {
      */
     public SimpleDBImplementationAsync(String id, String key) {
         super(id, key);
+        log.trace("Constructed SimpleDBImplementationAsync");
     }
 
     private String parseStatement(String preparedStatement,
             ArrayList<Object> myList) {
+        log.trace("Entering parseStatement(String preparedStatement, "
+                + "ArrayList<Object> myList)");
         return preparedStatement;
     }
 
     public static SimpleDBDataList setStaticExecute(String preparedStatement) {
+
+        log.trace("Entering setStaticExecute(String preparedStatement)");
         SimpleDBDataList sdbl = staticSdbc.setExcecute(preparedStatement, null);
         return sdbl;
     }
@@ -143,11 +147,14 @@ public class SimpleDBImplementationAsync extends ASimpleDBCustomAsync {
     public SimpleDBDataList setExcecute(String preparedStatement,
             ArrayList<Object> myList) {
 
+        log.trace("Entering setExcecute(String preparedStatement, ArrayList<Object> myList)");
         return setExcecute(preparedStatement, myList, null);
     }
 
     public SimpleDBDataList setExcecute(String preparedStatement,
             ArrayList<Object> myList, String nextToken) {
+        
+        log.trace("Entering setExcecute(String preparedStatement, ArrayList<Object> myList)");
 
         long t0 = System.currentTimeMillis();
         SimpleDBDataList sdb = null;

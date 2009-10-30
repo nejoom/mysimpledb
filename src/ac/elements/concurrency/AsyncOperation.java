@@ -44,8 +44,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.conf.Configuration;
 import ac.elements.parser.SimpleDBParser;
@@ -59,8 +58,8 @@ public class AsyncOperation {
             new ConcurrentHashMap<String, ThreadPoolExecutor>();
 
     /** The Constant log. */
-    private final static Log log =
-            LogFactory.getLog(ThreadPoolExecutorFactory.class);
+    private final static Logger log =
+        Logger.getLogger(ThreadPoolExecutorFactory.class);
 
     private static final int CAPACITY = 1000;
 

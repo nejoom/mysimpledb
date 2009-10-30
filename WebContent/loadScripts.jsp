@@ -13,16 +13,33 @@
  
      http://mysimpledb.com/license.
      
-     --%><!-- Combo-handled YUI CSS files: -->
+     --%>
+<!-- Combo-handled YUI CSS files: -->
+<%--
 <link
     rel="stylesheet"
     type="text/css"
-    href="http://yui.yahooapis.com/combo?2.7.0/build/reset-fonts-grids/reset-fonts-grids.css&2.7.0/build/base/base-min.css&2.7.0/build/assets/skins/sam/skin.css">
+    href="http://yui.yahooapis.com/combo?2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css&2.8.0r4/build/base/base-min.css&2.8.0r4/build/assets/skins/sam/skin.css&2.8.0r4/build/datatable/assets/skins/sam/datatable.css">
 <!-- Combo-handled YUI JS files: -->
 <script
     type="text/javascript"
     src="http://yui.yahooapis.com/combo?2.7.0/build/utilities/utilities.js&2.7.0/build/datasource/datasource-min.js&2.7.0/build/autocomplete/autocomplete-min.js&2.7.0/build/button/button-min.js&2.7.0/build/container/container-min.js"></script>
 
+ --%>
+
+<!-- Combo-handled YUI CSS files: -->
+<link
+    rel="stylesheet"
+    type="text/css"
+    href="http://yui.yahooapis.com/combo?2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css&2.8.0r4/build/base/base-min.css&2.8.0r4/build/assets/skins/sam/skin.css&2.8.0r4/build/datatable/assets/skins/sam/datatable.css">
+<!-- Combo-handled YUI JS files: -->
+<script
+    type="text/javascript"
+    src="http://yui.yahooapis.com/combo?2.8.0r4/build/utilities/utilities.js&2.8.0r4/build/datasource/datasource-min.js&2.8.0r4/build/autocomplete/autocomplete-min.js&2.8.0r4/build/button/button-min.js&2.8.0r4/build/connection/connection_core-min.js&2.8.0r4/build/container/container-min.js&2.8.0r4/build/datatable/datatable-min.js"></script>
+<%--
+Bookmark or mail this configuration: 
+http://developer.yahoo.com/yui/articles/hosting/?autocomplete&base&button&connectioncore&containercore&datasource&datatable&element&event&reset-fonts-grids&utilities&yahoo-dom-event&MIN
+ --%>
 <%--
 <!-- Combo-handled YUI CSS files: -->
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css&2.8.0r4/build/base/base-min.css&2.8.0r4/build/assets/skins/sam/skin.css">
@@ -831,6 +848,36 @@ window.uploadButtonClick = function(){
     $C.asyncRequest('POST', 'uploadFile.jsp', uploadHandler);
 };
 
+</script>
+<script>
+YAHOO.util.Event.addListener(window, "load", function() {
+    YAHOO.example.EnhanceFromMarkup = function() {
+
+        var headers = YAHOO.util.Dom.get("myTable").tHead.rows.item(0).cells;
+
+        var myFields = new Array();
+        for (var i = 0; i < headers.length; i++) {
+          myFields[i] ={
+            //define the header key attribute
+            key:headers.item(i).innerHTML
+          }
+        }
+        
+        var myDataSource = new YAHOO.util.DataSource(YAHOO.util.Dom.get("myTable"));
+        myDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
+        myDataSource.responseSchema = {
+            fields: myFields
+        };
+
+        var myDataTable = new YAHOO.widget.DataTable("markup", myFields, myDataSource
+        );
+        
+        return {
+            oDS: myDataSource,
+            oDT: myDataTable
+        };
+    }();
+});
 </script>
 <script src="http://script.opentracker.net/?site=mysimpledb.com"></script>
 <script type="text/javascript">

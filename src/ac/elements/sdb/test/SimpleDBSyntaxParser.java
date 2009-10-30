@@ -41,8 +41,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.sdb.SimpleDBImplementation;
 import ac.elements.sdb.collection.SimpleDBDataList;
@@ -54,8 +53,8 @@ public class SimpleDBSyntaxParser extends TestCase {
 
     /** The Constant log. */
     @SuppressWarnings("unused")
-    private final static Log log =
-            LogFactory.getLog(SimpleDBSyntaxParser.class);
+    private final static Logger log =
+        Logger.getLogger(SimpleDBSyntaxParser.class);
 
     /** The example db. */
     @SuppressWarnings("unused")

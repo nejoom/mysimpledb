@@ -26,14 +26,13 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 public class DebuggableConnection implements Connection {
 
     /** The Constant log. */
-    private final static Log logger =
-            LogFactory.getLog(DebuggableConnection.class);
+    private final static Logger logger =
+            Logger.getLogger(DebuggableConnection.class);
 
     private final Connection connection; // connection being proxied for.
 

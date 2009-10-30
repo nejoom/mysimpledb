@@ -35,8 +35,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * PreparedStatements have no way to retrieve the statement that was executed on
@@ -126,8 +125,8 @@ public class DebuggableStatement implements PreparedStatement {
     }
 
     /** The Constant log. */
-    private final static Log logger =
-            LogFactory.getLog(DebuggableStatement.class);
+    private final static Logger logger =
+        Logger.getLogger(DebuggableStatement.class);
 
     private static boolean triggerRegex = true;
 

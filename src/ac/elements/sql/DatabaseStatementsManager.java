@@ -50,8 +50,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * DatabaseStatementsManager manages giving HashMap representations of the
@@ -77,8 +76,8 @@ import org.apache.commons.logging.LogFactory;
 public class DatabaseStatementsManager {
 
     /** The Constant log. */
-    private final static Log logger =
-            LogFactory.getLog(DatabaseStatementsManager.class);
+    private final static Logger logger =
+        Logger.getLogger(DatabaseStatementsManager.class);
 
     /**
      * Get the ArrayList representation of table columns.

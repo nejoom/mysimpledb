@@ -53,8 +53,7 @@ import org.apache.catalina.Store;
 import org.apache.catalina.session.StandardSession;
 import org.apache.catalina.session.StoreBase;
 import org.apache.catalina.util.CustomObjectInputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.apache.commons.codec.binary.Base64;
 
 //import ac.elements.conf.Base64Decoder;
@@ -80,7 +79,7 @@ public class SimpleDBStore extends StoreBase implements Store {
     protected static String info = "SimpleDBStore/1.0";
 
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(SimpleDBStore.class);
+    private final static Logger log = Logger.getLogger(SimpleDBStore.class);
 
     /** Name to register for this Store, used for logging. */
     protected static String storeName = "SimpleDBStore";

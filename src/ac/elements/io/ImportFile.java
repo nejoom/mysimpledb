@@ -42,8 +42,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.parser.SimpleDBParser;
 import ac.elements.sdb.SimpleDBImplementationAsync;
@@ -53,7 +52,7 @@ public class ImportFile {
     // private static String NEWLINE = System.getProperty("line.separator");
 
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(ImportFile.class);
+    private final static Logger log = Logger.getLogger(ImportFile.class);
 
     private static String SEPARATOR = System.getProperty("file.separator");
 

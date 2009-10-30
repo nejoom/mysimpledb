@@ -46,18 +46,17 @@ import java.util.Iterator;
 
 import ac.elements.sql.debug.DebuggableConnection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 public class MigrateJDBC {
 
     /** The Constant log. */
-    private final static Log logger = LogFactory.getLog(MigrateJDBC.class);
+    private final static Logger logger = Logger.getLogger(MigrateJDBC.class);
 
     /**
      * Get the resultSet for the sql expression and dataSource passed as a
-     * parameter. It is a good idea to release resources in a finally{} block 
-     * if they are no-longer needed. The below code demonstrates this.
+     * parameter. It is a good idea to release resources in a finally{} block if
+     * they are no-longer needed. The below code demonstrates this.
      * 
      * <pre>
      *         finally {
@@ -129,16 +128,17 @@ public class MigrateJDBC {
         }
 
         try {
-            
-            statement = con.prepareStatement(preparedStatement,
-                    ResultSet.TYPE_SCROLL_SENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
+
+            statement =
+                    con.prepareStatement(preparedStatement,
+                            ResultSet.TYPE_SCROLL_SENSITIVE,
+                            ResultSet.CONCUR_READ_ONLY);
             statement.setFetchSize(Integer.MIN_VALUE);
-//      
-//            statement =
-//                    con.prepareStatement(preparedStatement,
-//                            ResultSet.TYPE_SCROLL_SENSITIVE,
-//                            ResultSet.CONCUR_READ_ONLY);
+            //      
+            // statement =
+            // con.prepareStatement(preparedStatement,
+            // ResultSet.TYPE_SCROLL_SENSITIVE,
+            // ResultSet.CONCUR_READ_ONLY);
 
         } catch (SQLException sqlEx) {
             logger.error("SQL statement: \n" + preparedStatement);
@@ -191,8 +191,7 @@ public class MigrateJDBC {
         }
 
         return rs;
-        
+
     }
-    
-    
+
 }

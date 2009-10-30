@@ -57,8 +57,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * The <code>PropertiesParser</code> class represents a persistent set of
@@ -93,7 +92,7 @@ import org.apache.commons.logging.LogFactory;
 public class PropertiesParser {
 
     /** The Constant log. */
-    private final static Log logger = LogFactory.getLog(PropertiesParser.class);
+    private final static Logger logger = Logger.getLogger(PropertiesParser.class);
 
     // private static final String SUFFIX = ".properties";
 

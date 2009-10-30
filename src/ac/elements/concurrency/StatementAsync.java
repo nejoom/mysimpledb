@@ -41,8 +41,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.sdb.SimpleDBImplementation;
 import ac.elements.sdb.collection.SimpleDBDataList;
@@ -52,7 +51,8 @@ public class StatementAsync {
     // ExecutorService executor = Executors.newFixedThreadPool(100);
 
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(StatementAsync.class);
+    private final static Logger log =
+        Logger.getLogger(StatementAsync.class);
 
     public static final StatementAsync SINGLETON = new StatementAsync();
 

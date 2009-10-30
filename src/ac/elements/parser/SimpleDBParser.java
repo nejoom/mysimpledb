@@ -43,8 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.sdb.ASimpleDBApiExtended;
 import ac.elements.sdb.collection.SimpleDBDataList;
@@ -52,7 +51,7 @@ import ac.elements.sdb.collection.SimpleDBMap;
 
 public class SimpleDBParser {
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(SimpleDBParser.class);
+    private final static Logger log = Logger.getLogger(SimpleDBParser.class);
 
     public static Object[] parseList(String keySyntax, String optionalDelimiters) {
         if (log.isDebugEnabled())

@@ -41,8 +41,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.Future;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.concurrency.AsyncOperation;
 import ac.elements.conversion.TypeConverter;
@@ -60,8 +59,8 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
         implements ISimpleDBCustom {
 
     /** The Constant log. */
-    private final static Log log =
-            LogFactory.getLog(ASimpleDBCustomAsync.class);
+    private final static Logger log =
+        Logger.getLogger(ASimpleDBCustomAsync.class);
 
     /**
      * Instantiates a new simple db to issue requests to Amazon's ASimpleDBApi.

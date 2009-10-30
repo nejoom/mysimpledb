@@ -2,6 +2,7 @@
     language="java"
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
+    import="org.apache.log4j.Logger"
     errorPage="signature.jsp"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
@@ -17,13 +18,23 @@
  
      http://mysimpledb.com/license.
      
-     --%><%@ 
+     --%><%!
+
+     /** The Constant log. */
+     private final static Logger log =
+         Logger.getLogger("index.jsp");
+     
+     %><%@ 
 taglib
     uri="http://java.sun.com/jstl/core"
     prefix="c"%><%@ 
 taglib
     uri="http://java.sun.com/jstl/fmt"
-    prefix="fmt" %>
+    prefix="fmt" %><%
+    
+    log.debug("Entering index.jsp");
+    
+    %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
@@ -41,6 +52,8 @@ Count: <%=session.getAttribute("count")%> Date: <%=new java.util.Date(session.ge
 Id: <%=session.getId()%>| Last access: <%=new java.util.Date(session.getLastAccessedTime())%>
 --%>
 
+            
+            
 <h1><center>SimpleDB Administrator User Interface</center></h1>
 <hr />
 <jsp:include page="loadForms.jsp" /> <!-- end header --></div>

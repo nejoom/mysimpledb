@@ -45,8 +45,7 @@ import java.util.Hashtable;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Objects that implement the FileChangeListener can register themselves with
@@ -142,7 +141,7 @@ public class FileMonitor {
     private static final FileMonitor instance = new FileMonitor();
 
     /** The Constant log. */
-    private final static Log log = LogFactory.getLog(FileMonitor.class);
+    private final static Logger log = Logger.getLogger(FileMonitor.class);
 
     /**
      * Gets the single instance of FileMonitor.

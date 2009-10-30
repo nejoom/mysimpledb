@@ -43,8 +43,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.WeakHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.conf.Configuration;
 import ac.elements.conversion.TypeConverter;
@@ -83,8 +82,8 @@ public class DatabaseConfiguration {
                     5 * 60 * 1000);
 
     /** The Constant log. */
-    private final static Log logger = LogFactory.getLog(DatabaseConfiguration.class);
-
+    private final static Logger logger =
+            Logger.getLogger(DatabaseConfiguration.class);
 
     /**
      * Gets the by database name.

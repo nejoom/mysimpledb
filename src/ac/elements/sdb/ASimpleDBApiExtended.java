@@ -43,8 +43,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.parser.ExtendedFunctions;
 import ac.elements.parser.SimpleDBConverter;
@@ -63,8 +62,8 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
     }
 
     /** The Constant log. */
-    private final static Log log =
-            LogFactory.getLog(ASimpleDBApiExtended.class);
+    private final static Logger log =
+        Logger.getLogger(ASimpleDBApiExtended.class);
 
     /**
      * Utility method to delete all the attributes and the item specified.

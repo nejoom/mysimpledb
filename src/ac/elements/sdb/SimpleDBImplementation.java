@@ -39,8 +39,7 @@ package ac.elements.sdb;
 
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import ac.elements.conf.Configuration;
 import ac.elements.parser.ExtendedFunctions;
@@ -53,8 +52,8 @@ import ac.elements.sdb.collection.SimpleDBDataList;
 public class SimpleDBImplementation extends ASimpleDBCustom {
 
     /** The Constant log. */
-    private final static Log log =
-            LogFactory.getLog(SimpleDBImplementation.class);
+    private final static Logger log =
+            Logger.getLogger(SimpleDBImplementation.class);
 
     /** The access key id. */
     private final static String staticAccessKeyId =
@@ -135,6 +134,10 @@ public class SimpleDBImplementation extends ASimpleDBCustom {
     }
 
     public static SimpleDBDataList setStaticExecute(String preparedStatement) {
+
+        log.error("Entering setExcecute(String preparedStatement, "
+                + "ArrayList<Object> myList)");
+
         SimpleDBDataList sdbl = staticSdbc.setExcecute(preparedStatement, null);
         return sdbl;
     }
@@ -142,11 +145,18 @@ public class SimpleDBImplementation extends ASimpleDBCustom {
     public SimpleDBDataList setExcecute(String preparedStatement,
             ArrayList<Object> myList) {
 
+        log.error("Entering setExcecute(String preparedStatement, "
+                + "ArrayList<Object> myList)");
+
         return setExcecute(preparedStatement, myList, null);
     }
 
     public SimpleDBDataList setExcecute(String preparedStatement,
             ArrayList<Object> myList, String nextToken) {
+
+        // if (log.isDebugEnabled())
+        log.error("Entering setExcecute(String preparedStatement, "
+                + "ArrayList<Object> myList, String nextToken)");
 
         long t0 = System.currentTimeMillis();
         SimpleDBDataList sdb = null;
@@ -206,5 +216,4 @@ public class SimpleDBImplementation extends ASimpleDBCustom {
         sdb.setResponseTime(responseTime);
         return sdb;
     }
-
 }
