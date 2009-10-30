@@ -18,24 +18,17 @@
  
      http://mysimpledb.com/license.
      
-     --%><%!
-
-     /** The Constant log. */
-     private final static Logger log =
-         Logger.getLogger("index.jsp");
-     
-     %><%@ 
+     --%><%!/** The Constant log. */
+    private final static Logger log = Logger.getLogger("index.jsp");%><%@ 
 taglib
     uri="http://java.sun.com/jstl/core"
     prefix="c"%><%@ 
 taglib
     uri="http://java.sun.com/jstl/fmt"
-    prefix="fmt" %><%
-    
+    prefix="fmt"%>
+<%
     log.debug("Entering index.jsp");
-    
-    %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <meta
@@ -52,9 +45,11 @@ Count: <%=session.getAttribute("count")%> Date: <%=new java.util.Date(session.ge
 Id: <%=session.getId()%>| Last access: <%=new java.util.Date(session.getLastAccessedTime())%>
 --%>
 
-            
-            
-<h1><center>SimpleDB Administrator User Interface</center></h1>
+
+
+<h1>
+<center>SimpleDB Administrator User Interface</center>
+</h1>
 <hr />
 <jsp:include page="loadForms.jsp" /> <!-- end header --></div>
 <div id="bd"><!-- body yui -->
@@ -71,7 +66,8 @@ Id: <%=session.getId()%>| Last access: <%=new java.util.Date(session.getLastAcce
 <hr />
 <jsp:include page="hiddenForms.jsp" />
 <center>Copyright elements (c)/ <a href="http://mysimpledb.com">mysimpledb.com</a>
-</center> <!-- end footer --></div>
+</center>
+<!-- end footer --></div>
 <!-- end document wrapper --></div>
 </body>
 </html>

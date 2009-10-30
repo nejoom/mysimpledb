@@ -3,7 +3,8 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     errorPage="signature.jsp"
-    import="ac.elements.sdb.SimpleDBImplementationAsync,ac.elements.sdb.collection.SimpleDBDataList,ac.elements.sdb.collection.SimpleDBMap,ac.elements.parser.ExtendedFunctions,ac.elements.conf.Configuration,ac.elements.io.SaveAsFile,ac.elements.io.ImportFile,ac.elements.parser.SimpleDBParser,java.text.SimpleDateFormat,java.util.HashMap,java.util.Set,java.util.TreeSet,java.util.Date"%><%--
+    import="ac.elements.sdb.SimpleDBImplementationAsync,ac.elements.sdb.collection.SimpleDBDataList,ac.elements.sdb.collection.SimpleDBMap,ac.elements.parser.ExtendedFunctions,ac.elements.conf.Configuration,ac.elements.io.SaveAsFile,ac.elements.io.ImportFile,ac.elements.parser.SimpleDBParser,java.text.SimpleDateFormat,java.util.HashMap,java.util.Set,java.util.TreeSet,java.util.Date"
+    import="org.apache.log4j.Logger"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
  
@@ -18,7 +19,8 @@
  
      http://mysimpledb.com/license.
      
-     --%><%@ 
+     --%><%!/** The Constant log. */
+	private final static Logger log = Logger.getLogger("listItemNames.jsp");%><%@ 
 taglib
     uri="http://java.sun.com/jstl/core"
     prefix="c"%><%@ 
@@ -29,6 +31,8 @@ taglib
     uri="http://ac.elements/jsp/jstl/functions"
     prefix="fn"%>
 <%
+    log.debug("Entering listItemNames.jsp");
+
     /**
      * The Access Key ID is associated with your AWS account. You include it in
      * AWS service requests to identify yourself as the sender of the request.

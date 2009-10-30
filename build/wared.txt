@@ -48,11 +48,10 @@ WEB-INF/lib/jdom.jar
 WEB-INF/lib/commons-codec-1.2.jar
 WEB-INF/lib/commons-httpclient.jar
 WEB-INF/lib/commons-lang-2.0.jar
-WEB-INF/lib/commons-logging-1.1.1.jar
-WEB-INF/lib/commons-logging.properties
+WEB-INF/lib/log4j-1.2.15.jar
 WEB-INF/lib/jstl.jar
 WEB-INF/lib/mysimpledb.version.jar
-WEB-INF/lib/simplelog.properties
 WEB-INF/lib/standard.jar
 WEB-INF/classes/aws.properties
+WEB-INF/classes/log4j.properties
 WEB-INF/web.xml
