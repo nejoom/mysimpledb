@@ -3,7 +3,12 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     errorPage="error.jsp"
-    import="ac.elements.sdb.SimpleDBImplementationAsync,ac.elements.sdb.collection.SimpleDBDataList,ac.elements.parser.ExtendedFunctions,ac.elements.conf.Configuration,java.util.HashMap"%><%--
+    import="ac.elements.sdb.SimpleDBImplementationAsync"
+    import="ac.elements.sdb.collection.SimpleDBDataList"
+    import="ac.elements.parser.ExtendedFunctions"
+    import="ac.elements.conf.Configuration"
+    import="java.util.ArrayList"
+    import="java.util.HashMap"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
  
@@ -29,6 +34,14 @@ taglib
     uri="http://ac.elements/jsp/jstl/functions"
     prefix="fn"%>
 <%
+    /* protecedDomains can't be deleted through user interface */
+    ArrayList<String> protectedDomains = new ArrayList<String>();
+    protectedDomains.add("Fips");
+    protectedDomains.add("test");
+    protectedDomains.add("Sebas");
+    protectedDomains.add("select_history");
+    protectedDomains.add("summary_top_pages");
+
     /**
      * The Access Key ID is associated with your AWS account. You include it in
      * AWS service requests to identify yourself as the sender of the request.
@@ -64,7 +77,8 @@ taglib
                 && request.getParameter("deleteDomain") != null) {
 
             String domainName = request.getParameter("deleteDomain");
-            exampleDB.deleteDomain(domainName);
+            if (!protectedDomains.contains(domainName))
+                exampleDB.deleteDomain(domainName);
 
         } else if (request.getParameter("Action").equals("select")
                 && request.getParameter("select") != null) {
@@ -99,6 +113,8 @@ taglib
     tokens.put(sdbList.getNextToken(), currentToken);
     session.setAttribute("domainTokens", tokens);
 
+    request.setAttribute("protectedDomains", protectedDomains);
+
     request.setAttribute("domainList", sdbList);
     request.setAttribute("nextToken", sdbList.getNextToken());
     request.setAttribute("previousToken", tokens.get(currentToken));
@@ -132,13 +148,16 @@ taglib
         items="${domainList}"
         var="domain"
         varStatus="status">
-        <li><span class="jive-paginator"><a
-            href="?Action=deleteDomain"
-            title="Click to delete domain"
-            onclick="popDeleteDomain('Delete Domain: ${domain}', 'Are you very sure?', '${domain}');return false;"><img
-            border="0"
-            align="absbottom"
-            src="/mysimpledb/assets/img/delete16.gif" /></a><a
+        <li><span class="jive-paginator"> <c:if
+            test='${not fn:contains(protectedDomains,domain)}'>
+            <a
+                href="?Action=deleteDomain"
+                title="Click to delete domain"
+                onclick="popDeleteDomain('Delete Domain: ${domain}', 'Are you very sure?', '${domain}');return false;"><img
+                border="0"
+                align="absbottom"
+                src="/mysimpledb/assets/img/delete16.gif" /></a>
+        </c:if> <a
             href="?Action=exploreDomain&domainName=${domain}"
             onmouseout="_hide();"
             onmouseover="_show(event,'id${status.count}');"
