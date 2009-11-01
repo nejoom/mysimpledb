@@ -123,7 +123,8 @@
 
   <!-- 
     the jared.txt file is generated with
-    mysimpledb/build/classes]$ find . -name "*class*" | cut -c 3- > ../jared.txt
+    cd /Users/eddie/Documents/workspace/mysimpledb/build/classes
+    find . -name "*class*" | cut -c 3- > ../jared.txt
     -->
   <target name="make-jar" description="Creates a bin jar">
     <jar jarfile="mysimpledb.version.jar"
