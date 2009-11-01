@@ -80,6 +80,7 @@ taglib
      */
     static File[] orderFileList(File[] fileObjects, String sort) {
 
+        if (fileObjects == null) return null;
         Comparator<Object> reverse = Collections.reverseOrder();
         TreeMap<Object, ArrayList<File>> tm =
                 new TreeMap<Object, ArrayList<File>>(reverse);
@@ -156,6 +157,7 @@ taglib
     File[] fileObjects =
             orderFileList(f.listFiles(), request
                     .getParameter("sortfile"));
+    
 
     // Make a SimpleDateFormat for toString()'s output.
     SimpleDateFormat format =
@@ -220,6 +222,7 @@ of exported files:</b></legend>
         name:</b></td>
     </tr>
     <%
+    if (fileObjects != null)
         for (int i = 0; i < fileObjects.length; i++) {
             if (!fileObjects[i].isDirectory()) {
                 request.setAttribute("size", Long.toString(fileObjects[i]
