@@ -140,6 +140,13 @@ public interface ISimpleDBCustom {
     public SimpleDBDataList setInsert(String insertExpression);
 
     /**
+     * The confirm operation is a custom utility method that confirms that the
+     * operation has completely replicated for this connections view of
+     * SimpleDB.
+     */
+//    public SimpleDBDataList confirm(String insertExpression);
+
+    /**
      * The Insert operation is a custom utility method that inserts a set of key
      * value pairs, by parsing the insert statement and uses the
      * batchPutAttributes method to insert the key value pairs. Unlike standard
