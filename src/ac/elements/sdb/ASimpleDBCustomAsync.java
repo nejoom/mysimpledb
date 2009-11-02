@@ -38,7 +38,10 @@
 package ac.elements.sdb;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
@@ -60,7 +63,7 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
 
     /** The Constant log. */
     private final static Logger log =
-        Logger.getLogger(ASimpleDBCustomAsync.class);
+            Logger.getLogger(ASimpleDBCustomAsync.class);
 
     /**
      * Instantiates a new simple db to issue requests to Amazon's ASimpleDBApi.
@@ -112,8 +115,11 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
         log.trace("selectExpression: " + selectExpression);
         String nextToken = null;
         SimpleDBDataList sdbList;
+
         ArrayList<Object> itemNames = new ArrayList<Object>();
-        ArrayList<Future<String>> futures = new ArrayList<Future<String>>();
+        Set<Future<String>> futures =
+                Collections
+                        .newSetFromMap(new WeakHashMap<Future<String>, Boolean>());
 
         // does the delete statement have a limit clause?
         int limit =
@@ -225,7 +231,9 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
         String nextToken = null;
         SimpleDBDataList sdbList;
         ArrayList<Object> itemNames = new ArrayList<Object>();
-        ArrayList<Future<String>> futures = new ArrayList<Future<String>>();
+        Set<Future<String>> futures =
+                Collections
+                        .newSetFromMap(new WeakHashMap<Future<String>, Boolean>());
 
         // does the delete statement have a limit clause?
         int limit =
@@ -345,7 +353,9 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
 
         log.error("Parsing itemSyntax: " + itemSyntax);
         ArrayList<Object> itemNames = new ArrayList<Object>();
-        ArrayList<Future<String>> futures = new ArrayList<Future<String>>();
+        Set<Future<String>> futures =
+                Collections
+                        .newSetFromMap(new WeakHashMap<Future<String>, Boolean>());
 
         StringBuffer itemBuffer = new StringBuffer(itemSyntax);
         int pointer = 0;
@@ -485,7 +495,10 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
         if (log.isDebugEnabled())
             log.debug("Entering insert");
         SimpleDBDataList dataList = extractSimpleDBList(insertExpression);
-        ArrayList<Future<String>> futures = new ArrayList<Future<String>>();
+
+        Set<Future<String>> futures =
+                Collections
+                        .newSetFromMap(new WeakHashMap<Future<String>, Boolean>());
 
         // async
         Future<String> future = AsyncOperation.batchPutAttributes(dataList);
@@ -651,7 +664,9 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
             }
         }
 
-        ArrayList<Future<String>> futures = new ArrayList<Future<String>>();
+        Set<Future<String>> futures =
+                Collections
+                        .newSetFromMap(new WeakHashMap<Future<String>, Boolean>());
 
         // async
         Future<String> future = AsyncOperation.batchPutAttributes(dataList);
@@ -877,7 +892,9 @@ public abstract class ASimpleDBCustomAsync extends ASimpleDBApiExtended
             }
         }
 
-        ArrayList<Future<String>> futures = new ArrayList<Future<String>>();
+        Set<Future<String>> futures =
+                Collections
+                        .newSetFromMap(new WeakHashMap<Future<String>, Boolean>());
 
         // async
         Future<String> future =
