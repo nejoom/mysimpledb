@@ -98,7 +98,7 @@ public class SaveAsFile {
             export(sdbList, path, file, true);
             rows += sdbList.size();
 
-            // should we limit the number of items deleted?
+            // should we limit the number of items?
             if (limit != -1 && rows >= limit) {
                 sdbList.setNextToken(null);
                 break;
