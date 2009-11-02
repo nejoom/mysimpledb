@@ -551,6 +551,11 @@ public class Signature {
                             + "http://aws.amazon.com/simpledb/\">Amazon's "
                             + "Simple DB</a> page and create an account, if "
                             + "you do not have one at this moment.");
+        } else if (response.indexOf("<Errors>") != -1) {
+
+            log.error("Found keyword error in response:\n" + response);
+            log.error("Key value pairs sent:\n" + keyValues);
+
         }
         return response;
 
