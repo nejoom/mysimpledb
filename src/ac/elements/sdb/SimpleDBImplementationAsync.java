@@ -53,7 +53,7 @@ public class SimpleDBImplementationAsync extends ASimpleDBCustomAsync {
 
     /** The Constant log. */
     private final static Logger log =
-        Logger.getLogger(SimpleDBImplementationAsync.class);
+            Logger.getLogger(SimpleDBImplementationAsync.class);
 
     /** The access key id. */
     private final static String staticAccessKeyId =
@@ -147,15 +147,14 @@ public class SimpleDBImplementationAsync extends ASimpleDBCustomAsync {
     public SimpleDBDataList setExcecute(String preparedStatement,
             ArrayList<Object> myList) {
 
-        log.trace("Entering setExcecute(String preparedStatement, ArrayList<Object> myList)");
+        log.trace("Entering setExcecute(preparedStatement, myList)");
         return setExcecute(preparedStatement, myList, null);
     }
 
     public SimpleDBDataList setExcecute(String preparedStatement,
             ArrayList<Object> myList, String nextToken) {
-        
-        log.trace("Entering setExcecute(String preparedStatement, ArrayList<Object> myList)");
 
+        log.trace("Entering setExcecute(preparedStatement, myList)");
         long t0 = System.currentTimeMillis();
         SimpleDBDataList sdb = null;
         if (preparedStatement.indexOf("//") == 0)
