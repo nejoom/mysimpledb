@@ -2,7 +2,12 @@
     language="java"
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import="java.io.DataInputStream,java.io.FileOutputStream"%><%--
+    import="org.apache.commons.fileupload.*"
+    import="org.apache.commons.fileupload.servlet.ServletFileUpload"
+    import="org.apache.commons.fileupload.disk.DiskFileItemFactory"
+    import="org.apache.commons.io.FilenameUtils,java.util.*"
+    import="java.io.File"
+    import="java.lang.Exception"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
  
@@ -16,91 +21,104 @@
   compliance with the License. You may obtain a copy of the License at
  
   http://mysimpledb.com/license.
-     
-     --%>
-<%--
-
-  http://www.roseindia.net/jsp/file_upload/Sinle_upload.xhtml.shtml
-
+  
+  http://commons.apache.org/fileupload/using.html
 --%>
 <%
+    //Create a progress listener
+    ProgressListener progressListener = new ProgressListener() {
+        private long megaBytes = -1;
+
+        public void update(long pBytesRead, long pContentLength,
+                int pItems) {
+            long mBytes = pBytesRead / 10000000;
+            if (megaBytes == mBytes) {
+                return;
+            }
+            megaBytes = mBytes;
+            System.out.println("We are currently reading item "
+                    + pItems);
+            if (pContentLength == -1) {
+                System.out.println("So far, " + pBytesRead
+                        + " bytes have been read.");
+            } else {
+                System.out.println("So far, " + pBytesRead + " of "
+                        + pContentLength + " bytes have been read.");
+            }
+        }
+    };
+
     String SEPARATOR = System.getProperty("file.separator");
 
-    //to get the content type information from JSP Request Header
-    String contentType = request.getContentType();
+    String dirName = application.getRealPath(SEPARATOR + "export");
 
-    //here we are checking the content type is not equal to Null and as well 
-    //as the passed data from mulitpart/ form-data is greater than or equal to 0
-    if ((contentType != null)
-            && (contentType.indexOf("multipart/form-data") >= 0)) {
+    //Check that we have a file upload request
+    if (ServletFileUpload.isMultipartContent(request)) {
 
-        DataInputStream in =
-                new DataInputStream(request.getInputStream());
+        // Create a new file upload handler, Create a factory for disk-based file items
+        ServletFileUpload servletFileUpload =
+                new ServletFileUpload(new DiskFileItemFactory());
 
-        //we are taking the length of Content type data
-        int formDataLength = request.getContentLength();
-        byte dataBytes[] = new byte[formDataLength];
-        int byteRead = 0;
-        int totalBytesRead = 0;
+        servletFileUpload.setProgressListener(progressListener);
 
-        //this loop converting the uploaded file into byte code
-        while (totalBytesRead < formDataLength) {
-            byteRead =
-                    in.read(dataBytes, totalBytesRead, formDataLength);
-            totalBytesRead += byteRead;
-        }
+        // Parse the request
+        List fileItemsList = servletFileUpload.parseRequest(request);
 
-        String uploadFile = new String(dataBytes);
+        String optionalFileName = "";
+        FileItem fileItem = null;
 
-        //for saving the file name
-        String saveFile =
-                uploadFile.substring(uploadFile.indexOf("filename=\"")
-                        + "filename=\"".length());
+        // Process the uploaded items
+        Iterator it = fileItemsList.iterator();
+        while (it.hasNext()) {
+            FileItem fileItemTemp = (FileItem) it.next();
+            if (fileItemTemp.isFormField()) {
 
-        saveFile = saveFile.substring(0, saveFile.indexOf("\n"));
-        saveFile =
-                saveFile.substring(saveFile.lastIndexOf("\\") + 1,
-                        saveFile.indexOf("\""));
+                String name = fileItemTemp.getFieldName();
+                String value = fileItemTemp.getString();
 
-        int lastIndex = contentType.lastIndexOf("=");
-        String boundary =
-                contentType.substring(lastIndex + 1, contentType
-                        .length());
-        int pos;
+                //Field name: fileItemTemp.getFieldName()
+                //Field value: fileItemTemp.getString()
+                if (fileItemTemp.getFieldName().equals("uploadFile"))
+                    optionalFileName = fileItemTemp.getString();
 
-        //extracting the index of uploadFile 
-        pos = uploadFile.indexOf("filename=\"");
-        pos = uploadFile.indexOf("\n", pos) + 1; // Skip "Content-Type:" line
-        pos = uploadFile.indexOf("\n", pos) + 1; // Skip blank line
-        pos = uploadFile.indexOf("\n", pos) + 1; // Skip blank line
-        int boundaryLocation = uploadFile.indexOf(boundary, pos) - 4; // Position to boundary line
+            } else {
 
-        int startPos =
-                ((uploadFile.substring(0, pos)).getBytes()).length;
-        int endPos =
-                ((uploadFile.substring(0, boundaryLocation)).getBytes()).length;
+                String fieldName = fileItemTemp.getFieldName();
+                String fileName = fileItemTemp.getName();
+                String contentType = fileItemTemp.getContentType();
+                boolean isInMemory = fileItemTemp.isInMemory();
+                long sizeInBytes = fileItemTemp.getSize();
 
-        String path = application.getRealPath(SEPARATOR + "export");
+                fileItem = fileItemTemp;
 
-        //FileOutputStream fos = new FileOutputStream(path + SEPARATOR + saveFile);
+                /* Save the uploaded file if its size is greater than 0. */
+                if (fileItem.getSize() > 0) {
+                    if (optionalFileName.trim().equals(""))
+                        fileName = FilenameUtils.getName(fileName);
+                    else
+                        fileName = optionalFileName;
 
-        //BufferedWriter osw =
-        //        new BufferedWriter(new OutputStreamWriter(fos, "UTF8"));
-        //PrintWriter pw = new PrintWriter(osw);
-        //pw.write(dataBytes, startPos, (endPos - startPos));
-        //pw.flush();
-        //pw.close();
+                    String saveFile = dirName + SEPARATOR + fileName;
+                    File saveTo = new File(saveFile);
 
-        // creating a new file with the same name and writing the content in new file
-        FileOutputStream fileOut =
-                new FileOutputStream(path + SEPARATOR + saveFile);
-        fileOut.write(dataBytes, startPos, (endPos - startPos));
-        fileOut.flush();
-        fileOut.close();
+                    System.out.println("Try uploaded file:" + saveFile);
+
+                    try {
+                        fileItem.write(saveTo);
+                        System.out.println("The uploaded file has "
+                                + "been saved successfully.");
 %>
 You have successfully uploaded the file by the name of:
-</b>
-<%=saveFile%>
+<%=fileName%>
 <%
-    }
+    //The uploaded file has been saved successfully.
+                    } catch (Exception e) {
+                        System.out.println("An error occurred when we "
+                                + "tried to save the uploaded file.");
+                        //An error occurred when we tried to save the uploaded file.
+                    }
+                }// size > 0
+            }// is not form field
+        }// while list of fields
+    }//is multi-form
 %>
