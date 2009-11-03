@@ -260,8 +260,8 @@ of exported files:</b></legend>
             src="/mysimpledb/assets/img/import16.gif"></img></a></td>
     </tr>
     <%
-        }
-            }
+        }//if
+            }//for
     %>
 
 </table>
