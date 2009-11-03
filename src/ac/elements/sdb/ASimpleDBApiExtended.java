@@ -63,7 +63,7 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
 
     /** The Constant log. */
     private final static Logger log =
-        Logger.getLogger(ASimpleDBApiExtended.class);
+            Logger.getLogger(ASimpleDBApiExtended.class);
 
     /**
      * Utility method to delete all the attributes and the item specified.
@@ -371,6 +371,15 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
     }
 
     public static SimpleDBDataList extractSimpleDBList(String sql) {
+        String memory =
+                "["
+                        + ((Runtime.getRuntime().totalMemory() - Runtime
+                                .getRuntime().freeMemory()) / (1024 * 1024))
+                        + " Mb] used of ["
+                        + (Runtime.getRuntime().totalMemory() / (1024 * 1024))
+                        + " Mb], ";
+
+        log.error(memory);
 
         // make sure spaces are ok and we have no enters
         sql = ExtendedFunctions.trimSentence(sql);
@@ -418,7 +427,7 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
             log.debug("Found parseString: " + parseString);
 
         Object[] items;
-        ArrayList<Object> itemNames = new ArrayList<Object>();
+        // ArrayList<Object> itemNames = new ArrayList<Object>();
         SimpleDBDataList dataList = new SimpleDBDataList();
 
         // if itemName is not a defined column, then use standard syntax
@@ -458,16 +467,15 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
 
             if (items.length == 0) {
                 // generate random UUIDs
-                itemNames.add(UUID.randomUUID().toString());
+                items = new Object[1];
+                items[0] = UUID.randomUUID().toString();
             } else {
                 for (int i = 0; i < items.length; i++) {
                     Object itemName = items[i];
                     if (itemName == null || itemName.toString().equals("")) {
-                        itemNames.add(UUID.randomUUID().toString());
+                        items[i] = UUID.randomUUID().toString();
                         continue;
                     }
-
-                    itemNames.add(itemName);
                 }
             }
 
@@ -504,13 +512,13 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
                     String valueString = (String) valueSequence[i];
                     Object[] values =
                             SimpleDBParser.parseList(valueString, "'\"");
-                    if (!dataList.getItemNames().contains(itemNames.get(i))) {
+                    if (!dataList.getItemNames().contains(items[i])) {
                         SimpleDBMap sdbMap = new SimpleDBMap();
                         for (int j = 0; j < values.length; j++) {
                             Object value = values[j];
                             sdbMap.put(keys[j], value);
                         }
-                        sdbMap.setItemName(itemNames.get(i));
+                        sdbMap.setItemName(items[i]);
                         dataList.add(sdbMap);
                         if (log.isDebugEnabled()) {
                             log.trace("TODO: in method getItemName? " + sdbMap);
@@ -523,9 +531,7 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
                     } else {
 
                         // ÊSearchÊforÊelementÊinÊlist
-                        int index =
-                                dataList.getItemNames().indexOf(
-                                        itemNames.get(i));
+                        int index = dataList.getItemNames().indexOf(items[i]);
 
                         // ÊSearchÊforÊelementÊinÊlist
                         // int index =
@@ -573,23 +579,6 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
 
             dataList.setDomainName(domain);
             StringBuffer dataBuffer = new StringBuffer(itemSyntax);
-            int pointer = 0;
-            // strip things to contain only data lists
-            while (pointer < dataBuffer.length()) {
-
-                if (dataBuffer.charAt(pointer) == '(') {
-                    while (dataBuffer.length() > 0
-                            && dataBuffer.charAt(pointer) != ')') {
-                        pointer++;
-                    }
-                    pointer++;
-                    if (dataBuffer.length() < pointer)
-                        dataBuffer.insert(pointer, ',');
-                    pointer++;
-                } else {
-                    dataBuffer.deleteCharAt(pointer);
-                }
-            }
 
             if (log.isDebugEnabled()) {
                 log.debug("Parsing dataBuffer: " + dataBuffer);
@@ -636,7 +625,7 @@ public abstract class ASimpleDBApiExtended extends ASimpleDBApi {
                                 log.debug("1. uuid for: " + values[0]);
                             }
                         }
-                        itemNames.add(values[0]);
+                        // itemNames.add(values[0]);
                         SimpleDBMap sdbMap = new SimpleDBMap();
                         sdbMap.setItemName(values[0]);
                         for (int j = 1; j < values.length; j++) {
