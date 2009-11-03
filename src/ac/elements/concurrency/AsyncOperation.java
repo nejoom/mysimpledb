@@ -37,6 +37,7 @@
  */
 package ac.elements.concurrency;
 
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
@@ -54,14 +55,13 @@ import ac.elements.sdb.collection.SimpleDBDataList;
 
 public class AsyncOperation {
 
-    private static ConcurrentHashMap<String, ThreadPoolExecutor> threadPoolExecutors =
-            new ConcurrentHashMap<String, ThreadPoolExecutor>();
+    private static HashMap<String, ThreadPoolExecutor> threadPoolExecutors =
+            new HashMap<String, ThreadPoolExecutor>();
 
     /** The Constant log. */
-    private final static Logger log =
-        Logger.getLogger(ThreadPoolExecutorFactory.class);
+    private final static Logger log = Logger.getLogger(AsyncOperation.class);
 
-    private static final int CAPACITY = 1000;
+    private static final int CAPACITY = 500;
 
     /** The access key id. */
     private final static String staticAccessKeyId =
@@ -74,8 +74,8 @@ public class AsyncOperation {
     private final static SimpleDBImplementation sdbimpl =
             new SimpleDBImplementation(staticAccessKeyId, staticSecretAccessKey);
 
-    private static ThreadPoolExecutor getStaticExcecutor(String key,
-            int N_THREADS) {
+    private static synchronized ThreadPoolExecutor getStaticExcecutor(
+            String key, int N_THREADS) {
         ThreadPoolExecutor executor = threadPoolExecutors.get(key);
         if (executor == null) {
             return createExecutor(key, N_THREADS);
@@ -101,10 +101,16 @@ public class AsyncOperation {
          * the Source (eg. TCP layer/ OS layer), and eventually to the client
          * enabling more graceful degradation under load.
          */
-        ThreadPoolExecutor executor =
-                new ThreadPoolExecutor(N_THREADS, N_THREADS, 0L,
+        CustomThreadPoolExecutor executor =
+                new CustomThreadPoolExecutor(N_THREADS, N_THREADS, 0L,
                         TimeUnit.MILLISECONDS, lbq);
         threadPoolExecutors.put(key, executor);
+        executor.setRejectedExecutionHandler(
+                new ThreadPoolExecutor.CallerRunsPolicy());
+
+        log.error("Created threadPoolExecuter size(): "
+                + threadPoolExecutors.size());
+
         return executor;
     }
 
@@ -161,13 +167,24 @@ public class AsyncOperation {
 
         ThreadPoolExecutor executor = AsyncOperation.getStaticExcecutor(key, 2);
 
+        if (log.isDebugEnabled())
+            log.debug("Retreaved executor");
+
         Future<String> response = executor.submit(new Callable<String>() {
 
             public String call() {
+
+                if (log.isDebugEnabled())
+                    log.debug("performing call");
+
                 return sdbimpl.batchPutAttributes(dataList);
             }
 
         });
+
+        if (log.isDebugEnabled())
+            log.debug("Qued future response");
+
         return response;
     }
 
