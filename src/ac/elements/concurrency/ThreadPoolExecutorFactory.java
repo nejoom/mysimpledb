@@ -47,18 +47,18 @@ import ac.elements.parser.SimpleDBParser;
 
 public class ThreadPoolExecutorFactory {
 
-    private static ConcurrentHashMap<String, CustomThreadPoolExecuter> threadPoolExecutors =
-            new ConcurrentHashMap<String, CustomThreadPoolExecuter>();
+    private static ConcurrentHashMap<String, CustomThreadPoolExecutor> threadPoolExecutors =
+            new ConcurrentHashMap<String, CustomThreadPoolExecutor>();
 
     /** The Constant log. */
     private final static Logger log =
             Logger.getLogger(ThreadPoolExecutorFactory.class);
 
-    private static final int CAPACITY = 1000;
+    private static final int CAPACITY = 250;
 
-    private static CustomThreadPoolExecuter getExcecutor(String key,
+    private static CustomThreadPoolExecutor getExcecutor(String key,
             int N_THREADS) {
-        CustomThreadPoolExecuter executor = threadPoolExecutors.get(key);
+        CustomThreadPoolExecutor executor = threadPoolExecutors.get(key);
         if (executor == null) {
             log.error("Creating thread for domain: " + key + " with N_THREADS "
                     + N_THREADS);
@@ -67,7 +67,7 @@ public class ThreadPoolExecutorFactory {
         return executor;
     }
 
-    private static CustomThreadPoolExecuter createExecutor(String key,
+    private static CustomThreadPoolExecutor createExecutor(String key,
             int N_THREADS) {
 
         LinkedBlockingQueue<Runnable> lbq =
@@ -86,14 +86,14 @@ public class ThreadPoolExecutorFactory {
          * the Source (eg. TCP layer/ OS layer), and eventually to the client
          * enabling more graceful degradation under load.
          */
-        CustomThreadPoolExecuter executor =
-                new CustomThreadPoolExecuter(N_THREADS, N_THREADS, 0L,
+        CustomThreadPoolExecutor executor =
+                new CustomThreadPoolExecutor(N_THREADS, N_THREADS, 0L,
                         TimeUnit.MILLISECONDS, lbq);
         threadPoolExecutors.put(key, executor);
         return executor;
     }
 
-    public static CustomThreadPoolExecuter getExecuter(String sql) {
+    public static CustomThreadPoolExecutor getExecuter(String sql) {
         // parse the sql to set up the key which maps to the correct executer
 
         // /*
