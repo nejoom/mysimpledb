@@ -46,14 +46,14 @@ import org.apache.log4j.Logger;
 /**
  * http://www.devx.com/Java/Article/41377/1954: CustomThreadPoolExecutor.
  */
-public class CustomThreadPoolExecuter extends
+public class CustomThreadPoolExecutor extends
         java.util.concurrent.ThreadPoolExecutor {
 
     /** The Constant log. */
     private final static Logger log =
-            Logger.getLogger(CustomThreadPoolExecuter.class);
+            Logger.getLogger(CustomThreadPoolExecutor.class);
 
-    public CustomThreadPoolExecuter(int corePoolSize, int maximumPoolSize,
+    public CustomThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
             long keepAliveTime, TimeUnit unit,
             BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory,
             RejectedExecutionHandler handler) {
@@ -61,14 +61,14 @@ public class CustomThreadPoolExecuter extends
                 threadFactory, handler);
     }
 
-    public CustomThreadPoolExecuter(int corePoolSize, int maximumPoolSize,
+    public CustomThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
             long keepAliveTime, TimeUnit unit,
             BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
                 threadFactory);
     }
 
-    public CustomThreadPoolExecuter(int corePoolSize, int maximumPoolSize,
+    public CustomThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
             long keepAliveTime, TimeUnit unit,
             BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
@@ -76,7 +76,7 @@ public class CustomThreadPoolExecuter extends
 
     }
 
-    public CustomThreadPoolExecuter(int corePoolSize, int maximumPoolSize,
+    public CustomThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
             long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
     }
