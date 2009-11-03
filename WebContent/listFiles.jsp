@@ -2,21 +2,21 @@
     language="java"
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import="java.io.OutputStream,
-    java.io.Writer,
-    java.io.IOException,
-    java.io.File,
-    java.io.InputStream,
-    java.io.FileInputStream,
-    java.io.BufferedInputStream,
-    java.util.Collections,
-    java.util.TreeMap,
-    java.util.ArrayList,
-    java.util.Iterator,
-    java.util.Comparator,
-    java.util.Date,
-    java.text.SimpleDateFormat,
-    java.util.HashMap"%><%--
+    import="java.io.OutputStream"
+    import="java.io.Writer"
+    import="java.io.IOException"
+    import="java.io.File"
+    import="java.io.InputStream"
+    import="java.io.FileInputStream"
+    import="java.io.BufferedInputStream"
+    import="java.util.Collections"
+    import="java.util.TreeMap"
+    import="java.util.ArrayList"
+    import="java.util.Iterator"
+    import="java.util.Comparator"
+    import="java.util.Date"
+    import="java.text.SimpleDateFormat"
+    import="java.util.HashMap"%><%--
  
   Copyright 2008-2009 Elements. All Rights Reserved.
  
@@ -80,7 +80,8 @@ taglib
      */
     static File[] orderFileList(File[] fileObjects, String sort) {
 
-        if (fileObjects == null) return null;
+        if (fileObjects == null)
+            return null;
         Comparator<Object> reverse = Collections.reverseOrder();
         TreeMap<Object, ArrayList<File>> tm =
                 new TreeMap<Object, ArrayList<File>>(reverse);
@@ -157,7 +158,6 @@ taglib
     File[] fileObjects =
             orderFileList(f.listFiles(), request
                     .getParameter("sortfile"));
-    
 
     // Make a SimpleDateFormat for toString()'s output.
     SimpleDateFormat format =
@@ -222,16 +222,17 @@ of exported files:</b></legend>
         name:</b></td>
     </tr>
     <%
-    if (fileObjects != null)
-        for (int i = 0; i < fileObjects.length; i++) {
-            if (!fileObjects[i].isDirectory()) {
-                request.setAttribute("size", Long.toString(fileObjects[i]
-                        .length()));
-                request.setAttribute("fileName", fileObjects[i].getName());
-                request.setAttribute("filePath", fileObjects[i]
-                        .getAbsolutePath());
-                Date date = new Date(fileObjects[i].lastModified());
-                String timeStamped = format.format(date);
+        if (fileObjects != null)
+            for (int i = 0; i < fileObjects.length; i++) {
+                if (!fileObjects[i].isDirectory()) {
+                    request.setAttribute("size", Long
+                            .toString(fileObjects[i].length()));
+                    request.setAttribute("fileName", fileObjects[i]
+                            .getName());
+                    request.setAttribute("filePath", fileObjects[i]
+                            .getAbsolutePath());
+                    Date date = new Date(fileObjects[i].lastModified());
+                    String timeStamped = format.format(date);
     %>
 
     <tr>
@@ -260,7 +261,7 @@ of exported files:</b></legend>
     </tr>
     <%
         }
-        }
+            }
     %>
 
 </table>
